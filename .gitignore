@@ -1,0 +1,8 @@
+.*
+!/.gitignore
+composer.lock
+**/vendor/*
+/include/settings.inc.php
+/include/settings.balive.inc.php
+/custfilequeue
+/custfiles

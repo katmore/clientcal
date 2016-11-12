@@ -1,0 +1,22 @@
+This is the Changelog for Clientcal
+Clientcal is Created by and Copyright (c) 2006-2011 Paul Douglas Bird II. All Rights Reserved.
+
+version 1.24 (2011-06-16)
+   -new feature: Customer Files (upload file, assoc with customer for later retrieval)
+      -stores file metadata in database (mimetype, userdata, etc)
+      -can only assoc a particular file with customer one time (no duplicate files for a customer)
+      -perm store file in single directory, filename is hash of customer+hashof(file)
+   -modify database:
+      -add table customer_file
+         -table stores: hasof(file), customer, file mimetype, userdata, debuginfo 
+   -new settings required in settings.inc.php (re: Customer Files)
+      $dir_custfiles = "/example/path/"; /*directory customer files will be perm stored*/
+      $dir_uploadtmp = "/example/tmp/path/"; /*directory customer files will be temp stored*/
+      $hashalgo_custfile = "sha256"; /*hash algo avail on sys to use for customer_file; ie: "sha256", "md5", (etc...)*/
+   -modified wtfpanel.customer.inc.php
+      -new functions PanelGetCustfileMimetype,PanelEnumerateCustfiles,PanelAddCustfile
+   -modified html.customer.inc.php
+      -new function wtfpanel_customerfilestable
+      -modify function wtfpanel_customeraddformtable
+   -modified customer.php
+      -added functionality to handle file uploads and downloads assoc by customer
