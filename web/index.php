@@ -6,7 +6,7 @@ return new class() {
       $mNotice = "";
       
       if (isset($_POST["username"])) { //if logging in
-         include("include/getsession.inc.php");
+         require self::APP_DIR."/Resources/routine/getsession.inc.php";
          wtfpanel_getloginvals();
          $sRet = verifyuserinfo($mUsername,$mPassword,$mLoggedUsername);
          if ($sRet === TRUE) {
