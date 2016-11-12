@@ -24,14 +24,14 @@ return new class() {
          }
       } else
       if (isset($_GET["logout"])) {
-         include("include/getsession.inc.php");
+         require self::APP_DIR."/Resources/routine/getsession.inc.php";
          killsession();
          $mAuthorized = "false";
          $mMode = "login";
       } else {
          $mMode = "login"; //default mode if getauth fails
-         include("include/getsession.inc.php");
-         include("include/getauth.inc.php"); 
+         require self::APP_DIR."/Resources/routine//getsession.inc.php";
+         include self::APP_DIR."/Resources/routine//getauth.inc.php"; 
       }
       
       //$mAuthorized = "true";
