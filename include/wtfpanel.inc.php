@@ -1,7 +1,5 @@
 <?php 
-   require __DIR__.'/../vendor/autoload.php';
-   include ("settings.inc.php");
-   require_once("wtfpanel.err.inc.php");
+   require ("settings.inc.php");
    function escapesafe($My,$Value) {
       if (get_magic_quotes_gpc()) {
          $value = stripslashes($Value);
