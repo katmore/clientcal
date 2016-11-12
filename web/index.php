@@ -30,8 +30,8 @@ return new class() {
          $mMode = "login";
       } else {
          $mMode = "login"; //default mode if getauth fails
-         require self::APP_DIR."/Resources/routine//getsession.inc.php";
-         include self::APP_DIR."/Resources/routine//getauth.inc.php"; 
+         require self::APP_DIR."/Resources/routine/getsession.inc.php";
+         require self::APP_DIR."/Resources/routine/getauth.inc.php";
       }
       
       //$mAuthorized = "true";
