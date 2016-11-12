@@ -1,5 +1,5 @@
 <?php 
-   require("do.mysqlsession.inc.php");
+   //require("do.mysqlsession.inc.php");
    $mLoggedUsername = ""; $mSessionid = ""; $mSeskey = "";
    //session_id();
    ////session_cache_expire(30);
