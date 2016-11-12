@@ -8,6 +8,9 @@
       global $mPanelPHPError;
       global $mPanelPHPErrorX;
       global $mPanelFormatPHPError;
+      if (!isset($mPanelPHPErrorX)||!is_array($mPanelPHPErrorX)) {
+         $mPanelPHPErrorX=[];
+      }
       $errortype = array (
                E_ERROR          => "Error",
                E_WARNING        => "Warning",
