@@ -1,5 +1,5 @@
 <?php
-   require_once("settings.inc.php");
+   require __DIR__."/../../../include/settings.inc.php";
    $SESS_DBHOST  = $control_dbhost;
    $SESS_DBNAME  = $control_dbname;
    $SESS_DBTABLE = "session";
