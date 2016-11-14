@@ -1,9 +1,9 @@
 <?php
 namespace clientcal;
 
-use Exception;
+use RuntimeException;
 
-class error extends Exception {
+class error extends RuntimeException  {
    /**
     * @return int
     */

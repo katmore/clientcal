@@ -1,37 +1,19 @@
 <?php
 
 namespace clientcal;
-
-   foreach(require(CLIENTCAL_CONFIG_DIR."/app.php") as $k=>$v) {
-      global $$k;
-      $$k=$v;
-   }
    
-   foreach(require(CLIENTCAL_CONFIG_DIR."/balive.php") as $k=>$v) {
-      global $$k;
-      $$k=$v;
-   }
+   $mNotice="";
    
-   foreach(require(CLIENTCAL_CONFIG_DIR."/customer.php") as $k=>$v) {
-      global $$k;
-      $$k=$v;
+   foreach(config::EnumConfigNames() as $configName) {
+      foreach((new config($configName))->getAssoc() as $k=>$v){
+         $$k=$v;
+      }
    }
-   
-   foreach(require(CLIENTCAL_CONFIG_DIR."/mysql.php") as $k=>$v) {
-      global $$k;
-      $$k=$v;
-   }
-   
-   foreach(require(CLIENTCAL_CONFIG_DIR."/tables.php") as $k=>$v) {
-      global $$k;
-      $$k=$v;
-   }
-   
-   global $mUsername,$mPassword,$mLoggedUsername,$mNotice;
+   unset($configName);
    
    if (isset($_POST["username"])) { //if logging in
       
-      require self::APP_DIR."/Resources/routine/getsession.php";
+      require "routine/getsession.php";
       getloginvals();
 
       $sRet = verifyuserinfo($mUsername,$mPassword,$mLoggedUsername);
@@ -50,16 +32,16 @@ namespace clientcal;
       }
    } else
       if (isset($_GET["logout"])) {
-         require self::APP_DIR."/Resources/routine/getsession.php";
+         require "routine/getsession.php";
          killsession();
          $mAuthorized = "false";
          $mMode = "login";
       } else {
          $mMode = "login"; //default mode if getauth fails
          
-         require self::APP_DIR."/Resources/routine/getsession.php";
+         require "routine/getsession.php";
          
-         require self::APP_DIR."/Resources/routine/getauth.php";
+         require "routine/getauth.php";
          
       }
       

@@ -2,35 +2,18 @@
 
 namespace clientcal;
 
-   foreach(require(CLIENTCAL_CONFIG_DIR."/app.php") as $k=>$v) {
-      global $$k;
+foreach(config::EnumConfigNames() as $configName) {
+   foreach((new config($configName))->getAssoc() as $k=>$v){
       $$k=$v;
    }
-   
-   foreach(require(CLIENTCAL_CONFIG_DIR."/balive.php") as $k=>$v) {
-      global $$k;
-      $$k=$v;
-   }
-   
-   foreach(require(CLIENTCAL_CONFIG_DIR."/customer.php") as $k=>$v) {
-      global $$k;
-      $$k=$v;
-   }
-   
-   foreach(require(CLIENTCAL_CONFIG_DIR."/mysql.php") as $k=>$v) {
-      global $$k;
-      $$k=$v;
-   }
-   
-   foreach(require(CLIENTCAL_CONFIG_DIR."/tables.php") as $k=>$v) {
-      global $$k;
-      $$k=$v;
-   }
+}
+unset($configName);
+
+   include("routine/getsession.php");
+   $mMode = "login";
+   include("routine/getauth.php");
    
 
-   include("include/getsession.php");
-   $mMode = "login";
-   include("include/getauth.php");
    
    if ($mAuthorized == "true") {
       $mMode = "nothing";
@@ -104,7 +87,7 @@ namespace clientcal;
    }
    $mNotice = "";
    $mSubtitle = "";
-   $mRet = ConnectToDB($data_dbhost,$data_dbname,$data_dbuser,$data_dbpasswd,$mMySched);
+   $mRet = ConnectToDB($dbhost,$dbname,$dbuser,$dbpasswd,$mMySched);
    if ($mRet != 0) {
       $mMode = "gen_error";
       $mNotice .= "problem ($mRet) while connecting to the schedule database:<br />$mError<br />";

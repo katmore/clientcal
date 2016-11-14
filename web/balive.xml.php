@@ -8,7 +8,7 @@
    require_once("include/settings.balive.php");
    $mFormatPHPError = $error_line_format;
    require_once("include/err.php");
-   require_once("../include/DAL/user.php");
+   require_once("../lib/DAL/user.php");
    require_once("include/xml.balive.php");
    
    include("include/getsession.php");

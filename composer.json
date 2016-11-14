@@ -14,20 +14,21 @@
             "clientcal\\": "src"
          },
         "files": [
-            "include/DAL/customer.php",
-            "include/DAL/geoloc.php",
-            "include/DAL/pop3.php",
-            "include/DAL/sentry.php",
-            "include/DAL/site.php",
-            "include/DAL/supervisor.php",
-            "include/DAL/user.php",
-            "include/DAL/version.php",
-            "include/BLL/balive.php",
-            "include/BLL/customer.php",
-            "include/BLL/menu.php",
-            "include/BLL/sentry.php",
-            "include/BLL/site.php",
-            "include/BLL/view.php"
+            "lib/DAL/customer.php",
+            "lib/DAL/geoloc.php",
+            "lib/DAL/pop3.php",
+            "lib/DAL/sentry.php",
+            "lib/DAL/site.php",
+            "lib/DAL/supervisor.php",
+            "lib/DAL/user.php",
+            "lib/DAL/version.php",
+            "lib/BLL/balive.php",
+            "lib/BLL/customer.php",
+            "lib/BLL/menu.php",
+            "lib/BLL/sentry.php",
+            "lib/BLL/site.php",
+            "lib/view.php",
+            "lib/mysql.php"
          ]
     }   
 }

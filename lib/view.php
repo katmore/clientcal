@@ -2,6 +2,7 @@
 
 namespace clientcal;
 
+
    function simplemessagetable($message) {
       $ret = "
       <table>
@@ -78,11 +79,11 @@ namespace clientcal;
       global $mHeadExtra;
       
       
-      foreach(require(CLIENTCAL_CONFIG_DIR."/app.php") as $k=>$v) $$k=$v;
+      foreach((new config("app"))->getAssoc() as $k=>$v) $$k=$v;
       
       
       
-      foreach(require(CLIENTCAL_CONFIG_DIR."/balive.php") as $k=>$v)  $$k=$v;
+      foreach((new config("balive"))->getAssoc() as $k=>$v)  $$k=$v;
       
       
       $ret = "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\">
@@ -122,8 +123,8 @@ namespace clientcal;
    function topminimal() {
 //       include("settings.php");
 //       include ("settings.balive.php");
-      foreach(require(CLIENTCAL_CONFIG_DIR."/app.php") as $k=>$v) $$k=$v;
-      foreach(require(CLIENTCAL_CONFIG_DIR."/balive.php") as $k=>$v) $$k=$v;
+      foreach((new config("app"))->getAssoc() as $k=>$v) $$k=$v;
+      foreach((new config("balive"))->getAssoc() as $k=>$v) $$k=$v;
       
       global $mAuthorized;
       global $mBodyExtra;
@@ -147,8 +148,8 @@ namespace clientcal;
    function top() {
 //       include("settings.php");
 //       include ("settings.balive.php");
-      foreach(require(CLIENTCAL_CONFIG_DIR."/app.php") as $k=>$v) $$k=$v;
-      foreach(require(CLIENTCAL_CONFIG_DIR."/balive.php") as $k=>$v) $$k=$v;
+      foreach((new config("app"))->getAssoc() as $k=>$v) $$k=$v;
+      foreach((new config("balive"))->getAssoc() as $k=>$v) $$k=$v;
       
       global $mAuthorized;
       global $mBodyExtra;
@@ -180,8 +181,8 @@ namespace clientcal;
    function bottomminimal() {
       global $mAuthorized;
       global $mLoggedUsername;
-      foreach(require(CLIENTCAL_CONFIG_DIR."/app.php") as $k=>$v) $$k=$v;
-      foreach(require(CLIENTCAL_CONFIG_DIR."/balive.php") as $k=>$v) $$k=$v;
+      foreach((new config("app"))->getAssoc() as $k=>$v) $$k=$v;
+      foreach((new config("balive"))->getAssoc() as $k=>$v) $$k=$v;
 //       include ("settings.php");
 //       include ("settings.balive.php");
       $ret = "";
@@ -224,8 +225,8 @@ namespace clientcal;
    function bottom() {
       global $mAuthorized;
       global $mLoggedUsername;
-      foreach(require(CLIENTCAL_CONFIG_DIR."/app.php") as $k=>$v) $$k=$v;
-      foreach(require(CLIENTCAL_CONFIG_DIR."/balive.php") as $k=>$v) $$k=$v;
+      foreach((new config("app"))->getAssoc() as $k=>$v) $$k=$v;
+      foreach((new config("balive"))->getAssoc() as $k=>$v) $$k=$v;
       $ret = "
 <span style='font-size:0.75em;'>
       ";
@@ -276,7 +277,7 @@ namespace clientcal;
    }
    function failedlogintable_old($tableclass,$action) {
       global $mUsername;
-      foreach(require(CLIENTCAL_CONFIG_DIR."/app.php") as $k=>$v) {
+      foreach((new config("app"))->getAssoc() as $k=>$v) {
          $$k=$v;
       }
       $ret = "
@@ -317,7 +318,7 @@ namespace clientcal;
    function failedlogintable($tableclass,$action) {
       global $mUsername;
 //       include ("settings.php");
-      foreach(require(CLIENTCAL_CONFIG_DIR."/app.php") as $k=>$v) {
+      foreach((new config("app"))->getAssoc() as $k=>$v) {
          global $$k;
          $$k=$v;
       }
@@ -376,7 +377,7 @@ namespace clientcal;
    function logintable($tableclass,$action) {
       global $mUsername;
       //include ("settings.php");
-      foreach(require(CLIENTCAL_CONFIG_DIR."/app.php") as $k=>$v) {
+      foreach((new config("app"))->getAssoc() as $k=>$v) {
          $$k=$v;
       }
       $ret = "

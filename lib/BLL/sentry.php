@@ -1060,7 +1060,7 @@ yyyy:" . htmlentities($mGodate_yyyy) . "<br>
          } else
          if ($sMapType == "google") {
             $ret .= "$sBmapAnchor $sSmapAnchor";
-            require("../../app/Resources/routine/do.sentrygooglemap.php");
+            require("../../app/Resources/controller/routine/do.sentrygooglemap.php");
          } else
          if ($sMapType == "street") {
             $ret .= "$sGmapAnchor $sBmapAnchor";

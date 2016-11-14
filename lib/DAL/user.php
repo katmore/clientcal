@@ -3,11 +3,10 @@
 namespace clientcal;
 
    function getuserkey($username) {
-      global $control_dbhost,$control_dbname,$control_dbuser,$control_dbpasswd;
-      if (!($my = @mysql_connect($control_dbhost,$control_dbuser,$control_dbpasswd)))
-         throw new Error(-4,"while connect: " . mysql_error());
-      if (!@mysql_select_db($control_dbname))
-         throw new Error(-4,"while db: " . mysql_error());
+      if (!($my = mysqli_connect($myconfig['dbhost'],$myconfig['dbuser'],$myconfig['dbpasswd'])))
+         throw new Error(-4,"while connect: " . mysql_error($my));
+         if (!mysqli_select_db($my,$myconfig['dbname']))
+            throw new Error(-4,"while db: " . mysql_error($my));
       $sql = "
       SELECT
          user_key 
@@ -25,23 +24,22 @@ namespace clientcal;
       return $row['user_key'];
    }
    function adduserprivilege($userkey,$privkey) {
-      global $control_dbhost,$control_dbname,$control_dbuser,$control_dbpasswd;
-      if (!($my = @mysql_connect($control_dbhost,$control_dbuser,$control_dbpasswd)))
-         throw new Error(-4,"while connect: " . mysql_error());
-      if (!@mysql_select_db($control_dbname))
-         throw new Error(-4,"while db: " . mysql_error());
+      if (!($my = mysqli_connect($myconfig['dbhost'],$myconfig['dbuser'],$myconfig['dbpasswd'])))
+         throw new Error(-4,"while connect: " . mysql_error($my));
+         if (!mysqli_select_db($my,$myconfig['dbname']))
+            throw new Error(-4,"while db: " . mysql_error($my));
       $sql = "INSERT INTO user_privilege SET user_key=$userkey,privilegetype_key=$privkey";
       if (!($result = @mysql_query($sql,$my)))
          throw new Error(-4,"while get: " . mysql_error());
       return 0;
    }
    function enumerategrantableprivs($username,$privkey,$privapi,$privname,$privdesc,$privcount) {
-      global $control_dbhost,$control_dbname,$control_dbuser,$control_dbpasswd;
+
       $privkey = array();   $privapi = array();   $privname = array();   $privdesc = array();
-      if (!($my = @mysql_pconnect($control_dbhost,$control_dbuser,$control_dbpasswd)))
-         throw new Error(-4,"while connect: " . mysql_error());
-      if (!@mysql_select_db($control_dbname))
-         throw new Error(-4,"while db: " . mysql_error());
+      if (!($my = mysqli_connect($myconfig['dbhost'],$myconfig['dbuser'],$myconfig['dbpasswd'])))
+         throw new Error(-4,"while connect: " . mysql_error($my));
+         if (!mysqli_select_db($my,$myconfig['dbname']))
+            throw new Error(-4,"while db: " . mysql_error($my));
       $sql =
       "SELECT
           user_grantright.privilegetype_key AS privkey,
@@ -91,7 +89,7 @@ namespace clientcal;
       return TRUE;
    }
    function userexists($user) {
-      $myconfig=require(CLIENTCAL_CONFIG_DIR."/mysql.php");
+      $myconfig=(new config("mysql"))->getAssoc();
       
       if (!($my = mysql_connect($myconfig['dbhost'],$myconfig['dbuser'],$myconfig['dbpasswd']))) {
          throw new Error(-4,"while connect: " . mysql_error());
@@ -111,12 +109,19 @@ namespace clientcal;
       if (userexists($username)) {
          throw new Error(-3,"that username allready exists ($username)");
       }
-      global $control_dbhost,$control_dbname,$control_dbuser,$control_dbpasswd;
-      if (!($my = @mysql_pconnect($control_dbhost,$control_dbuser,$control_dbpasswd)))
-         throw new Error(-4,"while connect: " . mysql_error());
-      if (!@mysql_select_db($control_dbname))
-         throw new Error(-4,"while db: " . mysql_error());
-      $sMajorVersion = substr(mysql_get_server_info(),0,1);
+      $myconfig=(new config("mysql"))->getAssoc();
+      
+      if (!($my = mysqli_connect($myconfig['dbhost'],$myconfig['dbuser'],$myconfig['dbpasswd'])))
+         throw new Error(-4,"while connect: " . mysql_error($my));
+         if (!mysqli_select_db($my,$myconfig['dbname']))
+            throw new Error(-4,"while db: " . mysql_error($my));
+      
+             
+            $username = mysqli_real_escape_string($my,$username);
+      
+            $passwd = mysqli_real_escape_string($my,$passwd);
+      
+            $sMajorVersion = substr(mysqli_get_server_info($my),0,1);
       if ($sMajorVersion < 4) { //no abstraction :|
          $sql = "INSERT INTO user SET username='$username',password=PASSWORD('$passwd')";
       } else {
@@ -130,7 +135,7 @@ namespace clientcal;
       $pUsername = "";
       
       
-      $myconfig=require(CLIENTCAL_CONFIG_DIR."/mysql.php");
+      $myconfig=(new config("mysql"))->getAssoc();
       
       if (!($my = mysqli_connect($myconfig['dbhost'],$myconfig['dbuser'],$myconfig['dbpasswd'])))
          throw new Error(-4,"while connect: " . mysql_error($my));
@@ -162,11 +167,10 @@ namespace clientcal;
       }
    }
    function userhaspriv($pHasPriv,$userkey,$privapi) {
-      global $control_dbhost,$control_dbname,$control_dbuser,$control_dbpasswd;
-      if (!($my = @mysql_connect($control_dbhost,$control_dbuser,$control_dbpasswd)))
+      if (!($my = mysqli_connect($myconfig['dbhost'],$myconfig['dbuser'],$myconfig['dbpasswd'])))
          throw new Error(-4,"while connect: " . mysql_error($my));
-      if (!@mysql_select_db($control_dbname))
-         throw new Error(-4,"while db: " . mysql_error($my));
+         if (!mysqli_select_db($my,$myconfig['dbname']))
+            throw new Error(-4,"while db: " . mysql_error($my));
       $sql = "
       SELECT
          privilegetype.api AS privapi,
