@@ -42,7 +42,7 @@ namespace clientcal;
          require "routine/getsession.php";
          
          require "routine/getauth.php";
-         
+
       }
       
       //$mAuthorized = "true";
