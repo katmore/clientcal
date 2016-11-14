@@ -3,7 +3,7 @@ return new class() {
    const APP_DIR = __DIR__. '/../app';
    public function __construct() {
       require self::APP_DIR . '/web-common.php';
-      $mNotice = "";
+      $mUsername=$mPassword=$mLoggedUsername=$mNotice = "";
       
       if (isset($_POST["username"])) { //if logging in
          require self::APP_DIR."/Resources/routine/getsession.inc.php";
