@@ -14,14 +14,20 @@
             "clientcal\\": "src"
          },
         "files": [
-            "include/customer.php",
-            "include/geoloc.php",
-            "include/pop3.php",
-            "include/sentry.php",
-            "include/site.php",
-            "include/supervisor.php",
-            "include/user.php",
-            "include/version.php"
+            "include/DAL/customer.php",
+            "include/DAL/geoloc.php",
+            "include/DAL/pop3.php",
+            "include/DAL/sentry.php",
+            "include/DAL/site.php",
+            "include/DAL/supervisor.php",
+            "include/DAL/user.php",
+            "include/DAL/version.php",
+            "include/BLL/balive.php",
+            "include/BLL/customer.php",
+            "include/BLL/menu.php",
+            "include/BLL/sentry.php",
+            "include/BLL/site.php",
+            "include/BLL/view.php"
          ]
     }   
 }

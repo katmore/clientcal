@@ -1,10 +1,10 @@
 <?php
-   require_once("include/user.php");
-   require_once("../app/Resources/controller/view.php");
-   require_once("../app/Resources/controller/menu.php");
+   require_once("../include/DAL/user.php");
+   require_once("../include/BLL/view.php");
+   require_once("../include/BLL/menu.php");
    require_once("include/mysql.php");
    require_once("include/settings.php");
-   require_once("../app/Resources/controller/customer.php");
+   require_once("../include/BLL/customer.php");
 
    include("include/getsession.php");
    $mMode = "login";

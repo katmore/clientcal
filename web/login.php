@@ -12,6 +12,12 @@ return new class() {
       require self::APP_DIR . '/Resources/controller/menu.php';
       require self::APP_DIR . '/Resources/controller/customer.php';
       
+      require_once("../include/BLL/view.php");
+      require_once("../include/BLL/sentry.php");
+      require_once("../include/BLL/customer.php");
+      require_once("../include/BLL/site.php");
+      
+      
       require self::APP_DIR . '/Resources/view/login.php';
    }
 };
