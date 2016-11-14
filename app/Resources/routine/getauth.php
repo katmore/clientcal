@@ -1,8 +1,7 @@
 <?php
 
 namespace clientcal;
-
-(function() use(&$mAuthorized,&$mAuthorized_username,&$mNotice,&$mLoggedUsername) {
+global $mAuthorized,$mAuthorized_username;
    $mAuthorized = "false";
    if (isset($_SESSION['authorized'])) {
        if ($_SESSION['authorized'] == "true") {
@@ -23,4 +22,3 @@ namespace clientcal;
    if ($mAuthorized == "false") {
       killsession();
    }
-})();
