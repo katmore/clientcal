@@ -1,7 +1,9 @@
 <?php
-   require_once("html.customer.inc.php");
-   function wtfpanel_panelmenu($tableclass) {
-      require("settings.inc.php");
+
+namespace clientcal;
+
+   function panelmenu($tableclass) {
+      //require("settings.php");
       $ret = "
       <table width=\"300\">
          <tr>
@@ -22,7 +24,7 @@
          <tr>
             <td class=\"project\">
                <li><b><a href=\"./customer.php?alpha=A\">[customers]</a></b><br />
-               " . wtfpanel_customersearch() . "<br>
+               " . customersearch() . "<br>
                lookup customer
             </td>
          </tr>

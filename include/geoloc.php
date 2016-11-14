@@ -1,4 +1,7 @@
 <?php
+
+namespace clientcal;
+
 /*
  *
  * geocode.php of bingmaps
@@ -135,7 +138,7 @@ class BingMapsGeocodeSoapService {
     }
 }
 
-function PanelGetGeoReverse($Address,&$pLat,&$pLon) {
+function GetGeoReverse($Address,&$pLat,&$pLon) {
    $geo = new BingMapsGeocodeSoapService();
    $result = $geo->geocode_lookup($Address);
 

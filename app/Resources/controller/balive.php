@@ -1,4 +1,7 @@
 <?php
+
+namespace clientcal;
+
    function balive_header($action) {
       $ret = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>
 <balive>
@@ -6,10 +9,10 @@
       return $ret;
    }
    function balive_bottom() {
-      global $mPanelPHPError;
+      global $mPHPError;
       $ret = "";
-      if ($mPanelPHPError != "") {
-         $ret .= $mPanelPHPError;
+      if ($mPHPError != "") {
+         $ret .= $mPHPError;
       }
       $ret .= "
 </balive>";

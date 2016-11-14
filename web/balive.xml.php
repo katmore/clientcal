@@ -5,15 +5,15 @@
    header("Cache-Control: no-store, no-cache, must-revalidate");
    header("Cache-Control: post-check=0, pre-check=0", false);
    header("Pragma: no-cache");
-   require_once("include/settings.balive.inc.php");
-   $mPanelFormatPHPError = $error_line_format;
-   require_once("include/wtfpanel.err.inc.php");
-   require_once("include/wtfpanel.inc.php");
-   require_once("include/xml.balive.inc.php");
+   require_once("include/settings.balive.php");
+   $mFormatPHPError = $error_line_format;
+   require_once("include/err.php");
+   require_once("include/user.php");
+   require_once("include/xml.balive.php");
    
-   include("include/getsession.inc.php");
+   include("include/getsession.php");
    $mMode = "login";
-   include("include/getauth.inc.php"); 
+   include("include/getauth.php"); 
    header("Content-type: text/xml; charset=UTF-8");
    echo balive_header("response");
    if ($mAuthorized == "true") {

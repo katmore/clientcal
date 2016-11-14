@@ -1,12 +1,10 @@
 <?php
-/*
- *
- * do.version.inc.php of schedule
- *
- */
+
+namespace clientcal;
 
 
-function PanelUniqueModuleList() {
+
+function UniqueModuleList() {
    $sList = array(
       "customer",
       "site",
@@ -16,20 +14,20 @@ function PanelUniqueModuleList() {
    return $sList;
 }
 
-function PanelVersionNo() {
+function VersionNo() {
    $sMajor = "1";
    $sMinor = "53";
    return "$sMajor.$sMinor";
 }
 
-function PanelProductName() {
+function ProductName() {
    return "ClientCal";
 }
 
-function PanelVersionNotes() {
+function VersionNotes() {
    return "";
 }
 
-function PanelCopyrightNotice() {
+function CopyrightNotice() {
    return "&copy;2006-2011 P.D.Bird II";
 }

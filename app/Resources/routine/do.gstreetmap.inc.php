@@ -1,7 +1,7 @@
 <?php
 /*
  *
- * do.gstreetmap.inc.php of schedule
+ * do.gstreetmap.php of schedule
  *
  */
    $gapikey = "";

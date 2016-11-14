@@ -1,7 +1,7 @@
 <?php
 /*
  *
- * do.bingmap.inc.php of schedule
+ * do.bingmap.php of schedule
  *
  */
 

@@ -1,7 +1,8 @@
 <?php
-   require_once("wtfpanel.mysql.inc.php");
-   require_once("wtfpanel.version.inc.php");
-   function wtfpanel_simplemessagetable($message) {
+
+namespace clientcal;
+
+   function simplemessagetable($message) {
       $ret = "
       <table>
          <tr>
@@ -12,7 +13,7 @@
       ";
       return $ret;
    }
-   function wtfpanel_balivescript() {
+   function balivescript() {
       //e=document.getElementById("s");
       //balivemsg
       //style.width = x + 'px';
@@ -73,10 +74,17 @@
             //visibility:hidden
             return $ret;
    }
-   function wtfpanel_header($subtitle) {
+   function header($subtitle) {
       global $mHeadExtra;
-      include("settings.inc.php");
-      include("settings.balive.inc.php");
+      
+      
+      foreach(require(CLIENTCAL_CONFIG_DIR."/app.php") as $k=>$v) $$k=$v;
+      
+      
+      
+      foreach(require(CLIENTCAL_CONFIG_DIR."/balive.php") as $k=>$v)  $$k=$v;
+      
+      
       $ret = "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\">
 <html>
    <head>
@@ -101,7 +109,7 @@
       ";
       if (isset($balive_interval)) {
          if ($balive_interval > 0) {
-            //$ret .= wtfpanel_balivescript();
+            //$ret .= balivescript();
             $ret .= "
       <script type=\"text/javascript\" src=\"balive.js.php\"></script>";
          }
@@ -111,9 +119,12 @@
       ";
       return $ret;
    }
-   function wtfpanel_topminimal() {
-      include("settings.inc.php");
-      include ("settings.balive.inc.php");
+   function topminimal() {
+//       include("settings.php");
+//       include ("settings.balive.php");
+      foreach(require(CLIENTCAL_CONFIG_DIR."/app.php") as $k=>$v) $$k=$v;
+      foreach(require(CLIENTCAL_CONFIG_DIR."/balive.php") as $k=>$v) $$k=$v;
+      
       global $mAuthorized;
       global $mBodyExtra;
       $sBodyExtra = $mBodyExtra;
@@ -133,9 +144,12 @@
       ";
       return $ret;
    }
-   function wtfpanel_top() {
-      include("settings.inc.php");
-      include ("settings.balive.inc.php");
+   function top() {
+//       include("settings.php");
+//       include ("settings.balive.php");
+      foreach(require(CLIENTCAL_CONFIG_DIR."/app.php") as $k=>$v) $$k=$v;
+      foreach(require(CLIENTCAL_CONFIG_DIR."/balive.php") as $k=>$v) $$k=$v;
+      
       global $mAuthorized;
       global $mBodyExtra;
       $sBodyExtra = $mBodyExtra;
@@ -163,11 +177,13 @@
       ";
       return $ret;
    }
-   function wtfpanel_bottomminimal() {
+   function bottomminimal() {
       global $mAuthorized;
       global $mLoggedUsername;
-      include ("settings.inc.php");
-      include ("settings.balive.inc.php");
+      foreach(require(CLIENTCAL_CONFIG_DIR."/app.php") as $k=>$v) $$k=$v;
+      foreach(require(CLIENTCAL_CONFIG_DIR."/balive.php") as $k=>$v) $$k=$v;
+//       include ("settings.php");
+//       include ("settings.balive.php");
       $ret = "";
       if ($mAuthorized == "true") {
          //$ret .= " <a href=\"./?logout\">[Log Out]</a>";
@@ -175,9 +191,9 @@
          $ret .= "<br />requested by $mLoggedUsername at " . date("g:ia",$sStamp) . " on " . date("F j, Y",$sStamp) . ".&nbsp;";
       }
       //$ret .= " is $copyrightnotice";
-      //$ret .= " " . PanelVersionNo();
+      //$ret .= " " . VersionNo();
       $ret .= "<span style='font-size:0.75em;'>";
-      $ret .=  PanelProductName() . " v" . PanelVersionNo() . " " . PanelCopyrightNotice() ;
+      $ret .=  ProductName() . " v" . VersionNo() . " " . CopyrightNotice() ;
       $ret .= "</span>";
       if ($mAuthorized == "true")
       if (isset($balive_interval)) {
@@ -186,30 +202,30 @@
       <span style=\"visibility:hidden;background:#FF0000;border:1px solid #000000;position:absolute;margin-left:5px;\" id=\"balivemsg\"></span>";
          }
       }
-      if ($show_php_errors === TRUE) {
-         global $mPanelPHPError;
-         if ($mPanelPHPError != "") {
-            $ret .= "
-            <table width=\"800\" border=\"1\">
-               <tr>
-                  <td>
-                  $mPanelPHPError
-                  </td>
-               </tr>
-            </table>";
-         }
-      }
+//       if ($show_php_errors === TRUE) {
+//          global $mPHPError;
+//          if ($mPHPError != "") {
+//             $ret .= "
+//             <table width=\"800\" border=\"1\">
+//                <tr>
+//                   <td>
+//                   $mPHPError
+//                   </td>
+//                </tr>
+//             </table>";
+//          }
+//       }
       $ret .= "
    </body>
 </html>
       ";
       return $ret;
    }
-   function wtfpanel_bottom() {
+   function bottom() {
       global $mAuthorized;
       global $mLoggedUsername;
-      include ("settings.inc.php");
-      include ("settings.balive.inc.php");
+      foreach(require(CLIENTCAL_CONFIG_DIR."/app.php") as $k=>$v) $$k=$v;
+      foreach(require(CLIENTCAL_CONFIG_DIR."/balive.php") as $k=>$v) $$k=$v;
       $ret = "
 <span style='font-size:0.75em;'>
       ";
@@ -217,7 +233,7 @@
          $ret .= " <a href=\"./?logout\">[Log Out]</a>";
          $ret .= " ($mLoggedUsername) ";
       }
-      $ret .=  PanelProductName() . " v" . PanelVersionNo() . " " . PanelCopyrightNotice() ;
+      $ret .=  ProductName() . " v" . VersionNo() . " " . CopyrightNotice() ;
 
       $ret .= "</span>";
       $ret .= "
@@ -232,35 +248,37 @@
       <span style=\"visibility:hidden;background:#FF0000;border:1px solid #000000;position:absolute;margin-left:5px;\" id=\"balivemsg\"></span>";
          }
       }
-      if ($show_php_errors === TRUE) {
-         global $mPanelPHPError;
-         if ($mPanelPHPError != "") {
-            $ret .= "
-            <table width=\"800\">
-               <tr>
-                  <td class=\"project\">
-                  $mPanelPHPError
-                  </td>
-               </tr>
-            </table>";
-         }
-      }
+//       if ($show_php_errors === TRUE) {
+//          global $mPHPError;
+//          if ($mPHPError != "") {
+//             $ret .= "
+//             <table width=\"800\">
+//                <tr>
+//                   <td class=\"project\">
+//                   $mPHPError
+//                   </td>
+//                </tr>
+//             </table>";
+//          }
+//       }
       $ret .= "
    </body>
 </html>
       ";
       return $ret;
    }
-   function wtfpanel_getloginvals() {
+   function getloginvals() {
       global $mUsername,$mPassword;
       if (isset($_POST["username"]))
          $mUsername = $_POST["username"];
       if (isset($_POST["password"]))
          $mPassword = $_POST["password"];
    }
-   function wtfpanel_failedlogintable_old($tableclass,$action) {
+   function failedlogintable_old($tableclass,$action) {
       global $mUsername;
-      include ("settings.inc.php");
+      foreach(require(CLIENTCAL_CONFIG_DIR."/app.php") as $k=>$v) {
+         $$k=$v;
+      }
       $ret = "
       <form method=\"POST\" action=\"$action\">
       <table class=\"$tableclass\" border=\"0\" width=\"100%\">
@@ -296,9 +314,13 @@
       ";
       return $ret;
    }
-   function wtfpanel_failedlogintable($tableclass,$action) {
+   function failedlogintable($tableclass,$action) {
       global $mUsername;
-      include ("settings.inc.php");
+//       include ("settings.php");
+      foreach(require(CLIENTCAL_CONFIG_DIR."/app.php") as $k=>$v) {
+         global $$k;
+         $$k=$v;
+      }
       $ret = "
       <form method=\"POST\" action=\"$action\">
       <table class=\"$tableclass\" border=\"0\" width=\"300px\">
@@ -334,25 +356,29 @@
       ";
       return $ret;
    }
-   function wtfpanel_echophperrortable() {
-      require("settings.inc.php");
-      if ($show_php_errors === FALSE) return -1;
-      global $mPanelPHPError;
-      if ($mPanelPHPError != "") {
-         $ret = "
-      <table width=\"800\">
-         <tr>
-            <td class=\"project\">
-            $mPanelPHPError
-            </td>
-         </tr>
-      </table>";
-         echo $ret;
-      }
+   function echophperrortable() {
+//       return -1;
+//       require("settings.php");
+//       if ($show_php_errors === FALSE) return -1;
+//       global $mPHPError;
+//       if ($mPHPError != "") {
+//          $ret = "
+//       <table width=\"800\">
+//          <tr>
+//             <td class=\"project\">
+//             $mPHPError
+//             </td>
+//          </tr>
+//       </table>";
+//          echo $ret;
+//       }
    }
-   function wtfpanel_logintable($tableclass,$action) {
+   function logintable($tableclass,$action) {
       global $mUsername;
-      include ("settings.inc.php");
+      //include ("settings.php");
+      foreach(require(CLIENTCAL_CONFIG_DIR."/app.php") as $k=>$v) {
+         $$k=$v;
+      }
       $ret = "
       <form method=\"POST\" action=\"$action\">
       <table class=\"$tableclass\" border=\"0\" width=\"300px\">
@@ -409,4 +435,3 @@
 
 
 
-?>

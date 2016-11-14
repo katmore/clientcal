@@ -1,4 +1,7 @@
 <?php 
+
+namespace clientcal;
+
 function pop3_login($host,$port,$user,$pass,$folder="INBOX",$ssl=false)
 {
     $ssl=($ssl==false)?"/novalidate-cert":"";

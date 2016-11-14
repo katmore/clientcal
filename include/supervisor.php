@@ -1,5 +1,8 @@
 <?php 
-   function PanelEnumerateSupervisors($My,$Table,&$pCount,&$pKey,&$pName,&$pFirst,&$pLast) {
+
+namespace clientcal;
+
+   function EnumerateSupervisors($My,$Table,&$pCount,&$pKey,&$pName,&$pFirst,&$pLast) {
       $pCount = 0;
       $pKey = array();
       $pName = array();
@@ -19,7 +22,7 @@
       DESC
       ";
       if (!($result = @mysql_query($sql,$My)))
-         return PanelError(-4,"while insert: " . mysql_error());
+         throw new Error(-4,"while insert: " . mysql_error());
       while ($row = mysql_fetch_assoc($result)) {
          $pKey[$pCount] = $row["id"];
          $pName[$pCount] = $row["name"];

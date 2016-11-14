@@ -1,11 +1,10 @@
 <?php
-   $mModbuild = 21;
-   function PanelPurgeRottenMailqueue($My,$CustKey) {
-      
-   }
-   function PanelUpdateCustfileMailqueueStatus($My,$CustKey,$Hash,$NewStatus) {
-      if (!is_numeric($CustKey)) return PanelError(-20,"invalid customer key given");
-      if (!is_numeric($NewStatus)) return PanelError(-21,"invalid status given");
+
+namespace clientcal;
+
+   function UpdateCustfileMailqueueStatus($My,$CustKey,$Hash,$NewStatus) {
+      if (!is_numeric($CustKey)) throw new Error(-20,"invalid customer key given");
+      if (!is_numeric($NewStatus)) throw new Error(-21,"invalid status given");
       $sql = "
       UPDATE
       	customer_mailqueue
@@ -17,15 +16,15 @@
       	customer=$CustKey
       ";
       if (!($result = @mysql_query($sql,$My))) {
-         return PanelError(-4,"while update: (" . mysql_errno() . ")" . mysql_error());
+         throw new Error(-4,"while update: (" . mysql_errno() . ")" . mysql_error());
       }
       if (mysql_affected_rows($My) < 1) {
-         return PanelError(-1,"no match for update status");
+         throw new Error(-1,"no match for update status");
       }
       return 0;
    }
    
-   function PanelGetCustfileMailqueueCustKeyStatus($My,$Hash,&$pCustKey,&$pStatus) {
+   function GetCustfileMailqueueCustKeyStatus($My,$Hash,&$pCustKey,&$pStatus) {
       
       $sql = "
       SELECT
@@ -37,20 +36,23 @@
       	hash='".mysql_real_escape_string($Hash,$My)."'
       ";
       if (!($result = @mysql_query($sql,$My))) {
-         return PanelError(-4,"while insert: (" . mysql_errno() . ")" . mysql_error());
+         throw new Error(-4,"while insert: (" . mysql_errno() . ")" . mysql_error());
       }
       if (mysql_num_rows($result) < 1)
-         return PanelError(-1,"no mailqueue match found");
+         throw new Error(-1,"no mailqueue match found");
       $row = mysql_fetch_assoc($result);
       $pStatus = $row["status"];
       $pCustKey = $row["customer"];
       return 0;
    }
    
-   function PanelAddCustfileMailqueue($My,$CustKey,$Username,&$pToken) {
+   function AddCustfileMailqueue($My,$CustKey,$Username,&$pToken) {
       
-      if (!is_numeric($CustKey)) return PanelError(-2,"invalid customer key given");
-      require("settings.inc.php");
+      if (!is_numeric($CustKey)) throw new Error(-2,"invalid customer key given");
+      
+      //require("settings.php");
+      foreach(require(CLIENTCAL_CONFIG_DIR."/customer.php") as $k=>$v) $$k=$v;
+      
       $sSalt1 = openssl_random_pseudo_bytes ( 1024 );
       $sSalt2 = uniqid ("",true );
       $sSalt3 = mt_rand(100000,999999);
@@ -69,13 +71,13 @@
       	hash='" . $sHash . "'
       ";
       if (!($result = @mysql_query($sql,$My))) {
-         return PanelError(-4,"while insert: (" . mysql_errno() . ")" . mysql_error());
+         throw new Error(-4,"while insert: (" . mysql_errno() . ")" . mysql_error());
       }
       
       return 0;
    }
-   function PanelUpdateCustfileDoctype($My,$CustKey,$Hash,$NewDoctype) {
-      if (!is_numeric($CustKey)) return PanelError(-2,"invalid customer key given");
+   function UpdateCustfileDoctype($My,$CustKey,$Hash,$NewDoctype) {
+      if (!is_numeric($CustKey)) throw new Error(-2,"invalid customer key given");
       $sql = "
       UPDATE
       	customer_file
@@ -87,13 +89,13 @@
       	customer=$CustKey
       ";
       if (!($result = @mysql_query($sql,$My)))
-         return PanelError(-4,"while insert: (" . mysql_errno() . ")" . mysql_error());
+         throw new Error(-4,"while insert: (" . mysql_errno() . ")" . mysql_error());
       //if (mysql_affected_rows ($My) < 1)
-      //   return PanelError(-1,"nothing affected while update doctype");
+      //   throw new Error(-1,"nothing affected while update doctype");
       return 0;
    }
-   function PanelUpdateCustfileName($My,$CustKey,$Hash,$NewName) {
-      if (!is_numeric($CustKey)) return PanelError(-2,"invalid customer key given");
+   function UpdateCustfileName($My,$CustKey,$Hash,$NewName) {
+      if (!is_numeric($CustKey)) throw new Error(-2,"invalid customer key given");
       $sql = "
       UPDATE
       	customer_file
@@ -105,15 +107,15 @@
       	customer=$CustKey
       ";
       if (!($result = @mysql_query($sql,$My)))
-         return PanelError(-4,"while update name: (" . mysql_errno() . ")" . mysql_error());
+         throw new Error(-4,"while update name: (" . mysql_errno() . ")" . mysql_error());
       //if (mysql_affected_rows ($My) < 1)
-      //   return PanelError(-1,"nothing affected while update name");
+      //   throw new Error(-1,"nothing affected while update name");
       return 0;
    }
    
-   function PanelGetCustfileName($My,$CustKey,$Hash,&$pName) {
+   function GetCustfileName($My,$CustKey,$Hash,&$pName) {
       $pMimetype = "";
-      if (!is_numeric($CustKey)) return PanelError(-2,"invalid customer key given");
+      if (!is_numeric($CustKey)) throw new Error(-2,"invalid customer key given");
       $sql = "
       SELECT
          name
@@ -125,17 +127,17 @@
          hash='" . mysql_real_escape_string($Hash) . "'
       ";
       if (!($result = @mysql_query($sql,$My)))
-         return PanelError(-4,"while insert: (" . mysql_errno() . ")" . mysql_error());
+         throw new Error(-4,"while insert: (" . mysql_errno() . ")" . mysql_error());
       
-      if (mysql_num_rows($result) < 1) return PanelError(-1,"while fetch: no record found");
+      if (mysql_num_rows($result) < 1) throw new Error(-1,"while fetch: no record found");
       $row = mysql_fetch_assoc($result);
       $pName = $row["name"];
       return 0;
    }
    
-   function PanelGetCustfileMimetype($My,$CustKey,$Hash,&$pMimetype) {
+   function GetCustfileMimetype($My,$CustKey,$Hash,&$pMimetype) {
       $pMimetype = "";
-      if (!is_numeric($CustKey)) return PanelError(-2,"invalid customer key given");
+      if (!is_numeric($CustKey)) throw new Error(-2,"invalid customer key given");
       $sql = "
       SELECT
          mimetype
@@ -147,14 +149,14 @@
          hash='" . mysql_real_escape_string($Hash) . "'
       ";
       if (!($result = @mysql_query($sql,$My)))
-         return PanelError(-4,"while insert: (" . mysql_errno() . ")" . mysql_error());
+         throw new Error(-4,"while insert: (" . mysql_errno() . ")" . mysql_error());
       
-      if (mysql_num_rows($result) < 1) return PanelError(-1,"while fetch: no record found");
+      if (mysql_num_rows($result) < 1) throw new Error(-1,"while fetch: no record found");
       $row = mysql_fetch_assoc($result);
       $pMimetype = $row["mimetype"];
       return 0;
    }
-   function PanelEnumerateCustfiles(
+   function EnumerateCustfiles(
    $My,
    $CustKey,
    $LimitStart,
@@ -166,7 +168,7 @@
    &$pMimetype,
    &$pName
    ) {
-      if (!is_numeric($CustKey)) return PanelError(-2,"invalid customer key given");
+      if (!is_numeric($CustKey)) throw new Error(-2,"invalid customer key given");
       $pCount=0;$pHash=array();$pDoctype=array();$pTimestampAdded=array();$pMimetype=array();$pName=array();
       $sql = "
       SELECT
@@ -183,8 +185,8 @@
       	created DESC
       ";
       if (!($result = @mysql_query($sql,$My)))
-         return PanelError(-4,"while insert: (" . mysql_errno() . ")" . mysql_error());
-      require("settings.inc.php");
+         throw new Error(-4,"while insert: (" . mysql_errno() . ")" . mysql_error());
+
       $i=0;
       while ($row = mysql_fetch_assoc($result)) {
          //hash($hashalgo_custfile,$CustKey . "." . $row["hash"]);
@@ -199,7 +201,7 @@
       return 0;
    }
    
-   function PanelAddCustfile(
+   function AddCustfile(
    $My,
    $CustKey,
    $Filename,
@@ -208,7 +210,7 @@
    $Mimetype,
    $Filedebug
    ) { //assuming $Filedebug = $_FILES['userfile'] or something similar for filedebugstr
-      require("settings.inc.php");
+      $hashalgo_custfile = require(CLIENTCAL_CONFIG_DIR."/customer.php")['hashalgo_custfile'];
       //create hash of $File
       $file_hash = hash_file ( $hashalgo_custfile , $Filename);
       
@@ -246,9 +248,9 @@
       ";
       if (!($result = @mysql_query($sql,$My))) {
          if (1062 == mysql_errno()) {
-            return PanelError(-1062,"file already exists for customer");
+            throw new Error(-1062,"file already exists for customer");
          } else
-         return PanelError(-4,"while insert: (myerr:" . mysql_errno() . ") " . mysql_error());
+         throw new Error(-4,"while insert: (myerr:" . mysql_errno() . ") " . mysql_error());
       }
       
       //create file handle from hash of string '$CustKey.$file_hash' ('.' is literal)
@@ -259,7 +261,7 @@
       
       return 0;
    }
-   function PanelGetImapMimetypeStr($Idx) {
+   function GetImapMimetypeStr($Idx) {
       if ($Idx == 0) {
          return "text";
       } else
@@ -283,7 +285,7 @@
       } else
       return "other";
    }
-   function PanelGetImapEncodingStr($Idx) {
+   function GetImapEncodingStr($Idx) {
       if ($Idx == 0) {
          return "7bit";
       } else
@@ -301,8 +303,9 @@
       }
       return "other";
    }
-   function PanelProcessCustfileMailqueue($My,&$pReport=NULL) {
-      require("settings.inc.php");
+   function ProcessCustfileMailqueue($My,&$pReport=NULL) {
+      //require("settings.php");
+      foreach(require(CLIENTCAL_CONFIG_DIR."/customer.php") as $k=>$v) $$k=$v;
       //lock table to prevent race condition
       $sql = "
       LOCK TABLES
@@ -312,14 +315,14 @@
       WRITE
       ";
       if (!($result = @mysql_query($sql,$My)))
-         return PanelError(-4,"while lock: (" . mysql_errno() . ")" . mysql_error());
+         throw new Error(-4,"while lock: (" . mysql_errno() . ")" . mysql_error());
          
       if (false === ($sImap = imap_open(
          $custfile_mailup_imap_mailbox,
          $custfile_mailup_user,
          $custfile_mailup_pass
       ))) {
-         return PanelError(-10,"problem connect to mailbox");
+         throw new Error(-10,"problem connect to mailbox");
       }
       $sEmailTotal = 0;
       $sAttachTotal = 0;
@@ -332,9 +335,9 @@
          $iHash = hash($hashalgo_custfile,$overview->subject);
          $iStatus = 10;
          //see if hash of message is mailup queue
-         //if (0 == ($sRet = PanelGetCustfileMailqueue($My,$CustKey,$iHash,&$iStatus))) {
-         //PanelGetCustfileMailqueueCustKeyStatus
-         if (0 == ($sRet = PanelGetCustfileMailqueueCustKeyStatus($My,$iHash,$iCustKey,$iStatus))) {
+         //if (0 == ($sRet = GetCustfileMailqueue($My,$CustKey,$iHash,&$iStatus))) {
+         //GetCustfileMailqueueCustKeyStatus
+         if (0 == ($sRet = GetCustfileMailqueueCustKeyStatus($My,$iHash,$iCustKey,$iStatus))) {
             if (is_numeric($iStatus))
             if ($iStatus < 1) {
                $iIgnore = false;
@@ -354,8 +357,8 @@
                   $mNotice .= "could not tag ".$overview->uid." for deletion ".imap_last_error ( )."<br>";
                }
             } else {
-               global $mPanelError;
-               $mNotice .= "error ($sRet) while checking uid:".$overview->uid." for hash match:<br>$mPanelError<br>";
+               global $mError;
+               $mNotice .= "error ($sRet) while checking uid:".$overview->uid." for hash match:<br>$mError<br>";
             }
          }
          
@@ -375,8 +378,8 @@
                if ($part->ifsubtype) {
                   
                  // $jDisposition = strtolower($part->subtype);
-                  $jMimetype = PanelGetImapMimetypeStr($part->type)."/".strtolower($part->subtype);
-                  $jEncoding = PanelGetImapEncodingStr($part->encoding);
+                  $jMimetype = GetImapMimetypeStr($part->type)."/".strtolower($part->subtype);
+                  $jEncoding = GetImapEncodingStr($part->encoding);
                   $mNotice .= "
                   &nbsp;&nbsp;part $j overview:<br>
                    
@@ -423,7 +426,7 @@
                      $jSuccess = false;
                      if (0 == 
                         ($sRet =
-                           PanelAddCustfile(
+                           AddCustfile(
                               $My,
                               $iCustKey,
                               $jUniqueFilename,
@@ -443,8 +446,8 @@
                            unlink($jUniqueFilename);
                            $jSuccess = true;
                         } else {
-                           global $mPanelError;
-                           $mNotice .= "<b>err ($sRet) while adding custfile:</b><br>$mPanelError<br>";
+                           global $mError;
+                           $mNotice .= "<b>err ($sRet) while adding custfile:</b><br>$mError<br>";
                         }
                      }
                      
@@ -504,32 +507,32 @@
       if (isset($sDbasePurge))
       foreach($sDbasePurge as $chash => $cckey) {
          if (is_numeric($cckey)) {
-            if (0 != ($sRet = PanelUpdateCustfileMailqueueStatus($My,$cckey,$chash,1))) {
-               global $mPanelError;
-               $mNotice .= "problem while updating status:<br>$mPanelError<br>";
+            if (0 != ($sRet = UpdateCustfileMailqueueStatus($My,$cckey,$chash,1))) {
+               global $mError;
+               $mNotice .= "problem while updating status:<br>$mError<br>";
             }
          }
       }
       //run expunge
       if (!imap_expunge ( $sImap) )
-         return PanelError(-99,"problem ".imap_last_error ( )." while closing mailbox");
+         throw new Error(-99,"problem ".imap_last_error ( )." while closing mailbox");
       
       //close imap stream
       if (!imap_close($sImap) )
-         return PanelError(-99,"problem ".imap_last_error ( )." while closing mailbox");
+         throw new Error(-99,"problem ".imap_last_error ( )." while closing mailbox");
       
       //unlock tables
       $sql = "
       UNLOCK TABLES
       ";
       if (!($result = @mysql_query($sql,$My)))
-         return PanelError(-4,"while unlock: (" . mysql_errno() . ")" . mysql_error());
+         throw new Error(-4,"while unlock: (" . mysql_errno() . ")" . mysql_error());
       
       $pReport = "found $sAttachTotal attachments in $sEmailTotal messages";   
       return 0;
    }
    
-   function PanelRemoveCustfile($My,$CustKey,$Hash,$pName) {
+   function RemoveCustfile($My,$CustKey,$Hash,$pName) {
       $sql = "
       SELECT 
       	name
@@ -541,9 +544,9 @@
       	hash='" . mysql_real_escape_string($Hash,$My) . "'
       ";
       if (!($result = @mysql_query($sql,$My)))
-         return PanelError(-4,"while finding file (" . mysql_errno() . "): " . mysql_error());
+         throw new Error(-4,"while finding file (" . mysql_errno() . "): " . mysql_error());
       if (mysql_num_rows($result) < 1)
-         return PanelError(-1,"file not found");
+         throw new Error(-1,"file not found");
          
       $row = mysql_fetch_assoc($result);
       $pName = $row["name"];
@@ -558,24 +561,24 @@
       	hash='" . mysql_real_escape_string($Hash,$My) . "'
       ";
       if (!($result = @mysql_query($sql,$My)))
-         return PanelError(-4,"while insert: " . mysql_error());
+         throw new Error(-4,"while insert: " . mysql_error());
       if (mysql_affected_rows($My) < 1)
-         return PanelError(-1,"no rows deleted");
+         throw new Error(-1,"no rows deleted");
          
-      require("settings.inc.php");
+      foreach(require(CLIENTCAL_CONFIG_DIR."/customer.php") as $k=>$v) $$k=$v;
       
       //get file handle
       $sHandle = hash($hashalgo_custfile,$CustKey . "." . $Hash);
       
       //delete from filesystem
       if (!unlink($dir_custfiles . $sHandle))
-         return PanelError(-7,"could not delete file");
+         throw new Error(-7,"could not delete file");
       
       
       return 0;
    }
    
-   function PanelEnumerateCustomerJobs(
+   function EnumerateCustomerJobs(
    $My,
    $CustKey,
    &$pCount,
@@ -584,7 +587,6 @@
    &$pStartdate,
    &$pSentrytype
    ) {
-      global $mCust_key,$mMySched;
       $pCount = 0;
       $pSentryKey = array();$pHeading = array();$pStartdate = array();$pSentrytype = array();
       $sql_where = "
@@ -624,7 +626,7 @@ ORDER BY
       //echo nl2br($sql); die();
       $pCount = 0;
       if (!($result = @mysql_query($sql,$My)))
-         return PanelError(-4,"while insert: " . mysql_error());
+         throw new Error(-4,"while insert: " . mysql_error());
       while ($row = mysql_fetch_assoc($result)) {
          //$pCustKey[$pCount] = $row["cust_key"];
          $pSentryKey[$pCount] = $row["sentry_key"];
@@ -636,7 +638,7 @@ ORDER BY
       return 0;
    }
 
-   function PanelFormatCustomerPhone($number) {
+   function FormatCustomerPhone($number) {
       $sNo = $number;
 
       //filter only numeric
@@ -646,7 +648,8 @@ ORDER BY
       if (strlen($sNo) == 7) {
          $sNo = preg_replace("/([0-9]{3})([0-9]{4})/", "$1-$2", $sNo);
          $default_customerareacode = "000";
-         require("settings.inc.php");
+         //require("settings.php");
+         foreach(require(CLIENTCAL_CONFIG_DIR."/customer.php") as $k=>$v) $$k=$v;
          $sNo = "($default_customerareacode) " . $sNo;
          return $sNo;
       } else
@@ -660,13 +663,13 @@ ORDER BY
       }
 
    }
-   function PanelFormatCustomerName($name) {
+   function FormatCustomerName($name) {
       $sNme = $name;
       $sNme = strtolower($sNme);
       $sNme = ucwords($sNme);
       return $sNme;
    }
-   function PanelAddCustomer($My,$Table,$Name,$Streetaddr,$City,$State,$Zip,$Customertype,$pKey) {
+   function AddCustomer($My,$Table,$Name,$Streetaddr,$City,$State,$Zip,$Customertype,$pKey) {
       $pKey = -1;
       $sql = "
       INSERT INTO
@@ -680,12 +683,12 @@ ORDER BY
          customertype='$Customertype'
       ";
       if (!($result = @mysql_query($sql,$My)))
-         return PanelError(-4,"while insert: " . mysql_error());
+         throw new Error(-4,"while insert: " . mysql_error());
       $pKey = @mysql_insert_id($My);
       return 0;
    }
 
-   function PanelSearchQCustomerContains(
+   function SearchQCustomerContains(
    $My,$TableCust,$CustQ,
    &$pCount,
    &$pCustKey,
@@ -758,7 +761,7 @@ AND (
 
       $pCount = 0;
       if (!($result = @mysql_query($sql,$My)))
-         return PanelError(-4,"while insert: " . mysql_error());
+         throw new Error(-4,"while insert: " . mysql_error());
       while ($row = mysql_fetch_assoc($result)) {
          $pCustKey[$pCount] = $row["cust_key"];
          $pName[$pCount] = $row["cust_name"];
@@ -776,7 +779,7 @@ AND (
 
    }
 
-   function PanelSearchQCustomerStartWords(
+   function SearchQCustomerStartWords(
    $My,$TableCust,$CustQ,
    &$pCount,
    &$pCustKey,
@@ -849,7 +852,7 @@ AND (
 
       $pCount = 0;
       if (!($result = @mysql_query($sql,$My)))
-         return PanelError(-4,"while insert: " . mysql_error());
+         throw new Error(-4,"while insert: " . mysql_error());
       while ($row = mysql_fetch_assoc($result)) {
          $pCustKey[$pCount] = $row["cust_key"];
          $pName[$pCount] = $row["cust_name"];
@@ -869,7 +872,7 @@ AND (
 
 
    //has the where forming loop
-   function PanelSearchQCustomerFulltext(
+   function SearchQCustomerFulltext(
    $My,$TableCust,$CustQ,
    &$pCount,
    &$pCustKey,
@@ -978,7 +981,7 @@ AGAINST
       //echo nl2br($sql); die();
       $pCount = 0;
       if (!($result = @mysql_query($sql,$My)))
-         return PanelError(-4,"while insert: " . mysql_error());
+         throw new Error(-4,"while insert: " . mysql_error());
       while ($row = mysql_fetch_assoc($result)) {
          $pCustKey[$pCount] = $row["cust_key"];
          $pName[$pCount] = $row["cust_name"];
@@ -996,7 +999,7 @@ AGAINST
    }
 
 
-   function PanelSearchQCustomerExact(
+   function SearchQCustomerExact(
    $My,$TableCust,$CustQ,
    $pCount,
    $pCustKey,
@@ -1054,7 +1057,7 @@ AND
       //echo nl2br($sql);die();
       $pCount = 0;
       if (!($result = @mysql_query($sql,$My)))
-         return PanelError(-4,"while insert: " . mysql_error());
+         throw new Error(-4,"while insert: " . mysql_error());
       while ($row = mysql_fetch_assoc($result)) {
          $pCustKey[$pCount] = $row["cust_key"];
          $pName[$pCount] = $row["cust_name"];
@@ -1076,8 +1079,8 @@ AND
    }
 
 
-   function PanelUpdateCustomerType($My,$TableCust,$CustKey,$NewType) {
-      if (!is_numeric($CustKey)) return PanelError(-5,"bad format customer key given");
+   function UpdateCustomerType($My,$TableCust,$CustKey,$NewType) {
+      if (!is_numeric($CustKey)) throw new Error(-5,"bad format customer key given");
       $sql = "
       UPDATE
          $TableCust
@@ -1087,13 +1090,13 @@ AND
          id=$CustKey
       ";
       if (!($result = @mysql_query($sql,$My)))
-         return PanelError(-4,"while update: " . mysql_error());
+         throw new Error(-4,"while update: " . mysql_error());
       if (mysql_affected_rows($My) < 1)
-         return PanelError(-1,"no customer with that key");
+         throw new Error(-1,"no customer with that key");
       return 0;
    }
-   function PanelUpdateAddr($My,$TableCust,$CustKey,$NewStreetaddr,$NewCity,$NewState,$NewZip) {
-      if (!is_numeric($CustKey)) return PanelError(-5,"customer key given in bad format");
+   function UpdateAddr($My,$TableCust,$CustKey,$NewStreetaddr,$NewCity,$NewState,$NewZip) {
+      if (!is_numeric($CustKey)) throw new Error(-5,"customer key given in bad format");
       $sql = "
       UPDATE
          $TableCust
@@ -1106,13 +1109,13 @@ AND
          id=$CustKey
       ";
       if (!($result = @mysql_query($sql,$My)))
-         return PanelError(-4,"while insert: " . mysql_error());
+         throw new Error(-4,"while insert: " . mysql_error());
       if (mysql_affected_rows($My) < 1)
-         return PanelError(-1,"no customer with that key");
+         throw new Error(-1,"no customer with that key");
       return 0;
    }
-   function PanelUpdateCustomerName($My,$TableCust,$CustKey,$NewName) {
-      if (!is_numeric($CustKey)) return PanelError(-5,"customer key given in bad format");
+   function UpdateCustomerName($My,$TableCust,$CustKey,$NewName) {
+      if (!is_numeric($CustKey)) throw new Error(-5,"customer key given in bad format");
       $sql = "
       UPDATE
          $TableCust
@@ -1122,15 +1125,15 @@ AND
          id=$CustKey
       ";
       if (!($result = @mysql_query($sql,$My)))
-         return PanelError(-4,"while insert: " . mysql_error());
+         throw new Error(-4,"while insert: " . mysql_error());
       if (mysql_affected_rows($My) < 1)
-         return PanelError(-1,"no customer with that key");
+         throw new Error(-1,"no customer with that key");
       return 0;
    }
-   function PanelEnumerateCustomerWPriPhoneByAlpha($My,$TableCust,$TablePhone,$Alpha,&$pCount,&$pCustKey,&$pName,&$pStreetaddr,&$pCity,&$pState,&$pZip,&$pCusttype,&$pPriphonetype,&$pPriphone,&$pLastUpdated) {
+   function EnumerateCustomerWPriPhoneByAlpha($My,$TableCust,$TablePhone,$Alpha,&$pCount,&$pCustKey,&$pName,&$pStreetaddr,&$pCity,&$pState,&$pZip,&$pCusttype,&$pPriphonetype,&$pPriphone,&$pLastUpdated) {
       $pCount = 0;
       $pCustKey = array();$pName = array();$pStreetaddr = array();$pCity = array();$pState = array();$pZip = array();$pCusttype = array();$pPriphonetype = array();$pPriphone = array();$pLastUpdated = array();
-      if (strlen($Alpha) > 1) return PanelError(-5,"bad format given for alpha lookup");
+      if (strlen($Alpha) > 1) throw new Error(-5,"bad format given for alpha lookup");
       $sql = "
       SELECT
          $TableCust.id AS cust_key,
@@ -1159,7 +1162,7 @@ AND
 
       ";
       if (!($result = @mysql_query($sql,$My)))
-         return PanelError(-4,"while insert: " . mysql_error());
+         throw new Error(-4,"while insert: " . mysql_error());
       while ($row = mysql_fetch_assoc($result)) {
          $pCustKey[$pCount] = $row["cust_key"];
          $pName[$pCount] = $row["cust_name"];
@@ -1175,10 +1178,10 @@ AND
       }
       return 0;
    }
-   function PanelGetCustomerPrimaryPhone($My,$CustKey,&$pPhonenumber,&$pPhonetype) {
+   function GetCustomerPrimaryPhone($My,$CustKey,&$pPhonenumber,&$pPhonetype) {
       $pCount = 0;
       $pPhonenumber = "";$pPhonetype = "";
-      if (!is_numeric($CustKey)) return PanelError(-5,"customer key given in bad format");
+      if (!is_numeric($CustKey)) throw new Error(-5,"customer key given in bad format");
       $sql = "
 SELECT
    customer_phone.number AS cust_phone,
@@ -1200,7 +1203,7 @@ AND (
       ";
       //echo nl2br($sql);die();
       if (!($result = @mysql_query($sql,$My)))
-         return PanelError(-4,"while insert: " . mysql_error());
+         throw new Error(-4,"while insert: " . mysql_error());
 
       while ($row = mysql_fetch_assoc($result)) {
          $pPhonetype = $row["cust_phonetype"];
@@ -1209,10 +1212,10 @@ AND (
       }
       return 0;
    }
-   function PanelEnumerateCustomerPhonenumbers($My,$TablePhone,$CustKey,&$pCount,&$pPhonenumber,&$pPhonetype) {
+   function EnumerateCustomerPhonenumbers($My,$TablePhone,$CustKey,&$pCount,&$pPhonenumber,&$pPhonetype) {
       $pCount = 0;
       $pPhonenumber = array();$pPhonetype = array();
-      if (!is_numeric($CustKey)) return PanelError(-5,"customer key given in bad format");
+      if (!is_numeric($CustKey)) throw new Error(-5,"customer key given in bad format");
       $sql = "
       SELECT
          type,
@@ -1223,7 +1226,7 @@ AND (
          customer=$CustKey
       ";
       if (!($result = @mysql_query($sql,$My)))
-         return PanelError(-4,"while insert: " . mysql_error());
+         throw new Error(-4,"while insert: " . mysql_error());
       while ($row = mysql_fetch_assoc($result)) {
          $pPhonetype[$pCount] = $row["type"];
          $pPhonenumber[$pCount] = $row["number"];
@@ -1231,7 +1234,7 @@ AND (
       }
       return 0;
    }
-   function PanelGetCustomerPhoneLastUpdated($My,$Table,$CustKey,&$phoneType,&$pLastUpdate) {
+   function GetCustomerPhoneLastUpdated($My,$Table,$CustKey,&$phoneType,&$pLastUpdate) {
       $pLastUpdate = "";
       $sql = "
       SELECT
@@ -1244,15 +1247,15 @@ AND (
          type='$PhoneType'
       ";
       if (!($result = @mysql_query($sql,$My)))
-         return PanelError(-4,"while get: " . mysql_error());
+         throw new Error(-4,"while get: " . mysql_error());
       if (mysql_num_rows($result) < 1) {
-         return PanelError(-1,"no phone number by that customer and type");
+         throw new Error(-1,"no phone number by that customer and type");
       }
       $row = mysql_fetch_assoc($result);
       $pLastUpdate = $row["last_updated"];
       return 0;
    }
-   function PanelDeleteCustomerPhone($My,$TablePhone,$CustKey,$PhoneType) {
+   function DeleteCustomerPhone($My,$TablePhone,$CustKey,$PhoneType) {
       $sql = "
       DELETE FROM
          $TablePhone
@@ -1263,10 +1266,10 @@ AND (
       LIMIT 1
       ";
       if (!($result = @mysql_query($sql,$My)))
-         return PanelError(-4,"while insert: " . mysql_error());
+         throw new Error(-4,"while insert: " . mysql_error());
       return 0;
    }
-   function PanelAddCustomerPhone($My,$TablePhone,$CustKey,$PhoneType,$PhoneNumber) {
+   function AddCustomerPhone($My,$TablePhone,$CustKey,$PhoneType,$PhoneNumber) {
       $sql = "
       INSERT INTO
          $TablePhone
@@ -1276,11 +1279,11 @@ AND (
          number='$PhoneNumber'
       ";
       if (!($result = @mysql_query($sql,$My)))
-         return PanelError(-4,"while insert: " . mysql_error());
+         throw new Error(-4,"while insert: " . mysql_error());
       return 0;
    }
-   function PanelUpdateCustomerPrimaryPhoneType($My,$TableCust,$CustKey,$PhoneType) {
-      if (!is_numeric($CustKey)) return PanelError(-5,"bad format customer key given");
+   function UpdateCustomerPrimaryPhoneType($My,$TableCust,$CustKey,$PhoneType) {
+      if (!is_numeric($CustKey)) throw new Error(-5,"bad format customer key given");
       $sql = "
       UPDATE
          $TableCust
@@ -1290,11 +1293,11 @@ AND (
          id=$CustKey
       ";
       if (!($result = @mysql_query($sql,$My)))
-         return PanelError(-4,"while update: " . mysql_error());
+         throw new Error(-4,"while update: " . mysql_error());
       return 0;
    }
 
-   function PanelUpdateCustomerPhone($My,$TablePhone,$CustKey,$PhoneType,$PhoneNumber) {
+   function UpdateCustomerPhone($My,$TablePhone,$CustKey,$PhoneType,$PhoneNumber) {
       $sql = "
       UPDATE
          $TablePhone
@@ -1308,34 +1311,34 @@ AND (
          type='$PhoneType'
       ";
       if (!($result = @mysql_query($sql,$My)))
-         return PanelError(-4,"while update: " . mysql_error());
+         throw new Error(-4,"while update: " . mysql_error());
       return 0;
    }
-   function PanelAssociateCustomerPhone($My,$TablePhone,$CustKey,$PhoneType,$PhoneNumber) {
-      if (!is_numeric($CustKey)) return PanelError(-5,"bad customer key given");
-      $sRet = PanelGetCustomerPhoneLastUpdated($My,$TablePhone,$CustKey,$PhoneType,$sLastUpdate);
+   function AssociateCustomerPhone($My,$TablePhone,$CustKey,$PhoneType,$PhoneNumber) {
+      if (!is_numeric($CustKey)) throw new Error(-5,"bad customer key given");
+      $sRet = GetCustomerPhoneLastUpdated($My,$TablePhone,$CustKey,$PhoneType,$sLastUpdate);
       if ($sRet == 0) {
-         $sRet = PanelUpdateCustomerPhone($My,$TablePhone,$CustKey,$PhoneType,$PhoneNumber);
+         $sRet = UpdateCustomerPhone($My,$TablePhone,$CustKey,$PhoneType,$PhoneNumber);
          if ($sRet != 0) {
-            global $mPanelError;
-            return PanelError(-200,"while update customer phone:$mPanelError");
+            global $mError;
+            throw new Error(-200,"while update customer phone:$mError");
          }
       } else
       if ($sRet == -1) {
-         $sRet = PanelAddCustomerPhone($My,$TablePhone,$CustKey,$PhoneType,$PhoneNumber);
+         $sRet = AddCustomerPhone($My,$TablePhone,$CustKey,$PhoneType,$PhoneNumber);
          if ($sRet != 0) {
-            global $mPanelError;
-            return PanelError(-210,"while add customer phone:$mPanelError");
+            global $mError;
+            throw new Error(-210,"while add customer phone:$mError");
          }
       } else {
          if ($sRet != 0) {
-            global $mPanelError;
-            return PanelError(-100,"while add customer phone:$mPanelError");
+            global $mError;
+            throw new Error(-100,"while add customer phone:$mError");
          }
       }
       return 0;
    }
-   function PanelEnumerateCustomersByName($My,$Table,$LimitStart,$LimitMax,&$pCount,&$pKey,&$pName,&$pStreetaddr,&$pCity,&$pState,&$pZip,&$pCustomertype,&$pLastUpdated) {
+   function EnumerateCustomersByName($My,$Table,$LimitStart,$LimitMax,&$pCount,&$pKey,&$pName,&$pStreetaddr,&$pCity,&$pState,&$pZip,&$pCustomertype,&$pLastUpdated) {
       $pKey = array();$pName = array();$pStreetaddr = array();$pCity = array();$pState = array();$pZip = array();$pCustomertype = array();$pLastUpdated = array();
       $pCount = 0;
       $sql = "
@@ -1360,7 +1363,7 @@ AND (
       ";
       }
       if (!($result = @mysql_query($sql,$My)))
-         return PanelError(-4,"while insert: " . mysql_error());
+         throw new Error(-4,"while insert: " . mysql_error());
       while ($row = mysql_fetch_assoc($result)) {
          $pKey[$pCount] = $row["id"];
          $pName[$pCount] = $row["name"];
@@ -1374,9 +1377,9 @@ AND (
       }
       return 0;
    }
-   function PanelGetCustomerAddrByKey($My,$Table,$Key,&$pStreetaddr,&$pCity,&$pState,&$pZip) {
+   function GetCustomerAddrByKey($My,$Table,$Key,&$pStreetaddr,&$pCity,&$pState,&$pZip) {
       $pStreetaddr = "";$pCity = "";$pState = "";$pZip = "";
-      if (!is_numeric($Key)) return PanelError(-5,"bad customer key given");
+      if (!is_numeric($Key)) throw new Error(-5,"bad customer key given");
       $sql = "
       SELECT
          streetaddr,
@@ -1390,12 +1393,12 @@ AND (
       LIMIT 0,1
       ";
       if (!($result = @mysql_query($sql,$My)))
-         return PanelError(-4,"while get: " . mysql_error());
+         throw new Error(-4,"while get: " . mysql_error());
       if (mysql_num_rows($result) < 1) {
-         return PanelError(-1,"no customer found with that key:$Key");
+         throw new Error(-1,"no customer found with that key:$Key");
       }
       if (!($row = mysql_fetch_assoc($result))) {
-         return PanelError(-100,"problem getting result");
+         throw new Error(-100,"problem getting result");
       }
       $pStreetaddr = $row["streetaddr"];
       $pCity = $row["city"];
@@ -1403,9 +1406,9 @@ AND (
       $pZip = $row["zip"];
       return 0;
    }
-   function PanelGetCustomerType($My,$TableCust,$CustKey,&$pType) {
+   function GetCustomerType($My,$TableCust,$CustKey,&$pType) {
       $pType = "";
-      if (!is_numeric($CustKey)) return PanelError(-5,"customer key given in bad format");
+      if (!is_numeric($CustKey)) throw new Error(-5,"customer key given in bad format");
       $sql = "
       SELECT
          customertype
@@ -1416,17 +1419,17 @@ AND (
       LIMIT 0,1
       ";
       if (!($result = @mysql_query($sql,$My)))
-         return PanelError(-4,"while get: " . mysql_error());
+         throw new Error(-4,"while get: " . mysql_error());
       if (mysql_num_rows($result) < 1)
-         return PanelError(-1,"no customer found with that key:$CustKey");
+         throw new Error(-1,"no customer found with that key:$CustKey");
       if (!($row = mysql_fetch_assoc($result)))
-         return PanelError(-100,"problem getting result");
+         throw new Error(-100,"problem getting result");
       $pType = $row["customertype"];
       return 0;
    }
-   function PanelGetCustomerName($My,$TableCust,$CustKey,&$pName) {
+   function GetCustomerName($My,$TableCust,$CustKey,&$pName) {
       $pName = "";
-      if (!is_numeric($CustKey)) return PanelError(-5,"customer key given in bad format");
+      if (!is_numeric($CustKey)) throw new Error(-5,"customer key given in bad format");
       $sql = "
       SELECT
          name
@@ -1437,17 +1440,17 @@ AND (
       LIMIT 0,1
       ";
       if (!($result = @mysql_query($sql,$My)))
-         return PanelError(-4,"while get: " . mysql_error());
+         throw new Error(-4,"while get: " . mysql_error());
       if (mysql_num_rows($result) < 1)
-         return PanelError(-1,"no customer found with that key:$CustKey");
+         throw new Error(-1,"no customer found with that key:$CustKey");
       if (!($row = mysql_fetch_assoc($result)))
-         return PanelError(-100,"problem getting result");
+         throw new Error(-100,"problem getting result");
       $pName = $row["name"];
       return 0;
    }
-   function PanelGetCustomer($My,$TableCust,$CustKey,&$pName,&$pStreetaddr,&$pCity,&$pState,&$pZip,&$pCustomertype,&$pLastUpdated) {
+   function GetCustomer($My,$TableCust,$CustKey,&$pName,&$pStreetaddr,&$pCity,&$pState,&$pZip,&$pCustomertype,&$pLastUpdated) {
       $pName = "";$pStreetaddr = "";$pCity = "";$pState = "";$pZip = "";$pCustomertype = "";$pLastUpdated = "";
-      if (!is_numeric($CustKey)) return PanelError(-5,"customer key given in bad format");
+      if (!is_numeric($CustKey)) throw new Error(-5,"customer key given in bad format");
       $sql = "
       SELECT
          name,
@@ -1464,11 +1467,11 @@ AND (
       LIMIT 0,1
       ";
       if (!($result = @mysql_query($sql,$My)))
-         return PanelError(-4,"while get: " . mysql_error());
+         throw new Error(-4,"while get: " . mysql_error());
       if (mysql_num_rows($result) < 1)
-         return PanelError(-1,"no customer found with that key:$CustKey");
+         throw new Error(-1,"no customer found with that key:$CustKey");
       if (!($row = mysql_fetch_assoc($result)))
-         return PanelError(-100,"problem getting result");
+         throw new Error(-100,"problem getting result");
       $pName = $row["name"];
       $pStreetaddr = $row["streetaddr"];
       $pCity = $row["city"];
@@ -1478,9 +1481,9 @@ AND (
       $pLastUpdated = $row["last_updated"];
       return 0;
    }
-   function PanelGetCustomerLastUpdate($My,$Table,$Key,&$pLastUpdate) {
+   function GetCustomerLastUpdate($My,$Table,$Key,&$pLastUpdate) {
       $pLastUpdate = "";
-      if (!is_numeric($Key)) return PanelError(-5,"bad customer key given");
+      if (!is_numeric($Key)) throw new Error(-5,"bad customer key given");
       $sql = "
       SELECT
          last_updated
@@ -1490,15 +1493,15 @@ AND (
          id=$Key
       ";
       if (!($result = @mysql_query($sql,$My)))
-         return PanelError(-4,"while get: " . mysql_error());
+         throw new Error(-4,"while get: " . mysql_error());
       if (mysql_num_rows($result) < 1) {
-         return PanelError(-1,"no customer found with that key:$Key");
+         throw new Error(-1,"no customer found with that key:$Key");
       }
       $row = mysql_fetch_assoc($result);
       $pLastUpdate = $row["last_updated"];
       return 0;
    }
-   function PanelEnumerateCustomertypes($My,$Table,&$pCount,&$pName,&$pBrief,&$pDescription) {
+   function EnumerateCustomertypes($My,$Table,&$pCount,&$pName,&$pBrief,&$pDescription) {
       $pCount = 0;$pName = array();$pBrief = array();$pDescription = array();
       $sql = "
       SELECT
@@ -1512,7 +1515,7 @@ AND (
       DESC
       ";
       if (!($result = @mysql_query($sql,$My)))
-         return PanelError(-4,"while insert: " . mysql_error());
+         throw new Error(-4,"while insert: " . mysql_error());
       while ($row = mysql_fetch_assoc($result)) {
          $pName[$pCount] = $row["name"];
          $pBrief[$pCount] = $row["brief"];

@@ -1,12 +1,13 @@
 <?php
-   $mModbuild = 8;
-   require_once("wtfpanel.customer.inc.php");
-   function wtfpanel_customerjobs() {
+
+namespace clientcal;
+
+   function customerjobs() {
       global $mCust_key,$mMySched;
 
-      //PanelGetCustomer($My,$TableCust,$CustKey,$pName,$pStreetaddr,$pCity,$pState,$pZip,$pCustomertype,$pLastUpdated)
+      //GetCustomer($My,$TableCust,$CustKey,$pName,$pStreetaddr,$pCity,$pState,$pZip,$pCustomertype,$pLastUpdated)
       if (0 != ($sRet =
-      PanelGetCustomer
+      GetCustomer
       (
          $mMySched,
          "customer",
@@ -24,12 +25,12 @@
          global $mNotice;
          $mNotice .= "
          <br>problem ($sRet) in _customerjobs while Customer Info:<br>
-         $mPanelError<br>";
+         $mError<br>";
          return "error (admin notice)";
       } /*--end if error on custinfo--*/
 
       if (0 != ($sRet =
-      PanelGetCustomerPrimaryPhone
+      GetCustomerPrimaryPhone
       (
          $mMySched,
          $mCust_key,
@@ -41,13 +42,13 @@
          global $mNotice;
          $mNotice .= "
          <br>problem ($sRet) in _customerjobs while Enumerating:<br>
-         $mPanelError<br>";
+         $mError<br>";
          return "error (admin notice)";
       } /*--end if error on priphone--*/
 
 
       if (0 != ($sRet =
-      PanelEnumerateCustomerJobs
+      EnumerateCustomerJobs
       (
          $mMySched,
          $mCust_key,
@@ -66,7 +67,7 @@
          global $mNotice;
          $mNotice .= "
          <br>problem ($sRet) in _customerjobs while Enumerating:<br>
-         $mPanelError<br>";
+         $mError<br>";
          return "error (admin notice)";
       } /*--begin if error on enumjobs--*/
       //add style sheet
@@ -120,7 +121,7 @@
 $sCustName:<span style=\"font-weight:normal;font-style:italic;\">$sInfo"
 . "</span><br>"
 . "<span style=\"font-weight:normal;font-size:8pt;\">$sPhonetype phone:" .
-PanelFormatCustomerPhone($sPhonenumber) . "</span><br>
+FormatCustomerPhone($sPhonenumber) . "</span><br>
          </div><!--end heading for search display-->";
       $sLastYear = 1;
       for ($i = 0;$i < $sCount;$i++) { /*--begin result loop--*/
@@ -164,13 +165,13 @@ PanelFormatCustomerPhone($sPhonenumber) . "</span><br>
 
    } /*--end function customerjobs--*/
 
-   function wtfpanel_getcustomerjobsvars() {
+   function getcustomerjobsvars() {
       global $mCust_key;
       if (isset($_GET["jobs"])) {
          $mCust_key = $_GET["jobs"];
       }
    }
-   function wtfpanel_customersearch() {
+   function customersearch() {
       global $mCust_q;
       $ret = "";
       $ret .= "
@@ -203,7 +204,7 @@ class=\"custq\"
 ";
       return $ret;
    }
-   function wtfpanel_addcustomervarerrmsg($pErrArea,$Area,$Msg) {
+   function addcustomervarerrmsg($pErrArea,$Area,$Msg) {
       if (isset($pErrArea[$Area])) {
          $pErrArea[$Area] .= ", ";
       } else {
@@ -211,14 +212,14 @@ class=\"custq\"
       }
       $pErrArea[$Area] .= $Msg;
    }
-   function wtfpanel_customeralphaforlink($letter,$next) {
+   function customeralphaforlink($letter,$next) {
       global $mMySched;
       global $mSentry_key;
-      require("settings.inc.php");
-      $sRet = PanelEnumerateCustomerWPriPhoneByAlpha($mMySched,"customer","customer_phone",$letter,$sCount,$sCustKey,$sName,$sStreetaddr,$sCity,$sState,$sZip,$sCusttype,$sPriphonetype,$sPriphone,$sLastUpdated);
+      require("settings.php");
+      $sRet = EnumerateCustomerWPriPhoneByAlpha($mMySched,"customer","customer_phone",$letter,$sCount,$sCustKey,$sName,$sStreetaddr,$sCity,$sState,$sZip,$sCusttype,$sPriphonetype,$sPriphone,$sLastUpdated);
       if ($sRet != 0) {
-         global $mPanelError;
-         $ret = "problem ($sRet) getting customer list:<br />$mPanelError";
+         global $mError;
+         $ret = "problem ($sRet) getting customer list:<br />$mError";
          return $ret;
       }
       $ret = "
@@ -261,13 +262,13 @@ class=\"custq\"
       return $ret;
    }
 
-   function wtfpanel_customerinfo_area($custkey,$name,$phone,$phonetype,$city,$state) {
+   function customerinfo_area($custkey,$name,$phone,$phonetype,$city,$state) {
       $ret = "";
          $ret .= "
 <a href=\"./customer.php?edit=" . $custkey . "\" class=\"sqdres\"><span style=\"color:blue;font-weight:bold;\">"
-. PanelFormatCustomerName($name) . "</span></a>: "
+. FormatCustomerName($name) . "</span></a>: "
 . "<span style=\"font-weight:normal;\">"
-. PanelFormatCustomerPhone($phone)
+. FormatCustomerPhone($phone)
 . " $phonetype</span><br>
 <span style=\"font-weight:normal;\">
 &nbsp;" . ucwords(strtolower($city)) . "
@@ -278,12 +279,12 @@ class=\"custq\"
       return $ret;
    }
 
-   function wtfpanel_customersearch_exact($term,$existing_ckeys) {
+   function customersearch_exact($term,$existing_ckeys) {
 
       global $mMySched;
       $ret = "";
       //see if query is exact match
-      $sRet = PanelSearchQCustomerExact(
+      $sRet = SearchQCustomerExact(
          $mMySched,"customer",$term,
          $sCount,
          $sCustKey,
@@ -297,8 +298,8 @@ class=\"custq\"
          $sZip
       );
       if ($sRet != 0) {
-         global $mNotice, $mPanelError;
-         $mNotice .= $mPanelError;
+         global $mNotice, $mError;
+         $mNotice .= $mError;
          return false;
       }
 
@@ -310,7 +311,7 @@ class=\"custq\"
          <div class=\"sqdheading\"><!--begin heading for search display-->
 search results<br>";
 //<span style=\"font-weight:normal;\">query: '" . $term . "'</span>
-      $ret .= wtfpanel_customersearch();
+      $ret .= customersearch();
       $ret .= "
          </div><!--end heading for search display-->";
       $sCountinfo = "$sCount exact matches:";
@@ -335,7 +336,7 @@ search results<br>";
 <div class=\"sqdres\"><!--begin search result entry-->
 
 ";
-         $ret .= wtfpanel_customerinfo_area(
+         $ret .= customerinfo_area(
          $sCustKey[$i],$sName[$i],$sPhone[$i],$sPhonetype[$i],$sCity[$i],$sState[$i]
          );
          $ret .= "
@@ -346,11 +347,11 @@ search results<br>";
       return $ret;
    }
 
-   function wtfpanel_customersearch_startwords($term,$existing_ckeys) {
+   function customersearch_startwords($term,$existing_ckeys) {
       $ret = "";
       global $mMySched;
-      //PanelSearchQCustomerCountainWords
-      $sRet = PanelSearchQCustomerStartWords(
+      //SearchQCustomerCountainWords
+      $sRet = SearchQCustomerStartWords(
          $mMySched,"customer",$term,
          $sCount,
          $sCustKey,
@@ -391,7 +392,7 @@ search results<br>";
 
 ";
          //<a href=\"./customer.php?edit=" . $sCustKey[$i] . "\" class=\"sqdres\">
-         $ret .= wtfpanel_customerinfo_area(
+         $ret .= customerinfo_area(
          $sCustKey[$i],$sName[$i],$sPhone[$i],$sPhonetype[$i],$sCity[$i],$sState[$i]
          );
          $ret .= "
@@ -423,12 +424,12 @@ search results<br>";
       return $ret;
    }
 
-   function wtfpanel_customersearch_contains($term,$existing_ckeys) {
+   function customersearch_contains($term,$existing_ckeys) {
 
       global $mMySched;
       $ret = "";
-      //PanelSearchQCustomerContains
-      $sRet = PanelSearchQCustomerContains(
+      //SearchQCustomerContains
+      $sRet = SearchQCustomerContains(
          $mMySched,"customer",$term,
          $sCount,
          $sCustKey,
@@ -464,7 +465,7 @@ search results<br>";
 <div class=\"sqdres\"><!--begin search result entry-->
 
 ";
-         $ret .= wtfpanel_customerinfo_area(
+         $ret .= customerinfo_area(
          $sCustKey[$i],$sName[$i],$sPhone[$i],$sPhonetype[$i],$sCity[$i],$sState[$i]
          );
          $ret .= "
@@ -497,7 +498,7 @@ search results<br>";
       return $ret;
    }
 
-   function wtfpanel_customersearchresult() {
+   function customersearchresult() {
       global $mMySched;
       global $mCust_q;
 
@@ -541,11 +542,11 @@ search results<br>";
 
       $sCkeys = array();
 
-      $ret .= wtfpanel_customersearch_exact($sQuery,$sCkeys);
+      $ret .= customersearch_exact($sQuery,$sCkeys);
 
-      $ret .= wtfpanel_customersearch_startwords($sQuery,$sCkeys);
+      $ret .= customersearch_startwords($sQuery,$sCkeys);
 
-      $ret .= wtfpanel_customersearch_contains($sQuery,$sCkeys);
+      $ret .= customersearch_contains($sQuery,$sCkeys);
 
 
 
@@ -558,7 +559,7 @@ search results<br>";
       ";
       return $ret;
    }
-   function wtfpanel_getcustomersearchpostvars() {
+   function getcustomersearchpostvars() {
       global $mCust_q,$mCust_valid;
       if (isset($_POST["q"])) {
          $mCust_valid = true;
@@ -571,14 +572,14 @@ search results<br>";
       return true;
    }
 
-   function wtfpanel_customeralpha($letter,$showsearch = false) {
+   function customeralpha($letter,$showsearch = false) {
       global $mMySched;
       $customer_table = "customer";$customerphone_table = "customer_phone";
-      require("settings.inc.php");
-      $sRet = PanelEnumerateCustomerWPriPhoneByAlpha($mMySched,$customer_table,$customerphone_table,$letter,$sCount,$sCustKey,$sName,$sStreetaddr,$sCity,$sState,$sZip,$sCusttype,$sPriphonetype,$sPriphone,$sLastUpdated);
+      require("settings.php");
+      $sRet = EnumerateCustomerWPriPhoneByAlpha($mMySched,$customer_table,$customerphone_table,$letter,$sCount,$sCustKey,$sName,$sStreetaddr,$sCity,$sState,$sZip,$sCusttype,$sPriphonetype,$sPriphone,$sLastUpdated);
       if ($sRet != 0) {
-         global $mPanelError;
-         $ret = "problem ($sRet) getting customer list:<br />$mPanelError";
+         global $mError;
+         $ret = "problem ($sRet) getting customer list:<br />$mError";
          return $ret;
       }
 //add style sheet
@@ -620,7 +621,7 @@ search results<br>";
             }
          }
       if ($showsearch) {
-         $ret .= wtfpanel_customersearch() . "<br>";
+         $ret .= customersearch() . "<br>";
       }
       $ret .= "
          </div>";
@@ -641,7 +642,7 @@ search results<br>";
 <div class=\"sqdres\"><!--begin search result entry-->
 
 ";
-         $ret .= wtfpanel_customerinfo_area(
+         $ret .= customerinfo_area(
          $sCustKey[$i],$sName[$i],$sPhone[$i],$sPhonetype[$i],$sCity[$i],$sState[$i]
          );
          $ret .= "
@@ -652,7 +653,7 @@ search results<br>";
          for ($i = 0;$i < $sCount;$i++) {
             $ret .= "
 <div class=\"sqdres\"><!--begin search result entry-->";
-            $ret .= wtfpanel_customerinfo_area($sCustKey[$i],$sName[$i],$sPriphone[$i],$sPriphonetype[$i],$sCity[$i],$sState[$i]);
+            $ret .= customerinfo_area($sCustKey[$i],$sName[$i],$sPriphone[$i],$sPriphonetype[$i],$sCity[$i],$sState[$i]);
             $ret .= "
 </div><!--end search result entry-->";
             /*
@@ -669,28 +670,28 @@ search results<br>";
       </div>";
       return $ret;
    }
-   function wtfpanel_formatcustomername() {
-      global $mCust_nametype,$mCust_lastname,$mCust_firstname,$mCust_name;
-      $sName = "";
-      if ($mCust_nametype == "individual") {
-         $sName = "$mCust_lastname, $mCust_firstname";
-      }
-      if ($mCust_nametype == "company") {
-         $sName = $mCust_name;
-      }
-      return $sName;
-   }
-   function wtfpanel_updatecustomerprocess() {
-      require("settings.inc.php");
+//    function formatcustomername() {
+//       global $mCust_nametype,$mCust_lastname,$mCust_firstname,$mCust_name;
+//       $sName = "";
+//       if ($mCust_nametype == "individual") {
+//          $sName = "$mCust_lastname, $mCust_firstname";
+//       }
+//       if ($mCust_nametype == "company") {
+//          $sName = $mCust_name;
+//       }
+//       return $sName;
+//    }
+   function updatecustomerprocess() {
+      require("settings.php");
       global $mNotice;
       global $mCust_key;
       global $mMySched;
       global $mCust_hmphone,$mCust_wkphone,$mCust_mbphone,$mCust_fxphone;
       //see if any of the phone numbers differ from the database
-      $sRet = PanelEnumerateCustomerPhonenumbers($mMySched,$customerphone_table,$mCust_key,$sCount,$sPhonenumber,$sPhonetype);
+      $sRet = EnumerateCustomerPhonenumbers($mMySched,$customerphone_table,$mCust_key,$sCount,$sPhonenumber,$sPhonetype);
       if ($sRet != 0) {
-         global $mNotice,$mPanelError;
-         $mNotice .= "problem ($mRet) while getting customer info:<br />$mPanelError<br />";
+         global $mNotice,$mError;
+         $mNotice .= "problem ($mRet) while getting customer info:<br />$mError<br />";
          return -1;
       }
       $sStor_hmphone = "";$sStor_wkphone = "";$sStor_mbphone = "";$sStor_fxphone = "";
@@ -718,24 +719,24 @@ search results<br>";
          if ($sStor_hmphone != $mCust_hmphone) {
             if ($mCust_hmphone == "") {
                //remove record
-               if (0 != ($sRet = PanelDeleteCustomerPhone($mMySched,$customerphone_table,$mCust_key,"hm"))) {
-                  global $mPanelError,$mNotice;
-                  $mNotice .= "problem ($sRet) removing customer hm phone:<br />$mPanelError<br />";
+               if (0 != ($sRet = DeleteCustomerPhone($mMySched,$customerphone_table,$mCust_key,"hm"))) {
+                  global $mError,$mNotice;
+                  $mNotice .= "problem ($sRet) removing customer hm phone:<br />$mError<br />";
                   return -1;
                }
             } else {
-               if (0 != ($sRet = PanelUpdateCustomerPhone($mMySched,$customerphone_table,$mCust_key,"hm",$mCust_hmphone))) {
-                  global $mPanelError,$mNotice;
-                  $mNotice .= "problem ($sRet) updating customer hm phone:<br />$mPanelError<br />";
+               if (0 != ($sRet = UpdateCustomerPhone($mMySched,$customerphone_table,$mCust_key,"hm",$mCust_hmphone))) {
+                  global $mError,$mNotice;
+                  $mNotice .= "problem ($sRet) updating customer hm phone:<br />$mError<br />";
                   return -1;
                }
             }
          }
       } else {
          if ($mCust_hmphone != "") {
-            if (0 != ($sRet = PanelAddCustomerPhone($mMySched,$customerphone_table,$mCust_key,"hm",$mCust_hmphone))) {
-               global $mPanelError,$mNotice;
-               $mNotice .= "problem ($sRet) adding customer hm phone:<br />$mPanelError<br />";
+            if (0 != ($sRet = AddCustomerPhone($mMySched,$customerphone_table,$mCust_key,"hm",$mCust_hmphone))) {
+               global $mError,$mNotice;
+               $mNotice .= "problem ($sRet) adding customer hm phone:<br />$mError<br />";
                return -1;
             }
          }
@@ -745,24 +746,24 @@ search results<br>";
          if ($sStor_wkphone != $mCust_wkphone) {
             if ($mCust_wkphone == "") {
                //remove record
-               if (0 != ($sRet = PanelDeleteCustomerPhone($mMySched,$customerphone_table,$mCust_key,"wk"))) {
-                  global $mPanelError,$mNotice;
-                  $mNotice .= "problem ($sRet) removing customer wk phone:<br />$mPanelError<br />";
+               if (0 != ($sRet = DeleteCustomerPhone($mMySched,$customerphone_table,$mCust_key,"wk"))) {
+                  global $mError,$mNotice;
+                  $mNotice .= "problem ($sRet) removing customer wk phone:<br />$mError<br />";
                   return -1;
                }
             } else {
-               if (0 != ($sRet = PanelUpdateCustomerPhone($mMySched,$customerphone_table,$mCust_key,"wk",$mCust_wkphone))) {
-                  global $mPanelError,$mNotice;
-                  $mNotice .= "problem ($sRet) updating customer wk phone:<br />$mPanelError<br />";
+               if (0 != ($sRet = UpdateCustomerPhone($mMySched,$customerphone_table,$mCust_key,"wk",$mCust_wkphone))) {
+                  global $mError,$mNotice;
+                  $mNotice .= "problem ($sRet) updating customer wk phone:<br />$mError<br />";
                   return -1;
                }
             }
          }
       } else {
          if ($mCust_wkphone != "") {
-            if (0 != ($sRet = PanelAddCustomerPhone($mMySched,$customerphone_table,$mCust_key,"wk",$mCust_wkphone))) {
-               global $mPanelError,$mNotice;
-               $mNotice .= "problem ($sRet) adding customer wk phone:<br />$mPanelError<br />";
+            if (0 != ($sRet = AddCustomerPhone($mMySched,$customerphone_table,$mCust_key,"wk",$mCust_wkphone))) {
+               global $mError,$mNotice;
+               $mNotice .= "problem ($sRet) adding customer wk phone:<br />$mError<br />";
                return -1;
             }
          }
@@ -772,24 +773,24 @@ search results<br>";
          if ($sStor_mbphone != $mCust_mbphone) {
             if ($mCust_mbphone == "") {
                //remove record
-               if (0 != ($sRet = PanelDeleteCustomerPhone($mMySched,$customerphone_table,$mCust_key,"mb"))) {
-                  global $mPanelError,$mNotice;
-                  $mNotice .= "problem ($sRet) removing customer mb phone:<br />$mPanelError<br />";
+               if (0 != ($sRet = DeleteCustomerPhone($mMySched,$customerphone_table,$mCust_key,"mb"))) {
+                  global $mError,$mNotice;
+                  $mNotice .= "problem ($sRet) removing customer mb phone:<br />$mError<br />";
                   return -1;
                }
             } else {
-               if (0 != ($sRet = PanelUpdateCustomerPhone($mMySched,$customerphone_table,$mCust_key,"mb",$mCust_mbphone))) {
-                  global $mPanelError,$mNotice;
-                  $mNotice .= "problem ($sRet) updating customer mb phone:<br />$mPanelError<br />";
+               if (0 != ($sRet = UpdateCustomerPhone($mMySched,$customerphone_table,$mCust_key,"mb",$mCust_mbphone))) {
+                  global $mError,$mNotice;
+                  $mNotice .= "problem ($sRet) updating customer mb phone:<br />$mError<br />";
                   return -1;
                }
             }
          }
       } else {
          if ($mCust_mbphone != "") {
-            if (0 != ($sRet = PanelAddCustomerPhone($mMySched,$customerphone_table,$mCust_key,"mb",$mCust_mbphone))) {
-               global $mPanelError,$mNotice;
-               $mNotice .= "problem ($sRet) adding customer mb phone:<br />$mPanelError<br />";
+            if (0 != ($sRet = AddCustomerPhone($mMySched,$customerphone_table,$mCust_key,"mb",$mCust_mbphone))) {
+               global $mError,$mNotice;
+               $mNotice .= "problem ($sRet) adding customer mb phone:<br />$mError<br />";
                return -1;
             }
          }
@@ -799,24 +800,24 @@ search results<br>";
          if ($sStor_fxphone != $mCust_fxphone) {
             if ($mCust_fxphone == "") {
                //remove record
-               if (0 != ($sRet = PanelDeleteCustomerPhone($mMySched,$customerphone_table,$mCust_key,"fx"))) {
-                  global $mPanelError,$mNotice;
-                  $mNotice .= "problem ($sRet) removing customer fx phone:<br />$mPanelError<br />";
+               if (0 != ($sRet = DeleteCustomerPhone($mMySched,$customerphone_table,$mCust_key,"fx"))) {
+                  global $mError,$mNotice;
+                  $mNotice .= "problem ($sRet) removing customer fx phone:<br />$mError<br />";
                   return -1;
                }
             } else {
-               if (0 != ($sRet = PanelUpdateCustomerPhone($mMySched,$customerphone_table,$mCust_key,"fx",$mCust_fxphone))) {
-                  global $mPanelError,$mNotice;
-                  $mNotice .= "problem ($sRet) updating customer fx phone:<br />$mPanelError<br />";
+               if (0 != ($sRet = UpdateCustomerPhone($mMySched,$customerphone_table,$mCust_key,"fx",$mCust_fxphone))) {
+                  global $mError,$mNotice;
+                  $mNotice .= "problem ($sRet) updating customer fx phone:<br />$mError<br />";
                   return -1;
                }
             }
          }
       } else {
          if ($mCust_fxphone != "") {
-            if (0 != ($sRet = PanelAddCustomerPhone($mMySched,$customerphone_table,$mCust_key,"fx",$mCust_fxphone))) {
-               global $mPanelError,$mNotice;
-               $mNotice .= "problem ($sRet) adding customer fx phone:<br />$mPanelError<br />";
+            if (0 != ($sRet = AddCustomerPhone($mMySched,$customerphone_table,$mCust_key,"fx",$mCust_fxphone))) {
+               global $mError,$mNotice;
+               $mNotice .= "problem ($sRet) adding customer fx phone:<br />$mError<br />";
                return -1;
             }
          }
@@ -831,35 +832,35 @@ search results<br>";
          $sSub_name = $mCust_name;
       }
       //update name if changed
-      if (0 != ($sRet = PanelGetCustomerName($mMySched,$customer_table,$mCust_key,$sStor_name))) {
-         global $mPanelError,$mNotice;
-         $mNotice .= "problem ($sRet) getting stored customer name:<br />$mPanelError<br />";
+      if (0 != ($sRet = GetCustomerName($mMySched,$customer_table,$mCust_key,$sStor_name))) {
+         global $mError,$mNotice;
+         $mNotice .= "problem ($sRet) getting stored customer name:<br />$mError<br />";
          return -1;
       }
       if ($sStor_name != $sSub_name) {
-         if (0 != ($sRet = PanelUpdateCustomerName($mMySched,$customer_table,$mCust_key,$sSub_name))) {
-            global $mPanelError,$mNotice;
-            $mNotice .= "problem ($sRet) updating customer name:<br />$mPanelError<br />";
+         if (0 != ($sRet = UpdateCustomerName($mMySched,$customer_table,$mCust_key,$sSub_name))) {
+            global $mError,$mNotice;
+            $mNotice .= "problem ($sRet) updating customer name:<br />$mError<br />";
             return -1;
          }
       }
       //update name type if changed
-      if (0 != ($sRet = PanelGetCustomerType($mMySched,$customer_table,$mCust_key,$sStor_type))) {
-         global $mPanelError,$mNotice;
-         $mNotice .= "problem ($sRet) getting stored customer type:<br />$mPanelError<br />";
+      if (0 != ($sRet = GetCustomerType($mMySched,$customer_table,$mCust_key,$sStor_type))) {
+         global $mError,$mNotice;
+         $mNotice .= "problem ($sRet) getting stored customer type:<br />$mError<br />";
          return -1;
       }
       if ($sStor_type != $mCust_customertype) {
-         if (0 != ($sRet = PanelUpdateCustomerType($mMySched,$customer_table,$mCust_key,$mCust_customertype))) {
-            global $mPanelError,$mNotice;
-            $mNotice .= "problem ($sRet) updating customer type:<br />$mPanelError<br />";
+         if (0 != ($sRet = UpdateCustomerType($mMySched,$customer_table,$mCust_key,$mCust_customertype))) {
+            global $mError,$mNotice;
+            $mNotice .= "problem ($sRet) updating customer type:<br />$mError<br />";
             return -1;
          }
       }
       //update addr if changed
-      if (0 != ($sRet = PanelGetCustomerAddrByKey($mMySched,$customer_table,$mCust_key,$sStor_streetaddr,$sStor_city,$sStor_state,$sStor_zip))) {
-         global $mPanelError,$mNotice;
-         $mNotice .= "problem ($sRet) getting stored customer address:<br />$mPanelError<br />";
+      if (0 != ($sRet = GetCustomerAddrByKey($mMySched,$customer_table,$mCust_key,$sStor_streetaddr,$sStor_city,$sStor_state,$sStor_zip))) {
+         global $mError,$mNotice;
+         $mNotice .= "problem ($sRet) getting stored customer address:<br />$mError<br />";
          return -1;
       }
       //$mCust_streetaddr,$mCust_city,$mCust_state,$mCust_zip,$mCust_customertype;
@@ -867,24 +868,24 @@ search results<br>";
          ($sStor_city != $mCust_city) ||
          ($sStor_state != $mCust_state) ||
          ($sStor_zip != $mCust_zip)) {
-         if (0 != ($sRet = PanelUpdateAddr($mMySched,$customer_table,$mCust_key,$mCust_streetaddr,$mCust_city,$mCust_state,$mCust_zip))) {
-            global $mPanelError,$mNotice;
-            $mNotice .= "problem ($sRet) updating stored customer address:<br />$mPanelError<br />";
+         if (0 != ($sRet = UpdateAddr($mMySched,$customer_table,$mCust_key,$mCust_streetaddr,$mCust_city,$mCust_state,$mCust_zip))) {
+            global $mError,$mNotice;
+            $mNotice .= "problem ($sRet) updating stored customer address:<br />$mError<br />";
             return -1;
          }
       }
       return 0;
    }
-   function wtfpanel_getcustomerprocess() {
+   function getcustomerprocess() {
       global $mCust_key;
       global $mMySched;
-      require("settings.inc.php");
+      require("settings.php");
       global $mCust_nametype,$mCust_lastname,$mCust_firstname,$mCust_name,$mCust_streetaddr,$mCust_city,$mCust_state,$mCust_zip,$mCust_customertype;
       $mCust_lastname = "";$mCust_firstname = "";$mCust_name = "";
-      $mRet = PanelGetCustomer($mMySched,"customer",$mCust_key,$sName,$mCust_streetaddr,$mCust_city,$mCust_state,$mCust_zip,$mCust_customertype,$sLastUpdated);
+      $mRet = GetCustomer($mMySched,"customer",$mCust_key,$sName,$mCust_streetaddr,$mCust_city,$mCust_state,$mCust_zip,$mCust_customertype,$sLastUpdated);
       if ($mRet != 0) {
-         global $mNotice,$mPanelError;
-         $mNotice .= "problem ($mRet) while getting customer info:<br />$mPanelError<br />";
+         global $mNotice,$mError;
+         $mNotice .= "problem ($mRet) while getting customer info:<br />$mError<br />";
          return -1;
       }
       //if there's a comma and a space.. then nametype is individual
@@ -896,11 +897,11 @@ search results<br>";
          $mCust_nametype = "company";
          $mCust_name = $sName;
       }
-      $mRet = PanelEnumerateCustomerPhonenumbers($mMySched,$customerphone_table,$mCust_key,$sCount,$sPhonenumber,$sPhonetype);
+      $mRet = EnumerateCustomerPhonenumbers($mMySched,$customerphone_table,$mCust_key,$sCount,$sPhonenumber,$sPhonetype);
       if ($mRet != 0) {
          global $mMode;
          $mMode = "gen_error";
-         $mNotice .= "problem ($mRet) while getting customer phone info:<br />$mPanelError<br />";
+         $mNotice .= "problem ($mRet) while getting customer phone info:<br />$mError<br />";
          return -1;
       }
       global $mCust_hmphone,$mCust_wkphone,$mCust_mbphone,$mCust_fxphone;
@@ -920,49 +921,49 @@ search results<br>";
       }
       return 0;
    }
-   function wtfpanel_testcustsomervars($pErrArea) {
+   function testcustsomervars($pErrArea) {
       $pErrArea = array();
       $sNoErrors = TRUE;
       global $mCust_nametype,$mCust_lastname,$mCust_firstname,$mCust_name,$mCust_streetaddr,$mCust_city,$mCust_state,$mCust_zip,$mCust_customertype;
       if (($mCust_nametype != "company") && ($mCust_nametype != "individual")) {
-         wtfpanel_addcustomervarerrmsg($pErrArea,"name","invalid name type given");
+         addcustomervarerrmsg($pErrArea,"name","invalid name type given");
          $sNoErrors = FALSE;
       }
       if ($mCust_nametype == "company") {
          if ($mCust_name == "") {
-            wtfpanel_addcustomervarerrmsg($pErrArea,"name","company name cannot be blank");
+            addcustomervarerrmsg($pErrArea,"name","company name cannot be blank");
             $sNoErrors = FALSE;
          }
          if (strpos($mCust_name,",",0) !== FALSE) {
-            wtfpanel_addcustomervarerrmsg($pErrArea,"name","company name cannot contain a comma");
+            addcustomervarerrmsg($pErrArea,"name","company name cannot contain a comma");
             $sNoErrors = FALSE;
          }
       }
       if ($mCust_nametype == "individual") {
          if ($mCust_lastname == "") {
-            wtfpanel_addcustomervarerrmsg($pErrArea,"name","last name cannot be blank");
+            addcustomervarerrmsg($pErrArea,"name","last name cannot be blank");
             $sNoErrors = FALSE;
          }
          if (strpos($mCust_lastname,",",0) !== FALSE) {
-            wtfpanel_addcustomervarerrmsg($pErrArea,"name","last name cannot contain a comma");
+            addcustomervarerrmsg($pErrArea,"name","last name cannot contain a comma");
             $sNoErrors = FALSE;
          }
       }
       if ($mCust_city == "") {
-         wtfpanel_addcustomervarerrmsg($pErrArea,"citystatezip","city cannot be blank");
+         addcustomervarerrmsg($pErrArea,"citystatezip","city cannot be blank");
          $sNoErrors = FALSE;
       }
       if ($mCust_state == "") {
-         wtfpanel_addcustomervarerrmsg($pErrArea,"citystatezip","state cannot be blank");
+         addcustomervarerrmsg($pErrArea,"citystatezip","state cannot be blank");
          $sNoErrors = FALSE;
       }
       if ($mCust_customertype == "") {
-         wtfpanel_addcustomervarerrmsg($pErrArea,"customertype","invalid customer type given");
+         addcustomervarerrmsg($pErrArea,"customertype","invalid customer type given");
          $sNoErrors = FALSE;
       }
       return $sNoErrors;
    }
-   function wtfpanel_globalizecustomerphonepostvars() {
+   function globalizecustomerphonepostvars() {
       global $mCust_hmphone,$mCust_wkphone,$mCust_mbphone,$mCust_fxphone;
       if (isset($_POST["hmphone"])) {
          $mCust_hmphone = $_POST["hmphone"];
@@ -977,7 +978,7 @@ search results<br>";
          $mCust_fxphone = $_POST["fxphone"];
       }
    }
-   function wtfpanel_processcustomerphonevars($pCount,$pType,$pNumber) {
+   function processcustomerphonevars($pCount,$pType,$pNumber) {
       global $mCust_hmphone,$mCust_wkphone,$mCust_mbphone,$mCust_fxphone;
       $pCount = 0;
       $pType = array();$pNumber = array();
@@ -1002,7 +1003,7 @@ search results<br>";
          $pCount++;
       }
    }
-   function wtfpanel_globalizecustomerpostvars() {
+   function globalizecustomerpostvars() {
       global $mCust_nametype,$mCust_lastname,$mCust_firstname,$mCust_name,$mCust_streetaddr,$mCust_city,$mCust_state,$mCust_zip,$mCust_customertype;
       if (isset($_POST["firstname"])) {
          $mCust_firstname = $_POST["firstname"];
@@ -1032,7 +1033,7 @@ search results<br>";
          $mCust_customertype = $_POST["customertype"];
       }
    }
-   function wtfpanel_customernoticetable($notice) {
+   function customernoticetable($notice) {
       $ret = "
       <table width=\"400\">
          <tr>
@@ -1041,17 +1042,17 @@ search results<br>";
       </table>";
       return $ret;
    }
-   function wtfpanel_customerlistforlink($caption,$next) {
+   function customerlistforlink($caption,$next) {
       global $mMySched;
       global $mSentry_key;
-      require("settings.inc.php");
+      require("settings.php");
       $ret = "
       <table width=\"400\">
          <tr>
             <td class=\"heading\">$caption</td>
          </tr>
          ";
-      $sRet = PanelEnumerateCustomersByName($mMySched,$customer_table,"","",$sCount,$sKey,$sName,$sStreetaddr,$sCity,$sState,$sZip,$sCustomertype,$sLastUpdated);
+      $sRet = EnumerateCustomersByName($mMySched,$customer_table,"","",$sCount,$sKey,$sName,$sStreetaddr,$sCity,$sState,$sZip,$sCustomertype,$sLastUpdated);
       if ($sRet == 0) {
          for ($i = 0;$i < $sCount;$i++) {
             $ret .= "
@@ -1063,7 +1064,7 @@ search results<br>";
          $ret .= "
          <tr>
             <td class=\"project\">
-            problem ($sRet) while getting customers:<br />$mPanelError
+            problem ($sRet) while getting customers:<br />$mError
             </td>
          </tr>";
       }
@@ -1071,43 +1072,43 @@ search results<br>";
       </table>";
       return $ret;
    }
-   function wtfpanel_clearcustomerphonevars() {
+   function clearcustomerphonevars() {
       global $mCust_hmphone,$mCust_wkphone,$mCust_mbphone,$mCust_fxphone;
       $mCust_hmphone = "";$mCust_wkphone = "";$mCust_mbphone = "";$mCust_fxphone = "";
    }
-   function wtfpanel_clearcustomervars() {
+   function clearcustomervars() {
       global $mCust_nametype,$mCust_lastname,$mCust_firstname,$mCust_name,$mCust_streetaddr,$mCust_city,$mCust_state,$mCust_zip,$mCust_customertype;
       $mCust_nametype = "";$mCust_lastname = "";$mCust_firstname = "";$mCust_name = "";$mCust_streetaddr = "";$mCust_city = "";$mCust_state = "";$mCust_zip = "";$mCust_customertype = "";
    }
-   function wtfpanel_customerfilevars() {
+   function customerfilevars() {
       global $mCustfile_type;
       if (isset($_POST["custfile_type"])) {
          $mCustfile_type = preg_replace("/[^a-zA-Z0-9\s]/", "", $_POST["custfile_type"]);
       }
    }
-   function wtfpanel_embedvars() {
+   function embedvars() {
       global $mCustfile_embed;
       $mCustfile_embed = "-1";
       if (isset($_GET["embed"])) {
          $mCustfile_embed = preg_replace("/[^a-zA-Z0-9\s]/", "", $_GET["embed"]);
       }
    }
-   function wtfpanel_custfile_doctypevars() {
+   function custfile_doctypevars() {
       global $mCustfile_doctype;
       if (isset($_POST["custfile_type"])) {
          $mCustfile_doctype = preg_replace("/[^a-zA-Z0-9\s]/", "", $_POST["custfile_type"]);
       }
    }
    
-   function wtfpanel_custfile_deleteyesnovars() {
+   function custfile_deleteyesnovars() {
       global $mCustfile_delete_token;
          if (isset($_POST["custfile_delete_token"])) {
          $mCustfile_delete_token = preg_replace("/[^a-zA-Z0-9\s]/", "", $_POST["custfile_delete_token"]);
       }
    }
    
-   function wtfpanel_custfile_delete_confirm() {
-      require("settings.inc.php");
+   function custfile_delete_confirm() {
+      require("settings.php");
       global $mCustfile_embed,$mCust_key,$mCustfile_name,$mCustfile_handle,$mCustfile_md5;
       $_SESSION["custfile_delete_token_sess"] = mt_rand ( 1000 , 9999 );
       
@@ -1137,7 +1138,7 @@ search results<br>";
       ";
       return $ret;
    }
-   function wtfpanel_custfiletypes($checked="invoice",$idsuffix="{RAND}") {
+   function custfiletypes($checked="invoice",$idsuffix="{RAND}") {
       if ($idsuffix == "{RAND}") {
          $idsuffix = "_" . mt_rand(10000,99999);
       }
@@ -1160,12 +1161,12 @@ search results<br>";
       return $ret;
    }
    
-   function wtfpanel_customerfilestable() {
+   function customerfilestable() {
       global $mMySched,$mCust_key;
       global $mCustfile_embed;
-      require("settings.inc.php");
+      require("settings.php");
       $ret = "";
-      $sRet = PanelEnumerateCustfiles(
+      $sRet = EnumerateCustfiles(
       $mMySched,
       $mCust_key,
       "",//LimitStart
@@ -1183,9 +1184,9 @@ search results<br>";
                   <td class=\"project\">
                   ";
       if ($sRet != 0) {
-         global $mPanelError;
+         global $mError;
          $ret .= "
-                  problem ($sRet) getting CustomerTypes:<br />$mPanelError";
+                  problem ($sRet) getting CustomerTypes:<br />$mError";
          $ret .= "
                      </td>
                   </tr>
@@ -1296,7 +1297,7 @@ search results<br>";
                if ($mCustfile_showeditdoctype === true) {
                   $ret .= "
                <div>";
-                  $ret .= wtfpanel_custfiletypes($sDoctype[$i]);
+                  $ret .= custfiletypes($sDoctype[$i]);
                   $ret .= "
                </div>
                <div>
@@ -1321,20 +1322,20 @@ search results<br>";
       ";
       return $ret;
    }
-   function wtfpanel_custfileupdate_namevars() {
+   function custfileupdate_namevars() {
       global $mCustfile_name;
       if (isset($_POST["custfile_name"])) {
          $mCustfile_name = preg_replace("/[^a-zA-Z0-9\s.]/", "", $_POST["custfile_name"]);
       }
    }
 
-   function wtfpanel_addfiletable() {
+   function addfiletable() {
       global $mCust_key;
       global $mMySched;
       global $mAuthorized_username;
       global $mCustfile_showadd,$mCustfile_showemailup,$mCustfile_showcheckemail;
       
-      include("settings.inc.php");
+      include("settings.php");
       
       $ret = "";
       
@@ -1352,7 +1353,7 @@ search results<br>";
 							<div id=\"custfiletypes\">
 							<div style='font-weight:bold;'>document type:</div>
 							";
-         $ret .= wtfpanel_custfiletypes();
+         $ret .= custfiletypes();
          $ret .= "	</div><!--#custfiletypes-->
                   </div>
                   <div>
@@ -1361,7 +1362,7 @@ search results<br>";
          $ret .= "</form>";
          if ($mCustfile_showemailup === true) {
             $ret .= "<div>";
-            if (0 == ($mRet = PanelAddCustfileMailqueue($mMySched,$mCust_key,$mAuthorized_username,$sToken))) {
+            if (0 == ($mRet = AddCustfileMailqueue($mMySched,$mCust_key,$mAuthorized_username,$sToken))) {
                $ret .= "
                &nbsp;&bull;&nbsp;<a href=\"mailto:$custfile_mailup_email?subject=$sToken&amp;body=" .
                 htmlentities("Attach the file to you want to upload to this email.") . "%0A%0A" .
@@ -1377,8 +1378,8 @@ search results<br>";
                <span style=\"font-size:0.70em;\">&nbsp;&nbsp;&nbsp;$sToken</span>
                ";
             } else {
-               global $mPanelError;
-               $ret .= "PanelError (while getting mailup link):<br>$mPanelError";
+               global $mError;
+               $ret .= "Error (while getting mailup link):<br>$mError";
             }
             $ret .= "</div>";
          } else {
@@ -1403,11 +1404,11 @@ search results<br>";
          ";
          if ($mCustfile_showcheckemail === true) {
             $ret .= "<div>";
-            if (0 == ($mRet = PanelProcessCustfileMailqueue($mMySched,$sReport))) {
+            if (0 == ($mRet = ProcessCustfileMailqueue($mMySched,$sReport))) {
                $ret .= "&nbsp;&nbsp;<span style=\"font-size:0.70em;\">success: $sReport</span>";
             } else {
-               global $mPanelError;
-               $ret .= "&nbsp;&nbsp;PanelError while processing custfile mail<br>:$mPanelError";
+               global $mError;
+               $ret .= "&nbsp;&nbsp;Error while processing custfile mail<br>:$mError";
             }
             $ret .= "</div>";
          } 
@@ -1431,12 +1432,12 @@ search results<br>";
       return $ret;
    }
    
-   function wtfpanel_customeraddformtable($action,$submitcaption) {
+   function customeraddformtable($action,$submitcaption) {
       global $mMySched;
       global $mAddcustomerErr;
       global $mCust_hmphone,$mCust_wkphone,$mCust_mbphone,$mCust_fxphone;
       global $mCust_nametype,$mCust_lastname,$mCust_firstname,$mCust_name,$mCust_streetaddr,$mCust_city,$mCust_state,$mCust_zip,$mCust_customertype;
-      require("settings.inc.php");
+      require("settings.php");
       $sState = $default_customerstate;
       if ($mCust_state != "") {
          $sState = $mCust_state;
@@ -1470,13 +1471,13 @@ search results<br>";
                   <td class=\"heading\"><b>$statustext</b></td>
                </tr>";
       if ($submitcaption !== "next") {
-         $ret .= wtfpanel_addfiletable();
+         $ret .= addfiletable();
       }
 
       
 
       if ($submitcaption !== "next")
-      $ret .= wtfpanel_customerfilestable();
+      $ret .= customerfilestable();
       $ret .= "
                <tr><form action=\"$action\" method=\"POST\">
                   <td class=\"project\">";
@@ -1570,7 +1571,7 @@ search results<br>";
          }
          $ret .= "</b>";
       }
-      //PanelFormatCustomerPhone($sPhonenumber)
+      //FormatCustomerPhone($sPhonenumber)
       //$mCust_hmphone
       //$mCust_wkphone
       //$mCust_mbphone
@@ -1588,22 +1589,22 @@ search results<br>";
                         <td>
                         home<br />
                         <input type=\"text\" size=\"12\" name=\"hmphone\" value=\"" 
-                        . PanelFormatCustomerPhone($mCust_hmphone) . "\">
+                        . FormatCustomerPhone($mCust_hmphone) . "\">
                         </td>
                         <td>
                         work<br />
                         <input type=\"text\" size=\"12\" name=\"wkphone\" value=\"" 
-                        . PanelFormatCustomerPhone($mCust_wkphone) . "\">
+                        . FormatCustomerPhone($mCust_wkphone) . "\">
                         </td>
                         <td>
                         mobile<br />
                         <input type=\"text\" size=\"12\" name=\"mbphone\" value=\"" 
-                        . PanelFormatCustomerPhone($mCust_mbphone) . "\">
+                        . FormatCustomerPhone($mCust_mbphone) . "\">
                         </td>
                         <td>
                         fax<br />
                         <input type=\"text\" size=\"12\" name=\"fxphone\" value=\"" 
-                        . PanelFormatCustomerPhone($mCust_fxphone) . "\">
+                        . FormatCustomerPhone($mCust_fxphone) . "\">
                         </td>
                      </tr>
                   </table>
@@ -1611,7 +1612,7 @@ search results<br>";
                </tr>
                <tr>
                   <td class=\"project\">";
-      $sRet = PanelEnumerateCustomertypes($mMySched,$customertype_table,$sCount,$sName,$sBrief,$sDescription);
+      $sRet = EnumerateCustomertypes($mMySched,$customertype_table,$sCount,$sName,$sBrief,$sDescription);
       if ($sRet == 0) {
          $sSelectedIdx = 1;
          for ($i = 0;$i < $sCount;$i++) {
@@ -1632,9 +1633,9 @@ search results<br>";
          $ret .= "
                   </select>";
       } else {
-         global $mPanelError;
+         global $mError;
          $ret .= "
-                  problem ($sRet) getting CustomerTypes:<br />$mPanelError";
+                  problem ($sRet) getting CustomerTypes:<br />$mError";
       }
       $submitcaptionval = $submitcaption;
       if ($submitcaption == "update") {

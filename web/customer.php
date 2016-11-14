@@ -1,14 +1,14 @@
 <?php
-   require_once("include/wtfpanel.inc.php");
-   require_once("include/html.inc.php");
-   require_once("include/html.menu.inc.php");
-   require_once("include/wtfpanel.mysql.inc.php");
-   require_once("include/settings.inc.php");
-   require_once("include/html.customer.inc.php");
+   require_once("include/user.php");
+   require_once("../app/Resources/controller/view.php");
+   require_once("../app/Resources/controller/menu.php");
+   require_once("include/mysql.php");
+   require_once("include/settings.php");
+   require_once("../app/Resources/controller/customer.php");
 
-   include("include/getsession.inc.php");
+   include("include/getsession.php");
    $mMode = "login";
-   include("include/getauth.inc.php");
+   include("include/getauth.php");
 
    if ($mAuthorized == "true") {
       $mMode = "nothing";
@@ -43,10 +43,10 @@
 
    $mNotice = "";
    $mSubtitle = "";
-   $mRet = PanelConnectToDB($data_dbhost,$data_dbname,$data_dbuser,$data_dbpasswd,$mMySched);
+   $mRet = ConnectToDB($data_dbhost,$data_dbname,$data_dbuser,$data_dbpasswd,$mMySched);
    if ($mRet != 0) {
       $mMode = "gen_error";
-      $mNotice .= "problem ($mRet) while connecting to the schedule database:<br />$mPanelError<br />";
+      $mNotice .= "problem ($mRet) while connecting to the schedule database:<br />$mError<br />";
    }
 
    //stuff to do before any output occurs
@@ -62,17 +62,17 @@
    }
    
    if ($mMode == "custfile") {
-      $mRet = PanelGetCustomerName($mMySched,$customer_table,$mCust_key,$mCust_name);
+      $mRet = GetCustomerName($mMySched,$customer_table,$mCust_key,$mCust_name);
       if ($mRet != 0) {
          $mMode = "gen_error";
-         $mNotice .= "problem ($mRet) while connecting to the schedule database:<br />$mPanelError<br />";
+         $mNotice .= "problem ($mRet) while connecting to the schedule database:<br />$mError<br />";
       }
    }
    
    if ($mMode == "custfile") {
-      if ( 0 != ($mRet = PanelGetCustfileMimetype($mMySched,$mCust_key,$_GET["file"],$mCustfile_mimetype)) ) {
+      if ( 0 != ($mRet = GetCustfileMimetype($mMySched,$mCust_key,$_GET["file"],$mCustfile_mimetype)) ) {
          $mMode = "gen_error";
-         $mNotice .= "problem ($mRet) while getting mimetype:<br>$mPanelError<br>";
+         $mNotice .= "problem ($mRet) while getting mimetype:<br>$mError<br>";
       }
       //echo $mCustfile_mimetype;die();
       
@@ -267,7 +267,7 @@
    }
 
    if ($mMode == "custfile_upload") {
-      wtfpanel_customerfilevars();
+      customerfilevars();
    }
    
    if ($mMode == "custfile_upload") {
@@ -297,21 +297,21 @@
       }
    }
    if ( ($mMode == "custfile_upload") || ($mMode == "custfile_error_notempfile") ) {
-      //PanelGetCustomerName($My,$TableCust,$CustKey,$pName)
-      $mRet = PanelGetCustomerName($mMySched,$customer_table,$mCustKey,$mCustName);
+      //GetCustomerName($My,$TableCust,$CustKey,$pName)
+      $mRet = GetCustomerName($mMySched,$customer_table,$mCustKey,$mCustName);
       if ($mRet != 0) {
          if ($mMode == "custfile_error_notempfile") {
             $mMode = "gen_error";
          } else {
             $mMode = "gen_error_custfile";
          }
-         $mNotice .= "<br>PanelError while getting customer:<br>$mPanelError<br>";
+         $mNotice .= "<br>Error while getting customer:<br>$mError<br>";
       }
    }
    
    if ($mMode == "custfile_upload") {
       //add entry to customer_files
-      if (0 != ($mRet = PanelAddCustfile(
+      if (0 != ($mRet = AddCustfile(
          $mMySched,
          $mCustKey,
          $tmpfile,
@@ -331,7 +331,7 @@
             ";
          } else {
             $mMode = "custfile_error";
-            $mNotice .= "<br>PanelError ($mRet) while Adding custfile:<br>$mPanelError<br>";
+            $mNotice .= "<br>Error ($mRet) while Adding custfile:<br>$mError<br>";
          }
       }
    }
@@ -354,10 +354,10 @@
       
    
    if ($mMode == "jobs") {
-      wtfpanel_getcustomerjobsvars();
+      getcustomerjobsvars();
    }
    if ($mMode == "search") {
-      wtfpanel_getcustomersearchpostvars();
+      getcustomersearchpostvars();
       if (!$mCust_valid) {
          $mMode = "gen_error";
          $mNotice .= "invalid customer search query";
@@ -384,17 +384,17 @@
       }
    }
    if ($mMode == "submitupdate") {
-      wtfpanel_globalizecustomerpostvars();
-      wtfpanel_globalizecustomerphonepostvars();
-      if (!wtfpanel_testcustsomervars($mAddcustomerErr)) {
+      globalizecustomerpostvars();
+      globalizecustomerphonepostvars();
+      if (!testcustsomervars($mAddcustomerErr)) {
          $mNotice .= "<li>there were problems adding the customer<br />";
          $mMode = "showedit";
       } else {
-         if (wtfpanel_updatecustomerprocess() == 0) {
+         if (updatecustomerprocess() == 0) {
             $mNotice .= "<li>updated successfully<br />";
             $mMode = "showedit";
-            wtfpanel_clearcustomervars();
-            wtfpanel_clearcustomerphonevars();
+            clearcustomervars();
+            clearcustomerphonevars();
          } else {
             $mNotice .= "<li>there were problems while updating this customer<br />";
             $mMode = "showedit";
@@ -402,14 +402,14 @@
       }
    }
    if ($mMode == "submit_add") {
-      wtfpanel_globalizecustomerpostvars();
-      if (!wtfpanel_testcustsomervars($mAddcustomerErr)) {
+      globalizecustomerpostvars();
+      if (!testcustsomervars($mAddcustomerErr)) {
          $mNotice .= "<li>there were problems adding the customer<br />";
          $mMode = "showadd";
       }
    }
    if ($mMode == "showedit") {
-      wtfpanel_embedvars();
+      embedvars();
    }
    if ($mMode == "custfile_upload") {
       $mNotice .= "<br>successful upload of '" . htmlentities($_FILES['userfile']['name']) . "'<br>";
@@ -426,7 +426,7 @@
       $mMode = "showedit";
    }
    if ($mMode == "showedit") {
-      if (wtfpanel_getcustomerprocess() != 0) {
+      if (getcustomerprocess() != 0) {
          $mMode = "gen_error";
       }
    }
@@ -460,7 +460,7 @@
    //showedit_submit_custfile_doctype
    if ($mMode == "custfile_delete_yes") {
       //get vars, make sure there's the token matching
-      wtfpanel_custfile_deleteyesnovars();
+      custfile_deleteyesnovars();
       if ($mCustfile_delete_token == $_SESSION["custfile_delete_token_sess"]) {
          //get md5 hash for info
          $mCustfile_handle = hash($hashalgo_custfile,$mCust_key . "." . $mCustfile_embed);
@@ -468,7 +468,7 @@
             $mCustfile_md5 = md5_file($dir_custfiles . $mCustfile_handle);
          }
          //remove from database & filesystem
-         if (0 ==( $mRet = PanelRemoveCustfile($mMySched,$mCust_key,$mCustfile_embed,$mCustfile_name)) ) {
+         if (0 ==( $mRet = RemoveCustfile($mMySched,$mCust_key,$mCustfile_embed,$mCustfile_name)) ) {
             if (strlen($mCustfile_name) < 21) {
                $mShowName = $mCustfile_name;
             } else {
@@ -476,7 +476,7 @@
             }
             $mNotice .= "deleted file '$mShowName'<br><span style=\"font-size:0.70em;\">md5:$mCustfile_md5</span>";
          } else {
-            $mNotice .= "PanelError while removing file:<br>$mPanelError";
+            $mNotice .= "Error while removing file:<br>$mError";
          }
          $mCustfile_embed = "-1";
       } else {
@@ -487,26 +487,26 @@
    
    if ($mMode == "showedit_custfile_delete_confirm") {
       //$mCustfile_doctype
-      wtfpanel_embedvars();
+      embedvars();
       
-      if (0 != ($mRet = PanelGetCustfileName($mMySched,$mCust_key,$mCustfile_embed,$mCustfile_name))) {
-         $mNotice .= "Panel Error while getting custfile name:<br>$mPanelError";
+      if (0 != ($mRet = GetCustfileName($mMySched,$mCust_key,$mCustfile_embed,$mCustfile_name))) {
+         $mNotice .= " Error while getting custfile name:<br>$mError";
          $mMode = "gen_error";
       }
    }
    if ($mMode == "showedit_custfile_delete_confirm") {
-      $mNotice .= wtfpanel_custfile_delete_confirm();
+      $mNotice .= custfile_delete_confirm();
       $mMode = "showedit";
    }
    
    if ($mMode == "showedit_submit_custfile_doctype") {
       //$mCustfile_doctype
-      wtfpanel_embedvars();
-      wtfpanel_custfile_doctypevars();
+      embedvars();
+      custfile_doctypevars();
       //echo $mCustfile_embed;die();
-      if (0 != ($mRet = PanelUpdateCustfileDoctype($mMySched,$mCust_key,$mCustfile_embed,$mCustfile_doctype))) {
+      if (0 != ($mRet = UpdateCustfileDoctype($mMySched,$mCust_key,$mCustfile_embed,$mCustfile_doctype))) {
          //$mMode = "gen_error";
-         $mNotice .= "PanelError while updating custfile:<br>$mPanelError";
+         $mNotice .= "Error while updating custfile:<br>$mError";
          
       }
       $mMode = "showedit";
@@ -525,14 +525,14 @@
    }
    
    if ($mMode == "showedit_update_custfile_name") {
-      wtfpanel_custfileupdate_namevars();
+      custfileupdate_namevars();
    }
    
    if ($mMode == "showedit_update_custfile_name") { /*should be able to use this any file updates*/
       //get vars
-      wtfpanel_embedvars();
+      embedvars();
       //see if it exists
-      if (0 != ($mRet = PanelGetCustfileMimetype($mMySched,$mCust_key,$mCustfile_embed,$mTmpMimetype))) {
+      if (0 != ($mRet = GetCustfileMimetype($mMySched,$mCust_key,$mCustfile_embed,$mTmpMimetype))) {
          if ($mRet == -1) {
             $mMode = "showedit";
             $mNotice .= "file not found";
@@ -543,14 +543,14 @@
    if ($mMode == "showedit_update_custfile_name") {
       //$mCustfile_embed
       //attempt to update it
-      $mRet = PanelUpdateCustfileName($mMySched,$mCust_key,$mCustfile_embed,$mCustfile_name);
+      $mRet = UpdateCustfileName($mMySched,$mCust_key,$mCustfile_embed,$mCustfile_name);
       //display results in notice
       if ($mRet == 0) {
          //$mNotice .= "updated file name";
          $mMode = "showedit";
       } else {
          $mMode = "gen_error";
-         $mNotice .= "PanelError ($mRet) during file name update:<br>$mPanelError<br>";
+         $mNotice .= "Error ($mRet) during file name update:<br>$mError<br>";
       }
    }
    
@@ -566,28 +566,28 @@
       if ($mCust_nametype == "company") {
          $mTmpCustName = $mCust_name;
       }
-      $mRet = PanelAddCustomer($mMySched,$customer_table,$mTmpCustName,$mCust_streetaddr,$mCust_city,$mCust_state,$mCust_zip,$mCust_customertype,$mCust_key);
+      $mRet = AddCustomer($mMySched,$customer_table,$mTmpCustName,$mCust_streetaddr,$mCust_city,$mCust_state,$mCust_zip,$mCust_customertype,$mCust_key);
       if ($mRet == 0) {
          $mNotice .= "<li>successfully added customer '$mTmpCustName':$mCust_key<br />";
-         wtfpanel_clearcustomervars();
+         clearcustomervars();
       } else {
-         $mNotice .= "<li>problem ($mRet) adding customer:<br />$mPanelError<br />";
+         $mNotice .= "<li>problem ($mRet) adding customer:<br />$mError<br />";
       }
-      wtfpanel_globalizecustomerphonepostvars();
-      wtfpanel_processcustomerphonevars($mPHCount,$mPHType,$mPHNumber);
+      globalizecustomerphonepostvars();
+      processcustomerphonevars($mPHCount,$mPHType,$mPHNumber);
       for ($i = 0;$i < $mPHCount;$i++) {
-         $mRet = PanelAssociateCustomerPhone($mMySched,$customerphone_table,$mCust_key,$mPHType[$i],$mPHNumber[$i]);
+         $mRet = AssociateCustomerPhone($mMySched,$customerphone_table,$mCust_key,$mPHType[$i],$mPHNumber[$i]);
          if ($mRet != 0) {
-            $mNotice .= "<li>problem ($mRet) while associating phone nubmer:$i," . $mPHType[$i] . "," . $mPHNumber[$i] . "<br />$mPanelError<br />";
+            $mNotice .= "<li>problem ($mRet) while associating phone nubmer:$i," . $mPHType[$i] . "," . $mPHNumber[$i] . "<br />$mError<br />";
          }
          if ($i == 0) { //make this primary until we have a better interface
-            $mRet = PanelUpdateCustomerPrimaryPhoneType($mMySched,$customer_table,$mCust_key,$mPHType[$i]);
+            $mRet = UpdateCustomerPrimaryPhoneType($mMySched,$customer_table,$mCust_key,$mPHType[$i]);
             if ($mRet != 0) {
-               $mNotice .= "<li>problem ($mRet) while updating primary phonetype for customer:$mCust_key on:$i," . $mPHType[$i] . "," . $mPHNumber[$i] . "<br />$mPanelError<br />";
+               $mNotice .= "<li>problem ($mRet) while updating primary phonetype for customer:$mCust_key on:$i," . $mPHType[$i] . "," . $mPHNumber[$i] . "<br />$mError<br />";
             }
          }
       }
-      wtfpanel_clearcustomerphonevars();
+      clearcustomerphonevars();
    }
    //$mCustfile_showadd
    if ($mMode == "showedit") {
@@ -635,12 +635,12 @@
          <link rel=\"STYLESHEET\" href=\"style.sentry.css.php\" type=\"text/css\">";
    }
 
-   echo wtfpanel_header($mSubtitle);
+   echo header($mSubtitle);
 
-   echo wtfpanel_top();
+   echo top();
 
    if ($mMode == "login") {
-      echo wtfpanel_logintable($default_tableclass,"./");
+      echo logintable($default_tableclass,"./");
    }
    if ($mMode == "nothing") {
       echo nl2br($mNotice);
@@ -651,46 +651,46 @@
    } else
    if ($mMode == "showadd") {
       if ($mNotice != "") {
-         echo wtfpanel_customernoticetable($mNotice);
+         echo customernoticetable($mNotice);
       }
-      echo wtfpanel_customeraddformtable("./customer.php?submitadd","add");
+      echo customeraddformtable("./customer.php?submitadd","add");
    } else
    if ($mMode == "showedit") {
       $mNoticePre = md5($mNotice);
       if ($mNotice != "") {
-         echo wtfpanel_customernoticetable($mNotice);
+         echo customernoticetable($mNotice);
       }
-      echo wtfpanel_customeraddformtable("./customer.php?submitupdate=$mCust_key","update");
+      echo customeraddformtable("./customer.php?submitupdate=$mCust_key","update");
       $mNoticePost = md5($mNotice);
       if ($mNoticePre != $mNoticePost) {
-         echo wtfpanel_customernoticetable($mNotice);
+         echo customernoticetable($mNotice);
       }
    } else
    if ($mMode == "alpha") {
       if ($mNotice != "") {
-         echo wtfpanel_customernoticetable($mNotice);
+         echo customernoticetable($mNotice);
       }
-      //echo wtfpanel_customersearch();
-      echo wtfpanel_customeralpha($mLetter,true);
+      //echo customersearch();
+      echo customeralpha($mLetter,true);
    }
    if ($mMode == "search") {
       if ($mCust_q == "") {
-         echo wtfpanel_customeralpha("A",true);
+         echo customeralpha("A",true);
          $mMode = "done";
       }
    }
    if ($mMode == "search") {
 
-      echo wtfpanel_customersearchresult();
+      echo customersearchresult();
       if ($mNotice != "") {
-         echo wtfpanel_customernoticetable($mNotice);
+         echo customernoticetable($mNotice);
       }
    } else
    if ($mMode == "jobs") {
-      echo wtfpanel_customerjobs();
+      echo customerjobs();
       if ($mNotice != "") {
-         echo wtfpanel_customernoticetable($mNotice);
+         echo customernoticetable($mNotice);
       }
    }
 
-   echo wtfpanel_bottom();
+   echo bottom();

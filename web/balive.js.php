@@ -1,6 +1,5 @@
 <?php
-   require_once ("include/settings.balive.inc.php");
-   //require_once("include/settings.balive.inc.php");
+   require_once ("include/settings.balive.php");
    
    header("Content-type: application/x-javascript");
    $mBaliveInterval = 10000;

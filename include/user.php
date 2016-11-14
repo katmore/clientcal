@@ -1,18 +1,13 @@
 <?php 
-   require ("settings.inc.php");
-   function escapesafe($My,$Value) {
-      if (get_magic_quotes_gpc()) {
-         $value = stripslashes($Value);
-      }
-      $Value = mysql_real_escape_string($Value);
-      return $Value;
-   }
+
+namespace clientcal;
+
    function getuserkey($username) {
       global $control_dbhost,$control_dbname,$control_dbuser,$control_dbpasswd;
       if (!($my = @mysql_connect($control_dbhost,$control_dbuser,$control_dbpasswd)))
-         return PanelError(-4,"while connect: " . mysql_error());
+         throw new Error(-4,"while connect: " . mysql_error());
       if (!@mysql_select_db($control_dbname))
-         return PanelError(-4,"while db: " . mysql_error());
+         throw new Error(-4,"while db: " . mysql_error());
       $sql = "
       SELECT
          user_key 
@@ -23,7 +18,7 @@
       LIMIT 0,1
       ";
       if (!($result = @mysql_query($sql,$my)))
-         return PanelError(-4,"while get: " . mysql_error());
+         throw new Error(-4,"while get: " . mysql_error());
       $row = mysql_fetch_assoc($result);
       if (mysql_num_rows($result) < 1)
          return -1;
@@ -32,21 +27,21 @@
    function adduserprivilege($userkey,$privkey) {
       global $control_dbhost,$control_dbname,$control_dbuser,$control_dbpasswd;
       if (!($my = @mysql_connect($control_dbhost,$control_dbuser,$control_dbpasswd)))
-         return PanelError(-4,"while connect: " . mysql_error());
+         throw new Error(-4,"while connect: " . mysql_error());
       if (!@mysql_select_db($control_dbname))
-         return PanelError(-4,"while db: " . mysql_error());
+         throw new Error(-4,"while db: " . mysql_error());
       $sql = "INSERT INTO user_privilege SET user_key=$userkey,privilegetype_key=$privkey";
       if (!($result = @mysql_query($sql,$my)))
-         return PanelError(-4,"while get: " . mysql_error());
+         throw new Error(-4,"while get: " . mysql_error());
       return 0;
    }
    function enumerategrantableprivs($username,$privkey,$privapi,$privname,$privdesc,$privcount) {
       global $control_dbhost,$control_dbname,$control_dbuser,$control_dbpasswd;
       $privkey = array();   $privapi = array();   $privname = array();   $privdesc = array();
       if (!($my = @mysql_pconnect($control_dbhost,$control_dbuser,$control_dbpasswd)))
-         return PanelError(-4,"while connect: " . mysql_error());
+         throw new Error(-4,"while connect: " . mysql_error());
       if (!@mysql_select_db($control_dbname))
-         return PanelError(-4,"while db: " . mysql_error());
+         throw new Error(-4,"while db: " . mysql_error());
       $sql =
       "SELECT
           user_grantright.privilegetype_key AS privkey,
@@ -60,7 +55,7 @@
                    ON user_grantright.user_key=user.user_key
              WHERE user.username='$username'";
       if (!($result = @mysql_query($sql,$my)))
-         return PanelError(-4,"while get: " . mysql_error());
+         throw new Error(-4,"while get: " . mysql_error());
       $i = 0;
       while($row = mysql_fetch_assoc($result)) {
          $privkey[$i] = $row['privkey'];
@@ -96,27 +91,31 @@
       return TRUE;
    }
    function userexists($user) {
-      global $control_dbhost,$control_dbname,$control_dbuser,$control_dbpasswd;
-      if (!($my = @mysql_connect($control_dbhost,$control_dbuser,$control_dbpasswd)))
-         return PanelError(-4,"while connect: " . mysql_error());
-      if (!@mysql_select_db($control_dbname))
-         return PanelError(-4,"while db: " . mysql_error());
+      $myconfig=require(CLIENTCAL_CONFIG_DIR."/mysql.php");
+      
+      if (!($my = mysql_connect($myconfig['dbhost'],$myconfig['dbuser'],$myconfig['dbpasswd']))) {
+         throw new Error(-4,"while connect: " . mysql_error());
+      }
+      if (!mysql_select_db($myconfig['dbname'],$my)) {
+         throw new Error(-4,"while select: " . mysql_error());
+      }
+         
       $sql = "SELECT user_key FROM user WHERE username='$user' LIMIT 0,1";
-      if (!($result = @mysql_query($sql,$my)))
-         return PanelError(-4,"while get: " . mysql_error());
+      if (!($result = mysql_query($sql,$my)))
+         throw new Error(-4,"while get: " . mysql_error());
       if (mysql_num_rows($result) > 0)
          return 1;
       return 0;
    }
    function submitnewuser($username,$passwd) {
       if (userexists($username)) {
-         return PanelError(-3,"that username allready exists ($username)");
+         throw new Error(-3,"that username allready exists ($username)");
       }
       global $control_dbhost,$control_dbname,$control_dbuser,$control_dbpasswd;
       if (!($my = @mysql_pconnect($control_dbhost,$control_dbuser,$control_dbpasswd)))
-         return PanelError(-4,"while connect: " . mysql_error());
+         throw new Error(-4,"while connect: " . mysql_error());
       if (!@mysql_select_db($control_dbname))
-         return PanelError(-4,"while db: " . mysql_error());
+         throw new Error(-4,"while db: " . mysql_error());
       $sMajorVersion = substr(mysql_get_server_info(),0,1);
       if ($sMajorVersion < 4) { //no abstraction :|
          $sql = "INSERT INTO user SET username='$username',password=PASSWORD('$passwd')";
@@ -124,26 +123,36 @@
          $sql = "INSERT INTO user SET username='$username',password=OLD_PASSWORD('$passwd')";
       }
       if (!($result = @mysql_query($sql,$my)))
-         return PanelError(-4,"while get: " . mysql_error());
+         throw new Error(-4,"while get: " . mysql_error());
       return 0;
    }
    function verifyuserinfo($username,$passwd,$pUsername) {
       $pUsername = "";
-      global $control_dbhost,$control_dbname,$control_dbuser,$control_dbpasswd;
-      if (!($my = @mysql_connect($control_dbhost,$control_dbuser,$control_dbpasswd)))
-         return PanelError(-4,"while connect: " . mysql_error());
-      if (!@mysql_select_db($control_dbname))
-         return PanelError(-4,"while db: " . mysql_error());
-      $username = escapesafe($my,$username);
-      $passwd = escapesafe($my,$passwd);
-      $sMajorVersion = substr(mysql_get_server_info(),0,1);
+      
+      
+      $myconfig=require(CLIENTCAL_CONFIG_DIR."/mysql.php");
+      
+      if (!($my = mysqli_connect($myconfig['dbhost'],$myconfig['dbuser'],$myconfig['dbpasswd'])))
+         throw new Error(-4,"while connect: " . mysql_error($my));
+      if (!mysqli_select_db($my,$myconfig['dbname']))
+         throw new Error(-4,"while db: " . mysql_error($my));
+      
+         
+      $username = mysqli_real_escape_string($my,$username);
+      
+      $passwd = mysqli_real_escape_string($my,$passwd);
+      
+      $sMajorVersion = substr(mysqli_get_server_info($my),0,1);
+      
       if ($sMajorVersion < 4) { //no abstraction :|
          $sql = "SELECT user_key,username FROM user WHERE username='$username' AND password=PASSWORD('$passwd')";
       } else {
          $sql = "SELECT user_key,username FROM user WHERE username='$username' AND password=OLD_PASSWORD('$passwd')";
       }
-      if (!($result = @mysql_query($sql,$my)))
-         return PanelError(-4,"while get: " . mysql_error());
+      
+      if (!($result = mysql_query($sql,$my)))
+         throw new Error(-4,"while get: " . mysql_error($my));
+         
       if (mysql_num_rows($result) == 0) {
          return FALSE;
       } else {
@@ -155,9 +164,9 @@
    function userhaspriv($pHasPriv,$userkey,$privapi) {
       global $control_dbhost,$control_dbname,$control_dbuser,$control_dbpasswd;
       if (!($my = @mysql_connect($control_dbhost,$control_dbuser,$control_dbpasswd)))
-         return PanelError(-4,"while connect: " . mysql_error());
+         throw new Error(-4,"while connect: " . mysql_error($my));
       if (!@mysql_select_db($control_dbname))
-         return PanelError(-4,"while db: " . mysql_error());
+         throw new Error(-4,"while db: " . mysql_error($my));
       $sql = "
       SELECT
          privilegetype.api AS privapi,
@@ -176,7 +185,7 @@
       LIMIT 0,1
       ";
       if (!($result = @mysql_query($sql,$my)))
-         return PanelError(-4,"while get: " . mysql_error());
+         throw new Error(-4,"while get: " . mysql_error($my));
       if (mysql_num_rows($result) < 1) {
          $pHasPriv = FALSE;
       } else {

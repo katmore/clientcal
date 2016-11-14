@@ -1,8 +1,90 @@
 <?php
-   //23:43:01
-   require_once("wtfpanel.sentry.inc.php");
-   require_once("wtfpanel.supervisor.inc.php");
-   function wtfpanel_nextsentrymonth($monthno,$year,$pNextmonth,$pNextyear) {
+
+namespace clientcal;
+
+function htmlformatconfig() {
+   $format['actionm_headingcells_height'] = 95;
+   $format['actionm_headingcells_width'] = 100;
+   $format['actionm_headingcells_format'] = "";
+   $format['actionm_cellheading_class'] = "cellheading";
+   //$format['actionm_cellheadingsel_class'] = "cellheadingsel";
+   $format['actionm_cellcontent_class'] = "cellcontent";
+   //$format['actionm_cellcontentsel_class'] = "cellcontentsel";
+   //<div class=\"supervisor_%entry.supervisorkey%\">
+   //./sentry.php?submitdupe=%entry.key%&amp;month=%date:n%&amp;day=%date:j%&amp;year=%date:Y%
+   $format['actionm_entrycaption_format'] = "
+         <div title=\"%entry.custname%: %entry.heading% - %site.streetaddr% (%entry.type%)\" class=\"entrycaption_%entry.supervisorkey%\">
+            %entry.custname:limitchar:10%%dashifcustandheading%%entry.heading:limitchar:8%
+         </div>
+         ";
+   $format['actionm_blankcell_format'] = "
+   <div style=\"height:100%;border: 1px solid #000000;background:#D6D2CE;\">&nbsp;</div>";
+   $format['actionm_daycell_format'] = "
+   <div class=\"%cellcontentclass%\">
+      <div title=\"select %date:l%, %date:F% %date:j%, %date:Y%\" class=\"%cellheadingclass%\" onclick=\"location.href='./sentry.php?%actionmselect%=%actionmentry.key%&amp;month=%date:n%&day=%date:j%&year=%date:Y%'\">
+         <div style=\"float: left;width:15px;font-family:Tahoma;font-size:8pt;vertical-align:top;\">%date:j%</div>
+         <div style=\"float:right;font-family:Tahoma;font-size:8pt;vertical-align:top;\">%entrycountabove0%</div>
+         <div style=\"border-left: 1px solid #000000;margin-left:15px;font-family:Tahoma;font-size:8pt;vertical-align:top;\">%date:D%</div>
+      </div>
+      %entries%
+   </div>";
+   $format['actionm_start_dayofweekw'] = 1;
+   //Sunday, June 4, 1972sssss
+   //$format['actionm_headingcaption
+   $format['actionm_headingcaption'] = "%actionmcaption%";
+   $format['actionmcaption_style'] = "font-family:Tahoma;font-size:11pt;font-weight:bold;color:#000000;vertical-align:top;float:left;";
+   $format['actionm_headingtools'] = "
+   <a href=\"./sentry.php?%actionmbrowse%=%actionmentry.key%&amp;month=%date:n%&amp;year=%date:Y%&amp;%toggleshowsentries.toggle%\">[%toggleshowsentries.caption%]</a>
+   %date:F% %date:Y%
+   
+   <a title=\"show selection for previous month %prevmonth.date:F% %prevmonth.date:Y%\" href=\"./sentry.php?%actionmbrowse%=%actionmentry.key%&amp;month=%prevmonth.date:n%&amp;year=%prevmonth.date:Y%\">&lt;</a>
+   <a title=\"refresh this month\" href=\"./sentry.php?%actionmbrowse%=%actionmentry.key%&amp;month=%date:n%&amp;year=%date:Y%\">||</a>
+   <a title=\"show selection for next month: %nextmonth.date:F% %nextmonth.date:Y%\" href=\"./sentry.php?%actionmbrowse%=%actionmentry.key%&amp;month=%nextmonth.date:n%&amp;year=%nextmonth.date:Y%\">&gt;</a>
+   ";
+   
+   $format['monthv_headingcells_width'] = 100;
+   $format['monthv_headingcells_height'] = 95;
+   $format['monthv_headingcells_format'] = "";
+   $format['monthv_cellheading_class'] = "cellheading";
+   $format['monthv_cellheadingsel_class'] = "cellheadingsel";
+   $format['monthv_cellcontent_class'] = "cellcontent";
+   $format['monthv_cellcontentsel_class'] = "cellcontentsel";
+   //<div class=\"supervisor_%entry.supervisorkey%\">
+   $format['monthv_entrytype_legend_format'] = "
+   <span class=\"entrycaption_entrytype_%entry.type%\">%entry.typebrief%</span>
+   ";
+   $format['monthv_entrycaption_format'] = "
+         <div title=\"%entry.custname%: %entry.heading% - %site.streetaddr% (%entry.type%)\" onclick=\"location.href='./sentry.php?show=%entry.key%'\" class=\"entrycaption_entrytype_%entry.type%\">
+            %entry.custname:limitchar:10%%dashifcustandheading%%entry.heading:limitchar:8%
+         </div>
+         ";
+   $format['monthv_blankcell_format'] = "
+   <div style=\"height:100%;border: 1px solid #000000;background:#D6D2CE;\">&nbsp;</div>";
+   $format['monthv_daycell_format'] = "
+   <div class=\"%cellcontentclass%\">
+      <div title=\"select %date:l%, %date:F% %date:j%, %date:Y%\" class=\"%cellheadingclass%\" onclick=\"location.href='./sentry.php?showsentries=%date:n%&day=%date:j%&year=%date:Y%'\">
+         <div style=\"float: left;width:15px;font-family:Tahoma;font-size:8pt;vertical-align:top;\">%date:j%</div>
+         <div style=\"float:right;font-family:Tahoma;font-size:8pt;vertical-align:top;\">%entrycountabove0%</div>
+         <div style=\"border-left: 1px solid #000000;margin-left:15px;font-family:Tahoma;font-size:8pt;vertical-align:top;\">%date:D%</div>
+      </div>
+      %entries%
+   </div>";
+   $format['monthv_start_dayofweekw'] = 1;
+   //Sunday, June 4, 1972sssss
+   $format['monthv_headingtools'] = "
+   <a title=\"show entries for %date:l%, %date:F% %date:j%, %date:Y%\" href=\"sentry.php?showday&amp;month=%date:n%&amp;day=%date:j%&amp;year=%date:Y%\">[day]</a>
+   <a href=\"./sentry.php?addwprocess&amp;cancel=showsentries&amp;month=%date:n%&amp;day=%date:j%&amp;year=%date:Y%\" title=\"create a new entry for %date:l%, %date:F% %date:j%, %date:Y%\">[new]</a>";
+   $format['monthv_headingcaption'] = "
+   <a title=\"show entries for previous month:%prevmonth.date:l%, %prevmonth.date:F% %prevmonth.date:j%, %prevmonth.date:Y%\" href=\"./sentry.php?showsentries=%prevmonth.date:n%&amp;year=%prevmonth.date:Y%&amp;day=%prevmonth.date:j%\">&lt;</a>
+   <a title=\"refresh this month\" href=\"./sentry.php?showsentries=%date:n%&amp;year=%date:Y%&amp;day=%date:j%\">||</a>
+   <a title=\"show entries for next month: %nextmonth.date:l%, %nextmonth.date:F% %nextmonth.date:j%, %nextmonth.date:Y%\" href=\"./sentry.php?showsentries=%nextmonth.date:n%&amp;year=%nextmonth.date:Y%&amp;day=%nextmonth.date:j%\">&gt;</a>
+   %jumpmonthform%
+   %date:l%, %date:F% %date:j%, %date:Y%";
+   return $format;
+}
+
+
+   function nextsentrymonth($monthno,$year,$pNextmonth,$pNextyear) {
       if (($monthno + 1) > 12) {
          $pNextmonth = 1;
          $pNextyear = $year + 1;
@@ -12,7 +94,7 @@
       $pNextyear = $year;
       return 0;
    }
-   function wtfpanel_previoussentrymonth($monthno,$year,$pPrevmonth,$pPrevyear) {
+   function previoussentrymonth($monthno,$year,$pPrevmonth,$pPrevyear) {
       if (($monthno - 1) < 1) {
          $sPrevmonth = 12;
          $pPrevyear = $year;
@@ -22,7 +104,7 @@
       $pPrevyear = $year;
       return 0;
    }
-   function wtfpanel_sentrydatebits($Expr,$Timestamp) {
+   function sentrydatebits($Expr,$Timestamp) {
       $ret = $Expr;
       $ret = str_replace("%date:j%",date("j",$Timestamp),$ret);
       $ret = str_replace("%date:D%",date("D",$Timestamp),$ret);
@@ -31,7 +113,7 @@
       $ret = str_replace("%date:l%",date("l",$Timestamp),$ret);
       $ret = str_replace("%date:n%",date("n",$Timestamp),$ret);
       if (strpos($Expr,"%prevmonth") !== FALSE) {
-         wtfpanel_previoussentrymonth(date("n",$Timestamp),date("Y",$Timestamp),$sPrevmonth,$sPrevyear);
+         previoussentrymonth(date("n",$Timestamp),date("Y",$Timestamp),$sPrevmonth,$sPrevyear);
          $sDaysInMonth = days_in_month(CAL_GREGORIAN,$sPrevmonth,$sPrevyear);
          $sPrevday = date("j",$Timestamp);
          if ($sPrevday > $sDaysInMonth) {
@@ -46,7 +128,7 @@
          $ret = str_replace("%prevmonth.date:n%",date("n",$sPrevStamp),$ret);
       }
       if (strpos($Expr,"%nextmonth") !== FALSE) {
-         wtfpanel_nextsentrymonth(date("n",$Timestamp),date("Y",$Timestamp),$sNextmonth,$sNextyear);
+         nextsentrymonth(date("n",$Timestamp),date("Y",$Timestamp),$sNextmonth,$sNextyear);
          $sDaysInMonth = days_in_month(CAL_GREGORIAN,$sNextmonth,$sNextyear);
          $sNextday = date("j",$Timestamp);
          if ($sNextday > $sDaysInMonth) {
@@ -61,15 +143,18 @@
          $ret = str_replace("%nextmonth.date:n%",date("n",$sNextStamp),$ret);
 
       }
-      //wtfpanel_jumpmonth($Timestamp) //%jumpmonthform%
-      $ret = str_replace("%jumpmonthform%",wtfpanel_jumpmonth($Timestamp),$ret);
+      //jumpmonth($Timestamp) //%jumpmonthform%
+      $ret = str_replace("%jumpmonthform%",jumpmonth($Timestamp),$ret);
       return $ret;
    }
-   function wtfpanel_actionmcaption($Timestamp,$actionmcaption,$actionmbrowse,$showsentries) {
+   function actionmcaption($Timestamp,$actionmcaption,$actionmbrowse,$showsentries) {
       $actionm_headingcaption = "";
-      require("settings.sentry.inc.php");
+      
+      //require("../../../include/settings.sentry.php");
+      foreach(htmlformatconfig() as $v) $$v=$v;
+      
       global $mSentry_key;
-      $ret = wtfpanel_sentrydatebits($actionm_headingcaption,$Timestamp);
+      $ret = sentrydatebits($actionm_headingcaption,$Timestamp);
       $ret = str_replace("%actionmcaption%",$actionmcaption,$ret);
       $ret = str_replace("%actionmbrowse%",$actionmbrowse,$ret);
       $ret = str_replace("%actionmentry.key%",$mSentry_key,$ret);
@@ -83,7 +168,7 @@
       }
       return $ret;
    }
-   function wtfpanel_jumpmonth($Timestamp) {
+   function jumpmonth($Timestamp) {
       $ret = "
 <style>
    .jumpmonth {
@@ -122,27 +207,28 @@ class=\"jumpmonth\"
       ";
       return $ret;
    }
-   function wtfpanel_monthvcaption($Timestamp) {
-      require("settings.sentry.inc.php");
+   function monthvcaption($Timestamp) {
+      //require("../../../include/settings.sentry.php");
+      foreach(htmlformatconfig() as $v) $$v=$v;
       $ret = "";
       //$ret = "<div>";
 
 
 
-      $ret .= wtfpanel_sentrydatebits($monthv_headingcaption,$Timestamp);
-      //$ret .= wtfpanel_jumpmonth($Timestamp);
+      $ret .= sentrydatebits($monthv_headingcaption,$Timestamp);
+      //$ret .= jumpmonth($Timestamp);
 
       //$ret .= "</div>";
       return $ret;
    }
-   function wtfpanel_sentrydelistpostvars() {
+   function sentrydelistpostvars() {
       global $mSentrydelist_confirm;
       $mSentrydelist_confirm = false;
       if (isset($_POST["yes"])) {
          $mSentrydelist_confirm = true;
       }
    }
-   function wtfpanel_sentrygodatepostvars() {
+   function sentrygodatepostvars() {
       global $mGodate_valid,$mNotice;
       global $mGodate_m,$mGodate_d,$mGodate_yyyy;
       $mGodate_valid = false;
@@ -233,7 +319,7 @@ class=\"jumpmonth\"
       return true;
 
    }
-   function wtfpanel_rawgodatevars() {
+   function rawgodatevars() {
       global $mGodate_m,$mGodate_d,$mGodate_yyyy;
       $ret ="
 m:" . htmlentities($mGodate_m) . "<br>
@@ -243,7 +329,7 @@ yyyy:" . htmlentities($mGodate_yyyy) . "<br>
 
       return $ret;
    }
-   function wtfpanel_confirmsentrydelist($action) {
+   function confirmsentrydelist($action) {
       global $mSentry_key,$mSentry_heading,$mSentry_startdate,$mSentry_starttime,$mSentry_sentrytype,$mCust_key,$mCust_name;
       $ret = "
       <div style=\"width:400;font-family:Tahoma;font-size;11pt;\">
@@ -267,19 +353,19 @@ yyyy:" . htmlentities($mGodate_yyyy) . "<br>
       ";
       return $ret;
    }
-   function wtfpanel_sentriesbyday($caption,$monthno,$year,$day) {
+   function sentriesbyday($caption,$monthno,$year,$day) {
       global $mMySched;
-      require("settings.inc.php");
-      $sRet = PanelEnumerateSentriesWSomeSiteAndCustInfoForDay($mMySched,$sentry_table,$supervisor_table,$customer_table,$site_table,$customerphone_table,$monthno,$year,$day,"","",$sCount,$sSentryKey,$sHeading,$sStartdate,$sStarttime,$sSentrytype,$sSupervisor_name,$sCust_name,$sCust_phone,$sSite_streetaddr,$sSite_city,$sSite_state,$sSite_zip,$sPriphone_num,$sPriphone_type);
+      require("settings.php");
+      $sRet = EnumerateSentriesWSomeSiteAndCustInfoForDay($mMySched,$sentry_table,$supervisor_table,$customer_table,$site_table,$customerphone_table,$monthno,$year,$day,"","",$sCount,$sSentryKey,$sHeading,$sStartdate,$sStarttime,$sSentrytype,$sSupervisor_name,$sCust_name,$sCust_phone,$sSite_streetaddr,$sSite_city,$sSite_state,$sSite_zip,$sPriphone_num,$sPriphone_type);
       if ($sRet != 0) {
-         global $mPanelError;
+         global $mError;
          $ret = "
       <div style=\"width:400;font-family:Tahoma;font-size;11pt;\">
          <div style=\"background:#999999;width:100%\">
             $caption
          </div>
          <div style=\"background:#CCCCCC;width:100%\">
-            problem ($sRet) while getting info for schedule entries:<br />$mPanelError
+            problem ($sRet) while getting info for schedule entries:<br />$mError
          </div>
       </div>";
          return $ret;
@@ -319,19 +405,19 @@ yyyy:" . htmlentities($mGodate_yyyy) . "<br>
       </div>";
       return $ret;
    }
-   function wtfpanel_sentriesbydayforprint($caption,$monthno,$year,$day) {
+   function sentriesbydayforprint($caption,$monthno,$year,$day) {
       global $mMySched;
-      require("settings.inc.php");
-      $sRet = PanelEnumerateSentriesWSomeSiteAndCustInfoForDayC($mMySched,$sentry_table,$supervisor_table,$customer_table,$site_table,$customerphone_table,$monthno,$year,$day,"","",$sCount,$sSentryKey,$sHeading,$sStartdate,$sStarttime,$sSentrytype,$sSupervisor_name,$sCust_name,$sCust_phone,$sSite_streetaddr,$sSite_city,$sSite_state,$sSite_zip,$sSite_sdirections,$sPriphone_num,$sPriphone_type);
+      require("settings.php");
+      $sRet = EnumerateSentriesWSomeSiteAndCustInfoForDayC($mMySched,$sentry_table,$supervisor_table,$customer_table,$site_table,$customerphone_table,$monthno,$year,$day,"","",$sCount,$sSentryKey,$sHeading,$sStartdate,$sStarttime,$sSentrytype,$sSupervisor_name,$sCust_name,$sCust_phone,$sSite_streetaddr,$sSite_city,$sSite_state,$sSite_zip,$sSite_sdirections,$sPriphone_num,$sPriphone_type);
       if ($sRet != 0) {
-         global $mPanelError;
+         global $mError;
          $ret = "
       <div style=\"width:400;font-family:Tahoma;font-size;11pt;\">
          <div style=\"background:#FFFFFF;width:100%;border: 1px solid #000000;\">
             $caption
          </div>
          <div style=\"background:#FFFFFF;width:100%;border: 1px solid #000000; \">
-            problem ($sRet) while getting info for schedule entries:<br />$mPanelError
+            problem ($sRet) while getting info for schedule entries:<br />$mError
          </div>
       </div>";
          return $ret;
@@ -375,14 +461,16 @@ yyyy:" . htmlentities($mGodate_yyyy) . "<br>
       </div>";
       return $ret;
    }
-   function wtfpanel_monthvtools($Timestamp) {
-      require("settings.sentry.inc.php");
-      return wtfpanel_sentrydatebits($monthv_headingtools,$Timestamp);
+   function monthvtools($Timestamp) {
+      //require("../../../include/settings.sentry.php");
+      foreach(htmlformatconfig() as $v) $$v=$v;
+      return sentrydatebits($monthv_headingtools,$Timestamp);
    }
-   function wtfpanel_actionmtools($Timestamp,$actionmcaption,$actionmbrowse,$showsentries) {
-      require("settings.sentry.inc.php");
+   function actionmtools($Timestamp,$actionmcaption,$actionmbrowse,$showsentries) {
+      //require("../../../include/settings.sentry.php");
+      foreach(htmlformatconfig() as $v) $$v=$v;
       global $mSentry_key;
-      $ret = wtfpanel_sentrydatebits($actionm_headingtools,$Timestamp);
+      $ret = sentrydatebits($actionm_headingtools,$Timestamp);
       $ret = str_replace("%actionmcaption%",$actionmcaption,$ret);
       $ret = str_replace("%actionmbrowse%",$actionmbrowse,$ret);
       $ret = str_replace("%actionmentry.key%",$mSentry_key,$ret);
@@ -395,23 +483,25 @@ yyyy:" . htmlentities($mGodate_yyyy) . "<br>
       }
       return $ret;
    }
-   function wtfpanel_sentrygoogleapiscript() {
+   function sentrygoogleapiscript() {
       $ret = "<script src=\"http://maps.google.com/maps?file=api&v=1&key=ABQIAAAA8r5nZFALlAb09o8z4vq8qhTZlEbBv2ofKC2JdKBTwGn3OFWaPRSup-7GlohwpWa0vz7OQ4hj3V2xqA\" type=\"text/javascript\"></script>";
       return $ret;
    }
-   function wtfpanel_blankcell($Area) {
+   function blankcell($Area) {
       $monthv_blankcell_format = "";
-      require("settings.sentry.inc.php");
+      //require("../../../include/settings.sentry.php");
+      foreach(htmlformatconfig() as $v) $$v=$v;
       $ret = $monthv_blankcell_format;
       return $ret;
    }
-   function wtfpanel_actionmblankcell($Area) {
+   function actionmblankcell($Area) {
       $actionm_blankcell_format = "";
-      require("settings.sentry.inc.php");
+      //require("../../../include/settings.sentry.php");
+      foreach(htmlformatconfig() as $v) $$v=$v;
       $ret = $actionm_blankcell_format;
       return $ret;
    }
-   function wtfpanel_actionmentrycaption_siteinfo($Format,$Streetaddr,$City,$State,$Zip,$Sdirections) {
+   function actionmentrycaption_siteinfo($Format,$Streetaddr,$City,$State,$Zip,$Sdirections) {
       $ret = $Format;
       if ($Streetaddr != "") {
          $sStreetaddr = htmlentities($Streetaddr);
@@ -422,7 +512,7 @@ yyyy:" . htmlentities($mGodate_yyyy) . "<br>
       }
       return $ret;
    }
-   function wtfpanel_entrycaption_siteinfo($Format,$Streetaddr,$City,$State,$Zip,$Sdirections) {
+   function entrycaption_siteinfo($Format,$Streetaddr,$City,$State,$Zip,$Sdirections) {
       $ret = $Format;
       if ($Streetaddr != "") {
          $sStreetaddr = htmlentities($Streetaddr);
@@ -433,8 +523,9 @@ yyyy:" . htmlentities($mGodate_yyyy) . "<br>
       }
       return $ret;
    }
-   function wtfpanel_entrycaption($Key,$Heading,$Starttime,$Sentrytype,$Supervisor,$Supervisorkey,$CustName) {
-      require("settings.sentry.inc.php");
+   function entrycaption($Key,$Heading,$Starttime,$Sentrytype,$Supervisor,$Supervisorkey,$CustName) {
+      //require("../../../include/settings.sentry.php");
+      foreach(htmlformatconfig() as $v) $$v=$v;
       $ret = $monthv_entrycaption_format;
       $ret = str_replace("%entry.custname%",htmlentities($CustName),$ret);
       $ret = str_replace("%entry.heading%",htmlentities($Heading),$ret);
@@ -484,9 +575,10 @@ yyyy:" . htmlentities($mGodate_yyyy) . "<br>
       $ret = str_replace("%entry.supervisorkey%",htmlentities($Supervisorkey),$ret);
       return $ret;
    }
-   function wtfpanel_actionmentrycaption($Key,$Heading,$Starttime,$Sentrytype,$Supervisor,$Supervisorkey,$CustName) {
+   function actionmentrycaption($Key,$Heading,$Starttime,$Sentrytype,$Supervisor,$Supervisorkey,$CustName) {
       $actionm_entrycaption_format = "";
-      require("settings.sentry.inc.php");
+      //require("../../../include/settings.sentry.php");
+      foreach(htmlformatconfig() as $v) $$v=$v;
       $ret = $actionm_entrycaption_format;
       $ret = str_replace("%entry.custname%",htmlentities($CustName),$ret);
       $ret = str_replace("%entry.heading%",htmlentities($Heading),$ret);
@@ -536,11 +628,12 @@ yyyy:" . htmlentities($mGodate_yyyy) . "<br>
       $ret = str_replace("%entry.supervisorkey%",htmlentities($Supervisorkey),$ret);
       return $ret;
    }
-   function wtfpanel_actionmdayofmonthcellval($Timestamp,$SentryCount,$actionmselect,$showsentries) {
+   function actionmdayofmonthcellval($Timestamp,$SentryCount,$actionmselect,$showsentries) {
       $actionm_daycell_format = "";
       $actionm_cellheading_class = "";
       $actionm_cellcontent_class = "";
-      require("settings.sentry.inc.php");
+      //require("../../../include/settings.sentry.php");
+      foreach(htmlformatconfig() as $v) $$v=$v;
       global $mSentry_key;
       $ret = $actionm_daycell_format;
       $ret = str_replace("%date:j%",date("j",$Timestamp),$ret);
@@ -557,17 +650,17 @@ yyyy:" . htmlentities($mGodate_yyyy) . "<br>
       if ($SentryCount > 0) {
          $ret = str_replace("%entrycountabove0%",$SentryCount,$ret);
          global $mMySched;
-         require("settings.inc.php");
-         $sRet = PanelEnumerateSentriesWSomeSiteAndCustInfoForDayB($mMySched,$sentry_table,$supervisor_table,$customer_table,$site_table,$customerphone_table,date("n",$Timestamp),date("Y",$Timestamp),date("j",$Timestamp),"","",$sCount,$sSentryKey,$sHeading,$sStartdate,$sStarttime,$sSentrytype,$sSupervisor,$sSupervisorKey,$sCustName,$sCust_phone,$sSite_streetaddr,$sSite_city,$sSite_state,$sSite_zip,$sPriphone_num,$sPriphone_type);
+         require("settings.php");
+         $sRet = EnumerateSentriesWSomeSiteAndCustInfoForDayB($mMySched,$sentry_table,$supervisor_table,$customer_table,$site_table,$customerphone_table,date("n",$Timestamp),date("Y",$Timestamp),date("j",$Timestamp),"","",$sCount,$sSentryKey,$sHeading,$sStartdate,$sStarttime,$sSentrytype,$sSupervisor,$sSupervisorKey,$sCustName,$sCust_phone,$sSite_streetaddr,$sSite_city,$sSite_state,$sSite_zip,$sPriphone_num,$sPriphone_type);
          if ($sRet == 0) {
             if ($showsentries === TRUE) {
                $sEntries = "";
                for($i = 0;$i < $sCount;$i++) {
-                  //wtfpanel_actionmentrycaption
-                  $sCur = wtfpanel_actionmentrycaption($sSentryKey[$i],$sHeading[$i],$sStarttime[$i],$sSentrytype[$i],$sSupervisor[$i],$sSupervisorKey[$i],$sCustName[$i]);
-                  $sCur = wtfpanel_actionmentrycaption_siteinfo($sCur,$sSite_streetaddr[$i],$sSite_city[$i],$sSite_state[$i],$sSite_zip[$i],"");
+                  //actionmentrycaption
+                  $sCur = actionmentrycaption($sSentryKey[$i],$sHeading[$i],$sStarttime[$i],$sSentrytype[$i],$sSupervisor[$i],$sSupervisorKey[$i],$sCustName[$i]);
+                  $sCur = actionmentrycaption_siteinfo($sCur,$sSite_streetaddr[$i],$sSite_city[$i],$sSite_state[$i],$sSite_zip[$i],"");
                   $sEntries .= $sCur;
-                  //$ret = str_replace("%entries%",wtfpanel_entrycaption($Heading,$Starttime,$Sentrytype,$Supervisor,$CustName),$ret);
+                  //$ret = str_replace("%entries%",entrycaption($Heading,$Starttime,$Sentrytype,$Supervisor,$CustName),$ret);
                }
                $ret = str_replace("%entries%",$sEntries,$ret);
             } else {
@@ -575,8 +668,8 @@ yyyy:" . htmlentities($mGodate_yyyy) . "<br>
             }
          } else {
             $ret = str_replace("%entries%","",$ret);
-            global $mNotice,$mPanelError;
-            $mNotice .= "problem ($sRet) while getting sentries for day " . date("j",$Timestamp) . "<br />$mPanelError<br />";
+            global $mNotice,$mError;
+            $mNotice .= "problem ($sRet) while getting sentries for day " . date("j",$Timestamp) . "<br />$mError<br />";
          }
       } else {
          $ret = str_replace("%entrycountabove0%","",$ret);
@@ -584,13 +677,14 @@ yyyy:" . htmlentities($mGodate_yyyy) . "<br>
       }
       return $ret;
    }
-   function wtfpanel_dayofmonthcellval($Timestamp,$Sel,$SentryCount) {
+   function dayofmonthcellval($Timestamp,$Sel,$SentryCount) {
       $monthv_daycell_format = "";
       $monthv_cellheadingsel_class = "";
       $monthv_cellcontentsel_class = "";
       $monthv_cellheading_class = "";
       $monthv_cellcontent_class = "";
-      require("settings.sentry.inc.php");
+      //require("../../../include/settings.sentry.php");
+      foreach(htmlformatconfig() as $v) $$v=$v;
       $ret = $monthv_daycell_format;
       $ret = str_replace("%date:j%",date("j",$Timestamp),$ret);
       $ret = str_replace("%date:D%",date("D",$Timestamp),$ret);
@@ -611,21 +705,21 @@ yyyy:" . htmlentities($mGodate_yyyy) . "<br>
          global $mMySched;
          $sentry_table = "sentry";
          $supervisor_table = "supervisor";
-         require("settings.inc.php");
-         $sRet = PanelEnumerateSentriesWSomeSiteAndCustInfoForDayB($mMySched,$sentry_table,$supervisor_table,$customer_table,$site_table,$customerphone_table,date("n",$Timestamp),date("Y",$Timestamp),date("j",$Timestamp),"","",$sCount,$sSentryKey,$sHeading,$sStartdate,$sStarttime,$sSentrytype,$sSupervisor,$sSupervisorKey,$sCustName,$sCust_phone,$sSite_streetaddr,$sSite_city,$sSite_state,$sSite_zip,$sPriphone_num,$sPriphone_type);
+         require("settings.php");
+         $sRet = EnumerateSentriesWSomeSiteAndCustInfoForDayB($mMySched,$sentry_table,$supervisor_table,$customer_table,$site_table,$customerphone_table,date("n",$Timestamp),date("Y",$Timestamp),date("j",$Timestamp),"","",$sCount,$sSentryKey,$sHeading,$sStartdate,$sStarttime,$sSentrytype,$sSupervisor,$sSupervisorKey,$sCustName,$sCust_phone,$sSite_streetaddr,$sSite_city,$sSite_state,$sSite_zip,$sPriphone_num,$sPriphone_type);
          if ($sRet == 0) {
             $sEntries = "";
             for($i = 0;$i < $sCount;$i++) {
-               $sCur = wtfpanel_entrycaption($sSentryKey[$i],$sHeading[$i],$sStarttime[$i],$sSentrytype[$i],$sSupervisor[$i],$sSupervisorKey[$i],$sCustName[$i]);
-               $sCur = wtfpanel_entrycaption_siteinfo($sCur,$sSite_streetaddr[$i],$sSite_city[$i],$sSite_state[$i],$sSite_zip[$i],"");
+               $sCur = entrycaption($sSentryKey[$i],$sHeading[$i],$sStarttime[$i],$sSentrytype[$i],$sSupervisor[$i],$sSupervisorKey[$i],$sCustName[$i]);
+               $sCur = entrycaption_siteinfo($sCur,$sSite_streetaddr[$i],$sSite_city[$i],$sSite_state[$i],$sSite_zip[$i],"");
                $sEntries .= $sCur;
-               //$ret = str_replace("%entries%",wtfpanel_entrycaption($Heading,$Starttime,$Sentrytype,$Supervisor,$CustName),$ret);
+               //$ret = str_replace("%entries%",entrycaption($Heading,$Starttime,$Sentrytype,$Supervisor,$CustName),$ret);
             }
             $ret = str_replace("%entries%",$sEntries,$ret);
          } else {
             $ret = str_replace("%entries%","",$ret);
-            global $mNotice,$mPanelError;
-            $mNotice .= "problem ($sRet) while getting sentries for day " . date("j",$Timestamp) . "<br />$mPanelError<br />";
+            global $mNotice,$mError;
+            $mNotice .= "problem ($sRet) while getting sentries for day " . date("j",$Timestamp) . "<br />$mError<br />";
          }
       } else {
          $ret = str_replace("%entrycountabove0%","",$ret);
@@ -633,11 +727,12 @@ yyyy:" . htmlentities($mGodate_yyyy) . "<br>
       }
       return $ret;
    }
-   function wtfpanel_actionmonthv($action,$month,$year,$actionmselect,$actionmcaption,$actionmbrowse,$showentries,$cancelnav) {
+   function actionmonthv($action,$month,$year,$actionmselect,$actionmcaption,$actionmbrowse,$showentries,$cancelnav) {
       global $mMySched;
       global $mNotice;
-      require("settings.sentry.inc.php");
-      require("settings.inc.php");
+      //require("../../../include/settings.sentry.php");
+      foreach(htmlformatconfig() as $v) $$v=$v;
+      //require("settings.php");
       $sDummy = mktime(0,0,0,3,$actionm_start_dayofweekw,2004);
       if (($sDummy === FALSE) || ($sDummy == -1)) {
          $mNotice .= "invalid Start day of week monthv_start_dayofweekw:$actionm_start_dayofweekw, defaulting to Monday (1)";
@@ -659,11 +754,11 @@ yyyy:" . htmlentities($mGodate_yyyy) . "<br>
             <td class=\"actionmmain\" colspan=\"7\">
             <div style=\"height:20;border: 1px solid #000000;vertical-align:top;\">
                <div style=\"$actionmcaption_style\">"
-            . wtfpanel_actionmcaption($sSelStamp,$actionmcaption,$actionmbrowse,$showentries)
+            . actionmcaption($sSelStamp,$actionmcaption,$actionmbrowse,$showentries)
             . "
                </div>
                <div style=\"font-family:Tahoma;font-size:11pt;vertical-align:top;float:right;\">"
-            . wtfpanel_actionmtools($sSelStamp,$actionmcaption,$actionmbrowse,$showentries)
+            . actionmtools($sSelStamp,$actionmcaption,$actionmbrowse,$showentries)
             . "
                </div>
             </div>";
@@ -690,15 +785,15 @@ yyyy:" . htmlentities($mGodate_yyyy) . "<br>
          }
          $ret .= "
                   <td class=\"monthvcallcell\" height=\"$actionm_headingcells_height\" width=\"$actionm_headingcells_width\" >
-                     " . wtfpanel_actionmblankcell("Top") . "
+                     " . actionmblankcell("Top") . "
                   </td>
                      "; //the blank cells prefixing the first day of the week row
          $sCol++;
       }
-      $sRet = PanelEnumerateSentryCountByDay($mMySched,$sentry_table,$month,$year,$sSentryCount);
+      $sRet = EnumerateSentryCountByDay($mMySched,$sentry_table,$month,$year,$sSentryCount);
       if ($sRet != 0) {
-         global $mPanelError;
-         $mNotice .= "problem ($sRet) while getting sentry counts:<br />$mPanelError<br />";
+         global $mError;
+         $mNotice .= "problem ($sRet) while getting sentry counts:<br />$mError<br />";
          $sSentryCount = array();
          $sSentryCount = array_fill(1,$sCurDaysInMonth,0);
       }
@@ -709,10 +804,10 @@ yyyy:" . htmlentities($mGodate_yyyy) . "<br>
             } else {
                $sCurSel = FALSE;
             }
-            //wtfpanel_actionmdayofmonthcellval
+            //actionmdayofmonthcellval
             $ret .= "
                   <td class=\"monthvcallcell\" height=\"$actionm_headingcells_height\" width=\"$actionm_headingcells_width\" >
-                  " . wtfpanel_actionmdayofmonthcellval($sCurStamp,$sSentryCount[$sCurDay],$actionmselect,$showentries) . "
+                  " . actionmdayofmonthcellval($sCurStamp,$sSentryCount[$sCurDay],$actionmselect,$showentries) . "
                   </td>
                      ";
          $sCurDay++;
@@ -728,7 +823,7 @@ yyyy:" . htmlentities($mGodate_yyyy) . "<br>
       if ($sCol != 0) {
          for($i=$sCol;$i<7;$i++) { //the blank cells suffixing the final day of the week row
             $ret .= "
-                  <td class=\"monthvcallcell\" height=\"$actionm_headingcells_height\" width=\"$actionm_headingcells_width\" >" . wtfpanel_actionmblankcell("Bottom") . "</td>
+                  <td class=\"monthvcallcell\" height=\"$actionm_headingcells_height\" width=\"$actionm_headingcells_width\" >" . actionmblankcell("Bottom") . "</td>
                   ";
          }
       }
@@ -743,18 +838,18 @@ yyyy:" . htmlentities($mGodate_yyyy) . "<br>
       ";
       return $ret;
    }
-   function wtfpanel_entrytypelegend($Format,$Typename,$Typebrief,$Typedesc) {
+   function entrytypelegend($Format,$Typename,$Typebrief,$Typedesc) {
       $ret = $Format;
       $ret = str_replace("%entry.type%",$Typename,$ret);
       $ret = str_replace("%entry.typebrief%",$Typebrief,$ret);
       $ret = str_replace("%entry.typedesc%",$Typedesc,$ret);
       return $ret;
    }
-   function wtfpanel_sentrymonthv($month,$year,$day) {
+   function sentrymonthv($month,$year,$day) {
       global $mMySched;
       global $mNotice;
-      require("settings.sentry.inc.php");
-      require("settings.inc.php");
+//       require("../../../include/settings.sentry.php");
+//       require("settings.php");
       $sDummy = mktime(0,0,0,3,$monthv_start_dayofweekw,2004);
       if (($sDummy === FALSE) || ($sDummy == -1)) {
          $mNotice .= "invalid Start day of week monthv_start_dayofweekw:$monthv_start_dayofweekw, defaulting to Monday (1)";
@@ -775,11 +870,11 @@ yyyy:" . htmlentities($mGodate_yyyy) . "<br>
             <td class=\"monthvmain\" colspan=\"7\">
             <div style=\"height:20;border: 1px solid #000000;vertical-align:top;\">
                <div style=\"font-family:Tahoma;font-size:11pt;vertical-align:top;float:left;\">"
-            . wtfpanel_monthvcaption($sSelStamp)
+            . monthvcaption($sSelStamp)
             . "
                </div>
                <div style=\"font-family:Tahoma;font-size:11pt;vertical-align:top;float:right;\">"
-            . wtfpanel_monthvtools($sSelStamp)
+            . monthvtools($sSelStamp)
             . "
                </div>
             </div>";
@@ -806,15 +901,15 @@ yyyy:" . htmlentities($mGodate_yyyy) . "<br>
          }
          $ret .= "
                   <td class=\"monthvcallcell\" height=\"$monthv_headingcells_height\" width=\"$monthv_headingcells_width\" >
-                     " . wtfpanel_blankcell("Top") . "
+                     " . blankcell("Top") . "
                   </td>
                      "; //the blank cells prefixing the first day of the week row
          $sCol++;
       }
-      $sRet = PanelEnumerateSentryCountByDay($mMySched,$sentry_table,$month,$year,$sSentryCount);
+      $sRet = EnumerateSentryCountByDay($mMySched,$sentry_table,$month,$year,$sSentryCount);
       if ($sRet != 0) {
-         global $mPanelError;
-         $mNotice .= "problem ($sRet) while getting sentry counts:<br />$mPanelError<br />";
+         global $mError;
+         $mNotice .= "problem ($sRet) while getting sentry counts:<br />$mError<br />";
          $sSentryCount = array();
          $sSentryCount = array_fill(1,$sCurDaysInMonth,0);
       }
@@ -827,7 +922,7 @@ yyyy:" . htmlentities($mGodate_yyyy) . "<br>
             }
             $ret .= "
                   <td class=\"monthvcallcell\" height=\"$monthv_headingcells_height\" width=\"$monthv_headingcells_width\" >
-                  " . wtfpanel_dayofmonthcellval($sCurStamp,$sCurSel,$sSentryCount[$sCurDay]) . "
+                  " . dayofmonthcellval($sCurStamp,$sCurSel,$sSentryCount[$sCurDay]) . "
                   </td>
                      ";
          $sCurDay++;
@@ -843,29 +938,29 @@ yyyy:" . htmlentities($mGodate_yyyy) . "<br>
       if ($sCol != 0) {
          for($i=$sCol;$i<7;$i++) { //the blank cells suffixing the final day of the week row
             $ret .= "
-                  <td class=\"monthvcallcell\" height=\"$monthv_headingcells_height\" width=\"$monthv_headingcells_width\" >" . wtfpanel_blankcell("Bottom") . "</td>
+                  <td class=\"monthvcallcell\" height=\"$monthv_headingcells_height\" width=\"$monthv_headingcells_width\" >" . blankcell("Bottom") . "</td>
                   ";
          }
       }
       $ret .= "
                </tr>";
-      $sRet = PanelEnumerateSentrytypes($mMySched,$sentrytype_table,$sCount,$sName,$sBrief,$sDescription);
+      $sRet = EnumerateSentrytypes($mMySched,$sentrytype_table,$sCount,$sName,$sBrief,$sDescription);
       if ($sRet == 0) {
          $ret .= "
                <tr>
                   <td colspan=\"7\">";
          for ($i = 0;$i < $sCount;$i++) {
             //$sLine = $monthv_entrytype_legend_format;
-            $ret .= wtfpanel_entrytypelegend($monthv_entrytype_legend_format,$sName[$i],$sBrief[$i],$sDescription[$i]);
+            $ret .= entrytypelegend($monthv_entrytype_legend_format,$sName[$i],$sBrief[$i],$sDescription[$i]);
          }
          $ret .= "
                   </td>
                </tr>";
       } else {
-         global $mPanelError;
+         global $mError;
          $ret .= "
                <tr>
-                  <td colspan=\"7\">problem ($sRet) while getting sentry types for legend:<br />$mPanelError</td>
+                  <td colspan=\"7\">problem ($sRet) while getting sentry types for legend:<br />$mError</td>
                </tr>";
       }
       $ret .= "
@@ -874,18 +969,18 @@ yyyy:" . htmlentities($mGodate_yyyy) . "<br>
       ";
       return $ret;
    }
-   function wtfpanel_sentrywithinfotable($caption,$showmap) {
+   function sentrywithinfotable($caption,$showmap) {
       global $mMySched;
       global $mSentry_key;
-      require("settings.inc.php");
-      $sRet = PanelGetSentryWSomeSiteAndCustInfo($mMySched,$sentry_table,$supervisor_table,$customer_table,$site_table,$customerphone_table,$mSentry_key,$sHeading,$sStartdate,$sStarttime,$sSentrytype,$sSupervisor_name,$sCust_key,$sCust_name,$sSite_streetaddr,$sSite_city,$sSite_state,$sSite_zip,$sPriphone_num,$sPriphone_type);
+      require("settings.php");
+      $sRet = GetSentryWSomeSiteAndCustInfo($mMySched,$sentry_table,$supervisor_table,$customer_table,$site_table,$customerphone_table,$mSentry_key,$sHeading,$sStartdate,$sStarttime,$sSentrytype,$sSupervisor_name,$sCust_key,$sCust_name,$sSite_streetaddr,$sSite_city,$sSite_state,$sSite_zip,$sPriphone_num,$sPriphone_type);
       if ($sRet != 0) {
-         global $mPanelError;
+         global $mError;
          $ret = "
       <table width=\"300\">
          <tr>
             <td class=\"project\">
-            problem ($sRet) while getting info for schedule entry<br />$mPanelError
+            problem ($sRet) while getting info for schedule entry<br />$mError
             </td>
          </tr>
       </table>";
@@ -930,7 +1025,7 @@ yyyy:" . htmlentities($mGodate_yyyy) . "<br>
       $sSmapAnchor = "<a href=\"./sentry.php?show=$mSentry_key&amp;showmap=true&amp;maptype=street\">[street view]</a>";
 
       if ($showmap) {
-         $sRet = PanelGetSiteLatLon($mMySched,"site",$mSentry_key,$sLat,$sLon);
+         $sRet = GetSiteLatLon($mMySched,"site",$mSentry_key,$sLat,$sLon);
          $sZoom = 15;
          if ( ($sLat == 0) && ($sLon == 0) ) {
             //default to 200 Hughes, willard mo (37.281253, -93.429131)
@@ -942,8 +1037,8 @@ yyyy:" . htmlentities($mGodate_yyyy) . "<br>
          $sMapDebug = "";
          if ($sRet != 0) {
             $sMapDebug = "Loc:$sLat,$sLon";
-            global $mPanelError;
-            $sMapDebug .= "PanelError $sRet:<br>$mPanelError<br>";
+            global $mError;
+            $sMapDebug .= "Error $sRet:<br>$mError<br>";
 
          }
          $ret .= "
@@ -961,15 +1056,15 @@ yyyy:" . htmlentities($mGodate_yyyy) . "<br>
          }
          if ($sMapType == "bing") {
             $ret .= "$sGmapAnchor $sSmapAnchor";
-            require("do.sentrybingmap.inc.php");
+            require("../routine/do.sentrybingmap.php");
          } else
          if ($sMapType == "google") {
             $ret .= "$sBmapAnchor $sSmapAnchor";
-            require("do.sentrygooglemap.inc.php");
+            require("../routine/do.sentrygooglemap.php");
          } else
          if ($sMapType == "street") {
             $ret .= "$sGmapAnchor $sBmapAnchor";
-            require("do.gstreetmap.inc.php");
+            require("../routine/do.gstreetmap.php");
          }
          $ret .= "
             </td>
@@ -993,13 +1088,13 @@ yyyy:" . htmlentities($mGodate_yyyy) . "<br>
             $sCust_name<br />";
          if (($sPriphone_type != "") && ($sPriphone_num != "")) {
             $ret .= "
-               <b>$sPriphone_type</b> " . PanelFormatCustomerPhone($sPriphone_num) . "<br />";
+               <b>$sPriphone_type</b> " . FormatCustomerPhone($sPriphone_num) . "<br />";
          }
-         $sRet = PanelEnumerateCustomerPhonenumbers($mMySched,$customerphone_table,$sCust_key,$sCount,$sPhonenumber,$sPhonetype);
+         $sRet = EnumerateCustomerPhonenumbers($mMySched,$customerphone_table,$sCust_key,$sCount,$sPhonenumber,$sPhonetype);
          if ($sRet != 0) {
-            global $mPanelError;
+            global $mError;
             $ret .= "
-               problem ($sRet) while getting phone numbers for customer:$sCust_key<br />$mPanelError<br />";
+               problem ($sRet) while getting phone numbers for customer:$sCust_key<br />$mError<br />";
          } else {
             if ($sCount < 1) {
                $ret .= "
@@ -1029,7 +1124,7 @@ yyyy:" . htmlentities($mGodate_yyyy) . "<br>
       </table>";
       return $ret;
    }
-   function wtfpanel_sentrygetstartdateparts($startdate,$pYYYY,$pMM,$pDD) {
+   function sentrygetstartdateparts($startdate,$pYYYY,$pMM,$pDD) {
       $pYYYY = 0;$pMM = 0;$pDD = 0;
       $sDateparts = explode("-",$startdate);
       if (count($sDateparts) == 3) {
@@ -1040,43 +1135,43 @@ yyyy:" . htmlentities($mGodate_yyyy) . "<br>
       }
       return -1;
    }
-   function wtfpanel_sentriesbyweektable_poop() {
+   function sentriesbyweektable_poop() {
       global $mMySched;
-      require("settings.inc.php");
-      $sRet = PanelEnumerateSentriesWSomeSiteAndCustInfo($mMySched,$sentry_table,$supervisor_table,$customer_table,$site_table,$customerphone_table,$monthno,$year,"","",$sCount,$sSentryKey,$sHeading,$sStartdate,$sStarttime,$sSentrytype,$sSupervisor_name,$sCust_name,$sCust_phone,$sSite_streetaddr,$sSite_city,$sSite_state,$sSite_zip,$sPriphone_num,$sPriphone_type);
+      require("settings.php");
+      $sRet = EnumerateSentriesWSomeSiteAndCustInfo($mMySched,$sentry_table,$supervisor_table,$customer_table,$site_table,$customerphone_table,$monthno,$year,"","",$sCount,$sSentryKey,$sHeading,$sStartdate,$sStarttime,$sSentrytype,$sSupervisor_name,$sCust_name,$sCust_phone,$sSite_streetaddr,$sSite_city,$sSite_state,$sSite_zip,$sPriphone_num,$sPriphone_type);
       if ($sRet != 0) {
-         global $mPanelError;
+         global $mError;
          $ret = "
       <table width=\"300\">
          <tr>
             <td class=\"heading\">$caption</td>
          </tr>
          <tr>
-            <td class=\"project\">problem ($sRet) while getting info for schedule entries:<br />$mPanelError</td>
+            <td class=\"project\">problem ($sRet) while getting info for schedule entries:<br />$mError</td>
          </tr>
       </table>";
          return $ret;
       }
    }
-   function wtfpanel_sentriesbyweektable($caption,$weekno,$year) {
+   function sentriesbyweektable($caption,$weekno,$year) {
       global $mMySched;
-      require("settings.inc.php");
-      $sRet = PanelEnumerateSentriesWSomeSiteAndCustInfoForWeek($mMySched,$sentry_table,$supervisor_table,$customer_table,$site_table,$customerphone_table,$weekno,$year,"","",$sCount,$sSentryKey,$sHeading,$sStartdate,$sStarttime,$sSentrytype,$sSupervisor_name,$sCust_name,$sCust_phone,$sSite_streetaddr,$sSite_city,$sSite_state,$sSite_zip,$sPriphone_num,$sPriphone_type);
+      require("settings.php");
+      $sRet = EnumerateSentriesWSomeSiteAndCustInfoForWeek($mMySched,$sentry_table,$supervisor_table,$customer_table,$site_table,$customerphone_table,$weekno,$year,"","",$sCount,$sSentryKey,$sHeading,$sStartdate,$sStarttime,$sSentrytype,$sSupervisor_name,$sCust_name,$sCust_phone,$sSite_streetaddr,$sSite_city,$sSite_state,$sSite_zip,$sPriphone_num,$sPriphone_type);
       if ($sRet != 0) {
-         global $mPanelError;
+         global $mError;
          $ret = "
       <table width=\"300\">
          <tr>
             <td class=\"heading\">$caption</td>
          </tr>
          <tr>
-            <td class=\"project\">problem ($sRet) while getting info for schedule entries:<br />$mPanelError</td>
+            <td class=\"project\">problem ($sRet) while getting info for schedule entries:<br />$mError</td>
          </tr>
       </table>";
          return $ret;
       }
-      //wtfpanel_previoussentrymonth($monthno,$year,$sPrevmonth,$sPrevyear);
-      //wtfpanel_nextsentrymonth($monthno,$year,$sNextmonth,$sNextyear);
+      //previoussentrymonth($monthno,$year,$sPrevmonth,$sPrevyear);
+      //nextsentrymonth($monthno,$year,$sNextmonth,$sNextyear);
       $sPrevweek = $weekno - 1;
       $sNextweek = $weekno + 1;
       $sNextyear = $year;
@@ -1117,14 +1212,14 @@ yyyy:" . htmlentities($mGodate_yyyy) . "<br>
          //add in the day of week
 
          $ret .= "<b><a href=\"./sentry.php?showday&month=" . date("n",$sLoopTimestamp) . "&day=" . date("j",$sLoopTimestamp) . "&year=" . date("Y",$sLoopTimestamp) . "\">" . date("D n/d",$sLoopTimestamp) . "</a></b> ";
-         $sRet = PanelEnumerateSentriesWSomeSiteAndCustInfoForDay(
+         $sRet = EnumerateSentriesWSomeSiteAndCustInfoForDay(
             $mMySched,$sentry_table,$supervisor_table,$customer_table,$site_table,$customerphone_table,
             date("n",$sLoopTimestamp),date("Y",$sLoopTimestamp),date("j",$sLoopTimestamp),"","",$sCount,$sSentryKey,$sHeading,$sStartdate,$sStarttime,$sSentrytype,$sSupervisor_name,$sCust_name,$sCust_phone,
             $sSite_streetaddr,$sSite_city,$sSite_state,$sSite_zip,$sPriphone_num,$sPriphone_type
          );
          if ($sRet != 0) {
-            global $mPanelError;
-            $ret .= " error $sRet: $mPanelError";
+            global $mError;
+            $ret .= " error $sRet: $mError";
             //return $ret;
          }
 
@@ -1175,25 +1270,25 @@ yyyy:" . htmlentities($mGodate_yyyy) . "<br>
       </table>";
       return $ret;
    }
-   function wtfpanel_sentriesbymonthtable_old($caption,$monthno,$year) {
+   function sentriesbymonthtable_old($caption,$monthno,$year) {
       global $mMySched;
-      require("settings.inc.php");
-      $sRet = PanelEnumerateSentriesWSomeSiteAndCustInfo($mMySched,$sentry_table,$supervisor_table,$customer_table,$site_table,$customerphone_table,$monthno,$year,"","",$sCount,$sSentryKey,$sHeading,$sStartdate,$sStarttime,$sSentrytype,$sSupervisor_name,$sCust_name,$sCust_phone,$sSite_streetaddr,$sSite_city,$sSite_state,$sSite_zip,$sPriphone_num,$sPriphone_type);
+      require("settings.php");
+      $sRet = EnumerateSentriesWSomeSiteAndCustInfo($mMySched,$sentry_table,$supervisor_table,$customer_table,$site_table,$customerphone_table,$monthno,$year,"","",$sCount,$sSentryKey,$sHeading,$sStartdate,$sStarttime,$sSentrytype,$sSupervisor_name,$sCust_name,$sCust_phone,$sSite_streetaddr,$sSite_city,$sSite_state,$sSite_zip,$sPriphone_num,$sPriphone_type);
       if ($sRet != 0) {
-         global $mPanelError;
+         global $mError;
          $ret = "
       <table width=\"300\">
          <tr>
             <td class=\"heading\">$caption</td>
          </tr>
          <tr>
-            <td class=\"project\">problem ($sRet) while getting info for schedule entries:<br />$mPanelError</td>
+            <td class=\"project\">problem ($sRet) while getting info for schedule entries:<br />$mError</td>
          </tr>
       </table>";
          return $ret;
       }
-      wtfpanel_previoussentrymonth($monthno,$year,$sPrevmonth,$sPrevyear);
-      wtfpanel_nextsentrymonth($monthno,$year,$sNextmonth,$sNextyear);
+      previoussentrymonth($monthno,$year,$sPrevmonth,$sPrevyear);
+      nextsentrymonth($monthno,$year,$sNextmonth,$sNextyear);
       $ret = "
       <table width=\"300\">
          <tr>
@@ -1233,7 +1328,7 @@ yyyy:" . htmlentities($mGodate_yyyy) . "<br>
       </table>";
       return $ret;
    }
-   function wtfpanel_addsentryvarerrmsg($pErrArea,$Area,$Msg,$Delimiter) {
+   function addsentryvarerrmsg($pErrArea,$Area,$Msg,$Delimiter) {
       if (isset($pErrArea[$Area])) {
          $pErrArea[$Area] .= $Delimiter;
       } else {
@@ -1241,18 +1336,18 @@ yyyy:" . htmlentities($mGodate_yyyy) . "<br>
       }
       $pErrArea[$Area] .= $Msg;
    }
-   function wtfpanel_testsentryvars($pErrArea) {
+   function testsentryvars($pErrArea) {
       $pErrArea = array();
       $sNoErrors = TRUE;
       global $mSentry_sentrytype,$mSentry_heading,$mSentry_supervisorkey,$mSentry_notes,$mSentry_startdate,$mSentry_starttime;
       /*
       if ($mSentry_heading == "") {
-         wtfpanel_addsentryvarerrmsg($pErrArea,"heading","caption cannot be blank",", ");
+         addsentryvarerrmsg($pErrArea,"heading","caption cannot be blank",", ");
          $sNoErrors = FALSE;
       }
       */
       if ($mSentry_startdate == "") {
-         wtfpanel_addsentryvarerrmsg($pErrArea,"startdate","start date cannot be blank",", ");
+         addsentryvarerrmsg($pErrArea,"startdate","start date cannot be blank",", ");
          $sNoErrors = FALSE;
       } else {
          $sYYYY = 0; $sMM = 0; $sDD = 0;
@@ -1264,29 +1359,29 @@ yyyy:" . htmlentities($mGodate_yyyy) . "<br>
             list($sYYYY,$sMM,$sDD) = $sDateparts;
          $sCheckDate = TRUE;
          if (!is_numeric($sYYYY)) {
-            wtfpanel_addsentryvarerrmsg($pErrArea,"startdate","start year should be numeric",", ");
+            addsentryvarerrmsg($pErrArea,"startdate","start year should be numeric",", ");
             $sNoErrors = FALSE;
             $sCheckDate = FALSE;
          }
          if (!is_numeric($sMM)) {
-            wtfpanel_addsentryvarerrmsg($pErrArea,"startdate","start month should be numeric",", ");
+            addsentryvarerrmsg($pErrArea,"startdate","start month should be numeric",", ");
             $sNoErrors = FALSE;
             $sCheckDate = FALSE;
          }
          if (!is_numeric($sDD)) {
-            wtfpanel_addsentryvarerrmsg($pErrArea,"startdate","start day of month should be numeric",", ");
+            addsentryvarerrmsg($pErrArea,"startdate","start day of month should be numeric",", ");
             $sNoErrors = FALSE;
             $sCheckDate = FALSE;
          }
          if ($sCheckDate) {
             if (!checkdate($sMM,$sDD,$sYYYY)) {
-               wtfpanel_addsentryvarerrmsg($pErrArea,"startdate",
+               addsentryvarerrmsg($pErrArea,"startdate",
                   "start date is not a real date",", ");
                $sNoErrors = FALSE;
             }
          }
          if (empty($_POST["startampm"])) {
-            wtfpanel_addsentryvarerrmsg($pErrArea,"startdate",
+            addsentryvarerrmsg($pErrArea,"startdate",
                   "must select AM or PM",", ");
             $mSentry_starttime = "";
             $sNoErrors = FALSE;
@@ -1294,7 +1389,7 @@ yyyy:" . htmlentities($mGodate_yyyy) . "<br>
       }
       return $sNoErrors;
    }
-   function wtfpanel_globalizesentryformpostvars() {
+   function globalizesentryformpostvars() {
       global $mSentry_sentrytype,$mSentry_heading,$mSentry_supervisorkey,$mSentry_notes,$mSentry_startdate,$mSentry_weekdayrepeat,$mSentry_starttime;
       if (isset($_POST["sentrytype"])) {
          $mSentry_sentrytype = $_POST["sentrytype"];
@@ -1326,7 +1421,7 @@ yyyy:" . htmlentities($mGodate_yyyy) . "<br>
       }
    }
 
-   function wtfpanel_sentrynoticetable($notice) {
+   function sentrynoticetable($notice) {
       $ret = "
       <table width=\"300\">
          <tr>
@@ -1335,7 +1430,7 @@ yyyy:" . htmlentities($mGodate_yyyy) . "<br>
       </table>";
       return $ret;
    }
-   function wtfpanel_existingcustomerformtable($action,$width,$submitcaption) {
+   function existingcustomerformtable($action,$width,$submitcaption) {
       $ret = "
       <table width=\"300\">
          <tr>
@@ -1357,7 +1452,7 @@ yyyy:" . htmlentities($mGodate_yyyy) . "<br>
       </table>";
       return $ret;
    }
-   function wtfpanel_sentrytable($width,$caption) {
+   function sentrytable($width,$caption) {
       global $mSentry_sentrytype,$mSentry_heading,$mSentry_supervisorkey,$mSentry_notes,$mSentry_startdate,$mSentry_starttime;
       $ret = "
       <table width=\"300\">
@@ -1373,14 +1468,14 @@ yyyy:" . htmlentities($mGodate_yyyy) . "<br>
       </table>";
       return $ret;
    }
-   function wtfpanel_editsentryformtable($action,$width) {
+   function editsentryformtable($action,$width) {
       global $mMySched;
       global $mSentry_sentrytype,$mSentry_heading,$mSentry_supervisorkey,$mSentry_notes,$mSentry_startdate,$mSentry_starttime;
-      require("settings.inc.php");
+      require("settings.php");
       $ret = "";
       return $ret;
    }
-   function wtfpanel_enumeratetimes($StartHour,$pHour,$pMin) {
+   function enumeratetimes($StartHour,$pHour,$pMin) {
       $pHour = array(); $pMin = array();
       if ($StartHour < 10) {
          $pHour[0] = "0$StartHour";
@@ -1409,11 +1504,11 @@ yyyy:" . htmlentities($mGodate_yyyy) . "<br>
       }
       return 0;
    }
-   function wtfpanel_addsentryformtable($action,$width,$submitcaption,$caption,$cancelnav) {
+   function addsentryformtable($action,$width,$submitcaption,$caption,$cancelnav) {
       global $mMySched; //the resource handler for this function
       global $mAddSentryerr;
       global $mSentry_sentrytype,$mSentry_heading,$mSentry_supervisorkey,$mSentry_notes,$mSentry_startdate,$mSentry_starttime,$mSentry_weekdayrepeat,$mSentry_key;
-      require("settings.inc.php");
+      require("settings.php");
       global $mShowYear,$mShowMonth,$mShowDay;
       if (($mShowYear != "") && ($mShowMonth != "") && ($mShowDay != "")) {
          $sShowStamp = mktime(0,0,0,$mShowMonth,$mShowDay,$mShowYear);
@@ -1449,7 +1544,7 @@ yyyy:" . htmlentities($mGodate_yyyy) . "<br>
             </tr>
             <tr>
                <td class=\"project\">";
-      $sRet = PanelEnumerateSentrytypes($mMySched,$sentrytype_table,$sCount,$sName,$sBrief,$sDescription);
+      $sRet = EnumerateSentrytypes($mMySched,$sentrytype_table,$sCount,$sName,$sBrief,$sDescription);
       if ($sRet == 0) {
          if ($sCount > 0) {
             //name=sentrytype
@@ -1471,8 +1566,8 @@ yyyy:" . htmlentities($mGodate_yyyy) . "<br>
             $ret .= "no schedule entry types found";
          }
       } else {
-         global $mPanelError;
-         $ret .= "problem ($sRet) while getting sentry types:<br />$mPanelError";
+         global $mError;
+         $ret .= "problem ($sRet) while getting sentry types:<br />$mError";
       }
       $ret .= "
                </td>
@@ -1517,7 +1612,7 @@ yyyy:" . htmlentities($mGodate_yyyy) . "<br>
          $mNotice .= "hour=$sExistHour,min=$sExistMin,ampm=$sExistAMPM";
       }
       $ret .= "   <select name=\"starthour\">";
-      $sRet = wtfpanel_enumeratetimes(7,$sHour,$sMin);
+      $sRet = enumeratetimes(7,$sHour,$sMin);
       foreach($sHour as $val) {
          $ret .= "
                      <option value=\"$val\"";
@@ -1585,7 +1680,7 @@ yyyy:" . htmlentities($mGodate_yyyy) . "<br>
                   <tr>
                      <td valign=\"top\">
                <b>crew</b><br />";
-      $sRet = PanelEnumerateSupervisors($mMySched,$supervisor_table,$sCount,$sKey,$sName,$sFirst,$sLast);
+      $sRet = EnumerateSupervisors($mMySched,$supervisor_table,$sCount,$sKey,$sName,$sFirst,$sLast);
       if ($sRet == 0) {
          if ($sCount > 0) {
             $ret .= "
@@ -1614,8 +1709,8 @@ yyyy:" . htmlentities($mGodate_yyyy) . "<br>
             $ret .= "no supervisors found";
          }
       } else {
-         global $mPanelError;
-         $ret .= "problem ($sRet) while getting supervisors:<br />$mPanelError";
+         global $mError;
+         $ret .= "problem ($sRet) while getting supervisors:<br />$mError";
       }
       $ret .= "
                      </td>

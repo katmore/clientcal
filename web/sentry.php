@@ -1,18 +1,18 @@
 <?php
-   require_once("include/wtfpanel.inc.php");
-   require_once("include/wtfpanel.err.inc.php");
-   require_once("include/html.inc.php");
-   require_once("include/html.sentry.inc.php");
-   require_once("include/wtfpanel.sentry.inc.php");
-   require_once("include/wtfpanel.mysql.inc.php");
+   require_once("include/user.php");
+   require_once("include/err.php");
+   require_once("../app/Resources/controller/view.php");
+   require_once("../app/Resources/controller/sentry.php");
+   require_once("include/sentry.php");
+   require_once("include/mysql.php");
 
-   require_once("include/html.customer.inc.php");
-   require_once("include/html.site.inc.php");
-   require_once("include/settings.inc.php");
-   require_once("include/settings.sentry.inc.php");
-   include("include/getsession.inc.php");
+   require_once("../app/Resources/controller/customer.php");
+   require_once("../app/Resources/controller/site.php");
+   require_once("include/settings.php");
+   require_once("include/settings.sentry.php");
+   include("include/getsession.php");
    $mMode = "login";
-   include("include/getauth.inc.php");
+   include("include/getauth.php");
 
    if ($mAuthorized == "true") {
       $mMode = "nothing";
@@ -62,7 +62,7 @@
          $mMode = "editcustlink";
       } else
       if (isset($_GET["sentrieslist"])) {
-         //wtfpanel_sentriesbymonthtable($caption,$monthno,$year)
+         //sentriesbymonthtable($caption,$monthno,$year)
          $mMode = "sentrieslist";
       } else
       if (isset($_GET["showday"])) {
@@ -86,10 +86,10 @@
    }
    $mNotice = "";
    $mSubtitle = "";
-   $mRet = PanelConnectToDB($data_dbhost,$data_dbname,$data_dbuser,$data_dbpasswd,$mMySched);
+   $mRet = ConnectToDB($data_dbhost,$data_dbname,$data_dbuser,$data_dbpasswd,$mMySched);
    if ($mRet != 0) {
       $mMode = "gen_error";
-      $mNotice .= "problem ($mRet) while connecting to the schedule database:<br />$mPanelError<br />";
+      $mNotice .= "problem ($mRet) while connecting to the schedule database:<br />$mError<br />";
    }
 
    //diff places sentry key shows up
@@ -169,9 +169,9 @@
    //before output occurs
    if ($mMode == "godate") {
       //get postvars
-      wtfpanel_sentrygodatepostvars();
+      sentrygodatepostvars();
       if ($mGodate_valid === false) {
-         $mNotice .= wtfpanel_rawgodatevars();
+         $mNotice .= rawgodatevars();
          //default to current date
 
          $mShowMonth = date("n");
@@ -191,10 +191,10 @@
       $mShow_sentries = true;
       //make sure sentry exists
       if (0 != (
-         $mRet = PanelGetSentryWCustName($mMySched,$sentry_table,$customer_table,$mSentry_key,$mSentry_heading,$mSentry_startdate,$mSentry_starttime,$mSentry_sentrytype,$mSentry_custkey,$mSentry_custname)
+         $mRet = GetSentryWCustName($mMySched,$sentry_table,$customer_table,$mSentry_key,$mSentry_heading,$mSentry_startdate,$mSentry_starttime,$mSentry_sentrytype,$mSentry_custkey,$mSentry_custname)
       )) {
          $mMode = "gen_error";
-         $mNotice .= "problem ($sRet) while looking up entry:<br />$mPanelError";
+         $mNotice .= "problem ($sRet) while looking up entry:<br />$mError";
       }
    }
    if ($mMode == "duplicate") {
@@ -203,13 +203,13 @@
       }
    }
    if ($mMode == "delistconfirm_examine") {
-      wtfpanel_sentrydelistpostvars();
+      sentrydelistpostvars();
       if ($mSentrydelist_confirm === true) {
          if (0 != (
-            $mRet = PanelGetSentryStartdate($mMySched,$sentry_table,$mSentry_key,$mSentry_startdate,$mSentryLastUpdate)
+            $mRet = GetSentryStartdate($mMySched,$sentry_table,$mSentry_key,$mSentry_startdate,$mSentryLastUpdate)
          )) {
             $mMode = "gen_error";
-            $mNotice .= "problem ($sRet) while looking up entry:<br />$mPanelError";
+            $mNotice .= "problem ($sRet) while looking up entry:<br />$mError";
          }
          //$mNotice .= "delisted entry $mSentry_key per user";
          $mMode = "delistentry_true";
@@ -220,42 +220,42 @@
    }
    if ($mMode == "delistentry_true") {
          if (0 != (
-            $mRet = PanelDelistSentry($mMySched,$sentry_table,$mSentry_key)
+            $mRet = DelistSentry($mMySched,$sentry_table,$mSentry_key)
          )) {
             $mMode = "gen_error";
-            $mNotice .= "problem ($sRet) while looking up entry:<br />$mPanelError";
+            $mNotice .= "problem ($sRet) while looking up entry:<br />$mError";
          } else {
             $mNotice .= "delisted entry $mSentry_key";
          }
    }
    if ($mMode == "delistconfirm") {
-      if (0 != ($sRet = PanelGetSentryLastUpdate($mMySched,$sentry_table,$mSentry_key,$mSentryLastUpdate))) {
+      if (0 != ($sRet = GetSentryLastUpdate($mMySched,$sentry_table,$mSentry_key,$mSentryLastUpdate))) {
          $mMode = "gen_error";
-         $mNotice .= "problem ($sRet) while looking up entry:<br />$mPanelError";
+         $mNotice .= "problem ($sRet) while looking up entry:<br />$mError";
       }
    }
    if ($mMode == "delistconfirm") {
       if (0 != (
-      //$mRet = PanelGetSentry($mMySched,$sentry_table,$mSentry_key,$mSentry_heading,$mSentry_notes,$mSentry_startdate,$mSentry_starttime,$mSentry_supervisorkey,$mSentry_sentrytype,$mSentry_LastUpdate)
-      $mRet = PanelGetSentryWCustName($mMySched,$sentry_table,$customer_table,$mSentry_key,$mSentry_heading,$mSentry_startdate,$mSentry_starttime,$mSentry_sentrytype,$mCust_key,$mCust_name)
+      //$mRet = GetSentry($mMySched,$sentry_table,$mSentry_key,$mSentry_heading,$mSentry_notes,$mSentry_startdate,$mSentry_starttime,$mSentry_supervisorkey,$mSentry_sentrytype,$mSentry_LastUpdate)
+      $mRet = GetSentryWCustName($mMySched,$sentry_table,$customer_table,$mSentry_key,$mSentry_heading,$mSentry_startdate,$mSentry_starttime,$mSentry_sentrytype,$mCust_key,$mCust_name)
       )) {
          $mMode = "gen_error";
-         $mNotice .= "problem ($sRet) while getting entry:<br />$mPanelError";
+         $mNotice .= "problem ($sRet) while getting entry:<br />$mError";
       }
    }
 
    if ($mMode == "editcustlink") {
       //make sure sentry exists
-      if (0 != ($sRet = PanelGetSentryLastUpdate($mMySched,$sentry_table,$mSentry_key,$mSentryLastUpdate))) {
+      if (0 != ($sRet = GetSentryLastUpdate($mMySched,$sentry_table,$mSentry_key,$mSentryLastUpdate))) {
          $mMode = "gen_error";
-         $mNotice .= "problem ($sRet) while looking up entry:<br />$mPanelError";
+         $mNotice .= "problem ($sRet) while looking up entry:<br />$mError";
       }
    }
    if ($mMode == "editcustlink") {
-      $mRet = PanelGetSentry($mMySched,$sentry_table,$mSentry_key,$mSentry_heading,$mSentry_notes,$mSentry_startdate,$mSentry_starttime,$mSentry_supervisorkey,$mSentry_sentrytype,$mSentry_LastUpdate);
+      $mRet = GetSentry($mMySched,$sentry_table,$mSentry_key,$mSentry_heading,$mSentry_notes,$mSentry_startdate,$mSentry_starttime,$mSentry_supervisorkey,$mSentry_sentrytype,$mSentry_LastUpdate);
       if ($mRet != 0) {
          $mMode = "gen_error";
-         $mNotice .= "problem ($mRet) while getting Sentry $mSentry_key:<br />$mPanelError<br />";
+         $mNotice .= "problem ($mRet) while getting Sentry $mSentry_key:<br />$mError<br />";
       }
    }
    //showday
@@ -311,38 +311,38 @@
    if ($mMode == "dupeselect") {
       //get the all the sentry & site and then create new one
       if (0 != (
-         $mRet = PanelGetSentryWSomeSiteAndCustInfoB($mMySched,$sentry_table,$supervisor_table,$customer_table,$site_table,$mSentry_key,$mNew_Heading,$mNew_Notes,$mOld_Startdate,$mNew_Starttime,$mNew_Sentrytype,$mNew_Supervisor_key,$mNew_Supervisor_name,$mNew_Cust_key,$mNew_Cust_name,$mNew_Site_streetaddr,$mNew_Site_city,$mNew_Site_state,$mNew_Site_zip,$mNew_Site_sdirections)
+         $mRet = GetSentryWSomeSiteAndCustInfoB($mMySched,$sentry_table,$supervisor_table,$customer_table,$site_table,$mSentry_key,$mNew_Heading,$mNew_Notes,$mOld_Startdate,$mNew_Starttime,$mNew_Sentrytype,$mNew_Supervisor_key,$mNew_Supervisor_name,$mNew_Cust_key,$mNew_Cust_name,$mNew_Site_streetaddr,$mNew_Site_city,$mNew_Site_state,$mNew_Site_zip,$mNew_Site_sdirections)
       )) {
          $mMode = "gen_error";
-         $mNotice .= "problem ($sRet) while looking up entry:<br />$mPanelError";
+         $mNotice .= "problem ($sRet) while looking up entry:<br />$mError";
       }
    }
    if ($mMode == "dupeselect") {
       $mNew_stamp = mktime(0,0,0,$mShowMonth,$mShowDay,$mShowYear);
       $mNew_Startdate = date("Y-m-d",$mNew_stamp);
       if (0 != (
-         $mRet = PanelAddSentry($mMySched,$sentry_table,$mNew_Heading,$mNew_Notes,$mNew_Startdate,$mNew_Starttime,$mNew_Supervisor_key,$mNew_Sentrytype,$mNew_Sentry_key)
+         $mRet = AddSentry($mMySched,$sentry_table,$mNew_Heading,$mNew_Notes,$mNew_Startdate,$mNew_Starttime,$mNew_Supervisor_key,$mNew_Sentrytype,$mNew_Sentry_key)
       )) {
          $mMode = "gen_error";
-         $mNotice .= "problem ($sRet) while adding entry:<br />$mPanelError";
+         $mNotice .= "problem ($sRet) while adding entry:<br />$mError";
       }
    }
    if ($mMode == "dupeselect") {
       //assoc cust
       if (0 != (
-         $mRet = PanelUpdateSentryCustomer($mMySched,$sentry_table,$mNew_Sentry_key,$mNew_Cust_key)
+         $mRet = UpdateSentryCustomer($mMySched,$sentry_table,$mNew_Sentry_key,$mNew_Cust_key)
       )) {
          $mMode = "gen_error";
-         $mNotice .= "problem ($sRet) while associating customer:<br />$mPanelError";
+         $mNotice .= "problem ($sRet) while associating customer:<br />$mError";
       }
    }
    if ($mMode == "dupeselect") {
       //create site info
       if (0 != (
-         $mRet = PanelAddSite($mMySched,$site_table,$mNew_Sentry_key,$mNew_Site_streetaddr,$mNew_Site_city,$mNew_Site_state,$mNew_Site_zip,$mNew_Site_sdirections)
+         $mRet = AddSite($mMySched,$site_table,$mNew_Sentry_key,$mNew_Site_streetaddr,$mNew_Site_city,$mNew_Site_state,$mNew_Site_zip,$mNew_Site_sdirections)
       )) {
          $mMode = "gen_error";
-         $mNotice .= "problem ($sRet) while creating site info:<br />$mPanelError";
+         $mNotice .= "problem ($sRet) while creating site info:<br />$mError";
       }
    }
    if ($mMode == "dupeselect") {
@@ -351,49 +351,49 @@
       $mMode = "show_sentry";
    }
    if ($mMode == "updatesite") {
-      wtfpanel_globalizesitepostvars();
+      globalizesitepostvars();
       //check if a site record exists
-      $mRet = PanelGetSiteLastUpdate($mMySched,$site_table,$mSentry_key,$mSentry_LastUpdated);
+      $mRet = GetSiteLastUpdate($mMySched,$site_table,$mSentry_key,$mSentry_LastUpdated);
       if ($mRet == 0) {
-         $mRet = PanelUpdateSite($mMySched,$site_table,$mSentry_key,$mSite_streetaddr,$mSite_city,$mSite_state,$mSite_zip,$mSite_sdirections);
+         $mRet = UpdateSite($mMySched,$site_table,$mSentry_key,$mSite_streetaddr,$mSite_city,$mSite_state,$mSite_zip,$mSite_sdirections);
          if ($mRet == 0) {
             $mNotice .= "successfully updated site info<br />";
             $mMode = "show_sentry";
          } else {
             $mMode = "gen_error";
-            $mNotice .= "problem ($mRet) while updating site info:<br />$mPanelError<br />";
+            $mNotice .= "problem ($mRet) while updating site info:<br />$mError<br />";
          }
       } else
       if ($mRet == -1) {
-         $mRet = PanelAddSite($mMySched,$site_table,$mSentry_key,$mSite_streetaddr,$mSite_city,$mSite_state,$mSite_zip,$mSite_sdirections);
+         $mRet = AddSite($mMySched,$site_table,$mSentry_key,$mSite_streetaddr,$mSite_city,$mSite_state,$mSite_zip,$mSite_sdirections);
          if ($mRet == 0) {
             $mNotice .= "successfully added site info<br />";
             $mMode = "show_sentry";
          } else {
             $mMode = "gen_error";
-            $mNotice .= "problem ($mRet) while updating site info:<br />$mPanelError<br />";
+            $mNotice .= "problem ($mRet) while updating site info:<br />$mError<br />";
          }
       } else {
          $mMode = "gen_error";
-         $mNotice .= "problem ($mRet) while updating site info:<br />$mPanelError<br />";
+         $mNotice .= "problem ($mRet) while updating site info:<br />$mError<br />";
       }
    }
    if ($mMode == "showedit_sentry") {
-      $mRet = PanelGetSentry($mMySched,$sentry_table,$mSentry_key,$mSentry_heading,$mSentry_notes,$mSentry_startdate,$mSentry_starttime,$mSentry_supervisorkey,$mSentry_sentrytype,$mSentry_LastUpdate);
+      $mRet = GetSentry($mMySched,$sentry_table,$mSentry_key,$mSentry_heading,$mSentry_notes,$mSentry_startdate,$mSentry_starttime,$mSentry_supervisorkey,$mSentry_sentrytype,$mSentry_LastUpdate);
       if ($mRet != 0) {
          $mMode = "gen_error";
-         $mNotice .= "problem ($mRet) while getting Sentry $mSentry_key:<br />$mPanelError<br />";
+         $mNotice .= "problem ($mRet) while getting Sentry $mSentry_key:<br />$mError<br />";
       }
    }
    if ($mMode == "updatesentry") {
-      wtfpanel_globalizesentryformpostvars();
-      if (!wtfpanel_testsentryvars($mAddSentryerr)) {
+      globalizesentryformpostvars();
+      if (!testsentryvars($mAddSentryerr)) {
          $mNotice .= "<b>problems with the entry</b><br />";
          $mMode = "showedit_sentry";
       }
    }
    if ($mMode == "updatesentry") {
-      $mRet = PanelUpdateSentry($mMySched,$sentry_table,$mSentry_key,$mSentry_heading,$mSentry_notes,$mSentry_startdate,$mSentry_starttime,$mSentry_supervisorkey,$mSentry_sentrytype);
+      $mRet = UpdateSentry($mMySched,$sentry_table,$mSentry_key,$mSentry_heading,$mSentry_notes,$mSentry_startdate,$mSentry_starttime,$mSentry_supervisorkey,$mSentry_sentrytype);
       if ($mRet == 0) {
          //$mMode = "showsentries";
          $mMode = "show_sentry";
@@ -403,11 +403,11 @@
          //$mNotice .= "<li>showing $mShowMonth of $mShowYear<br />";
       } else {
          $mMode = "gen_error";
-         $mNotice .= "problem ($mRet) while updating Sentry $mSentry_key:<br />$mPanelError<br />";
+         $mNotice .= "problem ($mRet) while updating Sentry $mSentry_key:<br />$mError<br />";
       }
    }
    if ($mMode == "showedit_site") {
-      $mRet = PanelGetSomeSentryAndSiteInfo($mMySched,$sentry_table,$site_table,$mSentry_key,$mSentry_Heading,$mSentry_Startdate,$mSentry_Starttime,$mSite_streetaddr,$mSite_city,$mSite_state,$mSite_zip,$mSite_sdirections,$mSentry_LastUpdated,$mSite_LastUpdated);
+      $mRet = GetSomeSentryAndSiteInfo($mMySched,$sentry_table,$site_table,$mSentry_key,$mSentry_Heading,$mSentry_Startdate,$mSentry_Starttime,$mSite_streetaddr,$mSite_city,$mSite_state,$mSite_zip,$mSite_sdirections,$mSentry_LastUpdated,$mSite_LastUpdated);
    }
    if ($mMode == "delistentry_true") {
       //$mSentry_startdate
@@ -485,20 +485,20 @@
       }
    }
    if ($mMode == "assocsite") {
-      //$mRet = PanelGetSentryLastUpdate($mMySched,$sentry_table,$mSentry_key,$mSentryLastUpdate);
-      $mRet = PanelGetSentryStartdate($mMySched,$sentry_table,$mSentry_key,$mSentryStartdate,$mSentryLastUpdate);
+      //$mRet = GetSentryLastUpdate($mMySched,$sentry_table,$mSentry_key,$mSentryLastUpdate);
+      $mRet = GetSentryStartdate($mMySched,$sentry_table,$mSentry_key,$mSentryStartdate,$mSentryLastUpdate);
       if ($mRet != 0) {
          if ($mRet == -1) {
             $mNotice .= "<li>invalid sentry key given to associate with site<br />";
             $mMode = "gen_error";
          } else {
-            $mNotice .= "<li>problem validating sentry key:<br />$mPanelError<br />";
+            $mNotice .= "<li>problem validating sentry key:<br />$mError<br />";
          }
       }
    }
    if ($mMode == "assocsite") {
-      wtfpanel_globalizesitepostvars();
-      $mRet = PanelAssociateSite($mMySched,$site_table,$mSentry_key,$mSite_streetaddr,$mSite_city,$mSite_state,$mSite_zip,$mSite_sdirections);
+      globalizesitepostvars();
+      $mRet = AssociateSite($mMySched,$site_table,$mSentry_key,$mSite_streetaddr,$mSite_city,$mSite_state,$mSite_zip,$mSite_sdirections);
       if ($mRet == 0) {
          $mNotice .= "<li>successfully updated site info<br />";
          $mMode = "showsentries";
@@ -513,7 +513,7 @@
          $mShowDay = $mPart[2];
          $mShowYear = $mPart[0];
       } else {
-         $mNotice .= "<li>problem ($mRet) while updating site info:<br />$mPanelError<br />";
+         $mNotice .= "<li>problem ($mRet) while updating site info:<br />$mError<br />";
          $mMode = "gen_error";
       }
    }
@@ -523,9 +523,9 @@
       if (isset($_GET["sentry"])) {
          $mSentry_key = $_GET["sentry"];
       }
-      $mRet = PanelGetSentryLastUpdate($mMySched,$sentry_table,$mSentry_key,$mSentry_LastUpdate);
+      $mRet = GetSentryLastUpdate($mMySched,$sentry_table,$mSentry_key,$mSentry_LastUpdate);
       if ($mRet != 0) {
-         $mNotice .= "<li>invalid sentry key '$mSentry_key' given to link a customer to<br />$mPanelError<br />";
+         $mNotice .= "<li>invalid sentry key '$mSentry_key' given to link a customer to<br />$mError<br />";
          $mMode = "gen_error";
       }
    }
@@ -534,18 +534,18 @@
       if (isset($_GET["linkcustomer"])) {
          $mCustomer_key = $_GET["linkcustomer"];
       }
-      $mRet = PanelGetCustomerLastUpdate($mMySched,$customer_table,$mCustomer_key,$mTmpLastUpdate);
+      $mRet = GetCustomerLastUpdate($mMySched,$customer_table,$mCustomer_key,$mTmpLastUpdate);
       if ($mRet != 0) {
-         $mNotice .= "<li>invalid customer key '$mCustomer_key' given to link sentry to<br />$mPanelError<br />";
+         $mNotice .= "<li>invalid customer key '$mCustomer_key' given to link sentry to<br />$mError<br />";
          $mMode = "gen_error";
       }
    }
    if ($mMode == "linkcustomer") {
-      $mRet = PanelUpdateSentryCustomer($mMySched,$sentry_table,$mSentry_key,$mCustomer_key);
+      $mRet = UpdateSentryCustomer($mMySched,$sentry_table,$mSentry_key,$mCustomer_key);
       if ($mRet == 0) {
          $mNotice .= "<li>successfully linked customer to entry";
       } else {
-         $mNotice .= "<li>problem ($mRet) linking customer to entry:<br />$mPanelError<br />";
+         $mNotice .= "<li>problem ($mRet) linking customer to entry:<br />$mError<br />";
          $mMode = "gen_error";
       }
    }
@@ -566,50 +566,50 @@
       if (isset($_GET["linknewcustomer"])) {
          $mSentry_key = $_GET["linknewcustomer"];
       }
-      $mRet = PanelGetSentryLastUpdate($mMySched,$sentry_table,$mSentry_key,$mSentryLastUpdate);
+      $mRet = GetSentryLastUpdate($mMySched,$sentry_table,$mSentry_key,$mSentryLastUpdate);
       if ($mRet != 0) {
          if ($mRet == -1) {
             $mNotice .= "<li>invalid sentry derived to link new customer with:$mSentry_key<br />";
             $mMode = "gen_error";
          } else {
-            $mNotice .= "<li>problem ($mRet) while validating sentry key:<br />$mPanelError<br />";
+            $mNotice .= "<li>problem ($mRet) while validating sentry key:<br />$mError<br />";
             $mMode = "gen_error";
          }
       }
    }
    if ($mMode == "linknewcustomer") {
-      wtfpanel_globalizecustomerpostvars();
-      if (!wtfpanel_testcustsomervars($mAddcustomerErr)) {
+      globalizecustomerpostvars();
+      if (!testcustsomervars($mAddcustomerErr)) {
          $mNotice .= "<li>problems with this customer entry<br />";
          $mMode = "showlinkcust";
       }
    }
    if ($mMode == "linknewcustomer") {
-      $mRet = PanelAddCustomer($mMySched,$customer_table,wtfpanel_formatcustomername(),$mCust_streetaddr,$mCust_city,$mCust_state,$mCust_zip,$mCust_customertype,$mCustomer_key);
+      $mRet = AddCustomer($mMySched,$customer_table,formatcustomername(),$mCust_streetaddr,$mCust_city,$mCust_state,$mCust_zip,$mCust_customertype,$mCustomer_key);
       if ($mRet == 0) {
          $mNotice .= "<li>successfully added customer:$mCustomer_key<br />";
       } else {
-         $mNotice .= "<li>problem ($mRet) while adding customer:<br />$mPanelError<br />";
+         $mNotice .= "<li>problem ($mRet) while adding customer:<br />$mError<br />";
          $mMode = "gen_error";
       }
-      wtfpanel_globalizecustomerphonepostvars();
-      wtfpanel_processcustomerphonevars($mPHCount,$mPHType,$mPHNumber);
+      globalizecustomerphonepostvars();
+      processcustomerphonevars($mPHCount,$mPHType,$mPHNumber);
       for ($i = 0;$i < $mPHCount;$i++) {
-         $mRet = PanelAssociateCustomerPhone($mMySched,$customerphone_table,$mCustomer_key,$mPHType[$i],$mPHNumber[$i]);
+         $mRet = AssociateCustomerPhone($mMySched,$customerphone_table,$mCustomer_key,$mPHType[$i],$mPHNumber[$i]);
          if ($mRet != 0) {
-            $mNotice .= "<li>problem ($mRet) while associating phone nubmer:$i," . $mPHType[$i] . "," . $mPHNumber[$i] . "<br />$mPanelError<br />";
+            $mNotice .= "<li>problem ($mRet) while associating phone nubmer:$i," . $mPHType[$i] . "," . $mPHNumber[$i] . "<br />$mError<br />";
          }
          if ($i == 0) { //make this primary until we have a better interface
-            $mRet = PanelUpdateCustomerPrimaryPhoneType($mMySched,$customer_table,$mCustomer_key,$mPHType[$i]);
+            $mRet = UpdateCustomerPrimaryPhoneType($mMySched,$customer_table,$mCustomer_key,$mPHType[$i]);
             if ($mRet != 0) {
-               $mNotice .= "<li>problem ($mRet) while updating primary phonetype for customer:$mCustomer_key on:$i," . $mPHType[$i] . "," . $mPHNumber[$i] . "<br />$mPanelError<br />";
+               $mNotice .= "<li>problem ($mRet) while updating primary phonetype for customer:$mCustomer_key on:$i," . $mPHType[$i] . "," . $mPHNumber[$i] . "<br />$mError<br />";
             }
          }
       }
-      $mRet = PanelUpdateSentryCustomer($mMySched,$sentry_table,$mSentry_key,$mCustomer_key);
+      $mRet = UpdateSentryCustomer($mMySched,$sentry_table,$mSentry_key,$mCustomer_key);
       if ($mRet != 0) {
          $mMode = "gen_error";
-         $mNotice .= "<li>problem ($mRet) while updating sentry customer:<br />$mPanelError<br />";
+         $mNotice .= "<li>problem ($mRet) while updating sentry customer:<br />$mError<br />";
       }
    }
    if ($mMode == "linknewcustomer") {
@@ -624,14 +624,14 @@
    if ($mMode == "suggestsite") {
       //$mSite_streetaddr,$mSite_city,$mSite_state,$mSite_zip,$mSite_sdirections;
       //$mCust_nametype,$mCust_lastname,$mCust_firstname,$mCust_name,$mCust_streetaddr,$mCust_city,$mCust_state,$mCust_zip,$mCust_customertype
-      $mRet = PanelGetCustomerAddrByKey($mMySched,$customer_table,$mCustomer_key,$mSuggest_streetaddr,$mSuggest_city,$mSuggest_state,$mSuggest_zip);
+      $mRet = GetCustomerAddrByKey($mMySched,$customer_table,$mCustomer_key,$mSuggest_streetaddr,$mSuggest_city,$mSuggest_state,$mSuggest_zip);
       if ($mRet == 0) {
          $mSite_streetaddr = $mSuggest_streetaddr;
          $mSite_city = $mSuggest_city;
          $mSite_state = $mSuggest_state;
          $mSite_zip = $mSuggest_zip;
       } else {
-         $mNotice .= "<li>problem ($mRet) getting customer addr to suggest site with:<br />$mPanelError<br />";
+         $mNotice .= "<li>problem ($mRet) getting customer addr to suggest site with:<br />$mError<br />";
          $mMode = "gen_error";
       }
    }
@@ -641,21 +641,21 @@
       if (isset($_GET["linkexistingcustomer"])) {
          $mSentry_key = $_GET["linkexistingcustomer"];
       }
-      $mRet = PanelGetSentryLastUpdate($mMySched,$sentry_table,$mSentry_key,$mSentry_LastUpdate);
+      $mRet = GetSentryLastUpdate($mMySched,$sentry_table,$mSentry_key,$mSentry_LastUpdate);
       if ($mRet != 0) {
-         $mNotice .= "<li>invalid sentry key '$mSentry_key' given to link a customer to<br />$mPanelError";
+         $mNotice .= "<li>invalid sentry key '$mSentry_key' given to link a customer to<br />$mError";
          $mMode = "gen_error";
       }
    }
 
    if ($mMode == "show_sentry") {
-      $mRet = PanelGetSentryHeading($mMySched,$sentry_table,$mSentry_key,$mSentry_heading);
+      $mRet = GetSentryHeading($mMySched,$sentry_table,$mSentry_key,$mSentry_heading);
       if ($mRet != 0) {
          $mMode = "gen_error";
          if ($mRet == -1) {
             $mNotice .= "<li>sentry key:$mSentry_key not found<br />";
          } else {
-            $mNotice .= "<li>problem ($mRet) while getting Sentry info:$mSentry_key<br />$mPanelError<br />";
+            $mNotice .= "<li>problem ($mRet) while getting Sentry info:$mSentry_key<br />$mError<br />";
          }
       }
    }
@@ -671,21 +671,21 @@
    }
 
    if ($mMode == "submitnew") {
-      wtfpanel_globalizesentryformpostvars();
+      globalizesentryformpostvars();
    }
    if ($mMode == "submitnew") {
-      if (!wtfpanel_testsentryvars($mAddSentryerr)) {
+      if (!testsentryvars($mAddSentryerr)) {
          $mMode = $mModeAfterFailSubmit;
          $mNotice .= "<li>problems with information submitted for entry<br />";
       }
    }
    if ($mMode == "submitnew") {
-      $mRet = PanelAddSentry($mMySched,$sentry_table,$mSentry_heading,$mSentry_notes,$mSentry_startdate,$mSentry_starttime,$mSentry_supervisorkey,$mSentry_sentrytype,$mSentry_key);
+      $mRet = AddSentry($mMySched,$sentry_table,$mSentry_heading,$mSentry_notes,$mSentry_startdate,$mSentry_starttime,$mSentry_supervisorkey,$mSentry_sentrytype,$mSentry_key);
       if ($mRet == 0) {
          $mNotice .= "successfully added schedule entry<br />";
          $mMode = $mModeAfterSuccessSubmit;
       } else {
-         $mNotice .= "problem ($mRet) while adding schedule entry:<br />$mPanelError<br />";
+         $mNotice .= "problem ($mRet) while adding schedule entry:<br />$mError<br />";
          $mMode = $mModeAfterFailSubmit;
       }
    }
@@ -784,7 +784,7 @@
    if ($mMode == "show_sentry") {
       $mSubtitle = "$mSentry_heading | Entry";
       if ($mShowMap) {
-         //$mHeadExtra .= wtfpanel_sentrygoogleapiscript();
+         //$mHeadExtra .= sentrygoogleapiscript();
       }
    } else
    if ($mMode == "showedit_site") {
@@ -811,16 +811,16 @@
    }
 
    if ($mMode != "printday") {
-      echo wtfpanel_header($mSubtitle);
-      echo wtfpanel_top();
+      echo header($mSubtitle);
+      echo top();
    }
    if ($mMode == "printday") {
-      echo wtfpanel_header($mSubtitle);
-      echo wtfpanel_topminimal();
+      echo header($mSubtitle);
+      echo topminimal();
    }
 
    if ($mMode == "login") {
-      echo wtfpanel_logintable($default_tableclass,"./");
+      echo logintable($default_tableclass,"./");
    }
    if ($mMode == "nothing") {
       echo "nothing designed for this state";
@@ -830,55 +830,55 @@
    } else
    if ($mMode == "add_sentry") {
       if ($mNotice != "") {
-         echo wtfpanel_sentrynoticetable($mNotice);
+         echo sentrynoticetable($mNotice);
       }
-      //wtfpanel_addsentryformtable($action,$width,$submitcaption,$caption,$cancelnav)
-      echo wtfpanel_addsentryformtable("./sentry.php?submitnew","800","add","<b>add schedule entry</b>","./");
+      //addsentryformtable($action,$width,$submitcaption,$caption,$cancelnav)
+      echo addsentryformtable("./sentry.php?submitnew","800","add","<b>add schedule entry</b>","./");
    } else
    if ($mMode == "showadd_wprocess") {
       if ($mNotice != "") {
-         echo wtfpanel_sentrynoticetable($mNotice);
+         echo sentrynoticetable($mNotice);
       }
       $mCancelNav = "./";
-      echo wtfpanel_addsentryformtable("./sentry.php?submitsentry_linkcust","800","next","<b>add schedule entry</b>",$mCancelNav);
+      echo addsentryformtable("./sentry.php?submitsentry_linkcust","800","next","<b>add schedule entry</b>",$mCancelNav);
    } else
    if ($mMode == "showlinkcust") {
       if ($mNotice != "") {
-         echo wtfpanel_sentrynoticetable($mNotice);
+         echo sentrynoticetable($mNotice);
       }
-      echo wtfpanel_sentrynoticetable("<b>link a customer to this schedule entry</b>");
-      echo wtfpanel_existingcustomerformtable("./sentry.php?linkexistingcustomer=$mSentry_key","800","existing customer lookup");
-      echo wtfpanel_customeraddformtable("./sentry.php?linknewcustomer=$mSentry_key&next=suggestsite","next");
+      echo sentrynoticetable("<b>link a customer to this schedule entry</b>");
+      echo existingcustomerformtable("./sentry.php?linkexistingcustomer=$mSentry_key","800","existing customer lookup");
+      echo customeraddformtable("./sentry.php?linknewcustomer=$mSentry_key&next=suggestsite","next");
    } else
    if ($mMode == "linkexistingcustomer_find") {
       //make the alpha list
       if ($mNotice != "") {
-         echo wtfpanel_sentrynoticetable($mNotice);
+         echo sentrynoticetable($mNotice);
       }
       if (isset($_GET["alpha"])) {
          $mAlpha = $_GET["alpha"];
       } else {
          $mAlpha = "A";
       }
-      echo wtfpanel_customeralphaforlink($mAlpha,"suggestsite");
-      //echo wtfpanel_customerlistforlink("<b>choose customer to link</b>","suggestsite");
-      echo wtfpanel_customeraddformtable("./sentry.php?linknewcustomer=$mSentry_key&next=suggestsite","next");
+      echo customeralphaforlink($mAlpha,"suggestsite");
+      //echo customerlistforlink("<b>choose customer to link</b>","suggestsite");
+      echo customeraddformtable("./sentry.php?linknewcustomer=$mSentry_key&next=suggestsite","next");
    } else
    if ($mMode == "suggestsite") {
       if ($mNotice != "") {
-         echo wtfpanel_sentrynoticetable($mNotice);
+         echo sentrynoticetable($mNotice);
       }
-      echo wtfpanel_sitesuggest("<b>site for entry</b>","./sentry.php?assocsite=$mSentry_key","");
+      echo sitesuggest("<b>site for entry</b>","./sentry.php?assocsite=$mSentry_key","");
    } else
    if ($mMode == "showsentries") {
-      //echo wtfpanel_sentriesbymonthtable("<b>Schedule Entries for $mShowMonthText, $mShowYear</b>",$mShowMonth,$mShowYear);
-      echo wtfpanel_sentrymonthv($mShowMonth,$mShowYear,$mShowDay);
+      //echo sentriesbymonthtable("<b>Schedule Entries for $mShowMonthText, $mShowYear</b>",$mShowMonth,$mShowYear);
+      echo sentrymonthv($mShowMonth,$mShowYear,$mShowDay);
       if ($mNotice != "") {
-         echo wtfpanel_sentrynoticetable($mNotice);
+         echo sentrynoticetable($mNotice);
       }
    } else
    if ($mMode == "sentrieslist") {
-      //echo wtfpanel_sentrymonthv($mShowMonth,$mShowYear,$mShowDay);
+      //echo sentrymonthv($mShowMonth,$mShowYear,$mShowDay);
       //$mPaddedWeekno = $mShowWeek;
       //$mPaddedWeekno = sprintf("%02d",$mShowWeek);
       $mStartTimestamp = strtotime($mShowYear . "W" . sprintf("%02d",$mShowWeek));
@@ -889,75 +889,75 @@
       $mShowDay = date("j",$mStartTimestamp);
       $mTCaption = "" . $mStartText . " - " . $mEndText . date(", Y",$mEndTimestamp);
       //$mTCaption = "poop";
-      echo wtfpanel_sentriesbyweektable($mTCaption,$mShowWeek,$mShowYear);
-      //echo wtfpanel_sentriesbymonthtable("all for $mShowMonthText, $mShowYear",$mShowWeek,$mShowYear);
+      echo sentriesbyweektable($mTCaption,$mShowWeek,$mShowYear);
+      //echo sentriesbymonthtable("all for $mShowMonthText, $mShowYear",$mShowWeek,$mShowYear);
       if ($mNotice != "") {
-         echo wtfpanel_sentrynoticetable($mNotice);
+         echo sentrynoticetable($mNotice);
       }
    } else
    if ($mMode == "show_sentry") {
-      echo wtfpanel_sentrywithinfotable("",$mShowMap);
+      echo sentrywithinfotable("",$mShowMap);
       if ($mNotice != "") {
-         echo wtfpanel_sentrynoticetable($mNotice);
+         echo sentrynoticetable($mNotice);
       }
    } else
    if ($mMode == "showedit_site") {
-      echo wtfpanel_sitesuggest("<b>edit site for $mSentry_Heading $mSentry_Startdate</b>","./sentry.php?updatesite=$mSentry_key","./sentry.php?show=$mSentry_key");
+      echo sitesuggest("<b>edit site for $mSentry_Heading $mSentry_Startdate</b>","./sentry.php?updatesite=$mSentry_key","./sentry.php?show=$mSentry_key");
       if ($mNotice != "") {
-         echo wtfpanel_sentrynoticetable($mNotice);
+         echo sentrynoticetable($mNotice);
       }
    } else
    if ($mMode == "showedit_sentry") {
-      wtfpanel_sentrygetstartdateparts($mSentry_startdate,$mShowYear,$mShowMonth,$mShowDay);
-      echo wtfpanel_addsentryformtable("./sentry.php?updatesentry=$mSentry_key","800","update","<b>edit schedule entry</b>","./sentry.php?show=$mSentry_key");
+      sentrygetstartdateparts($mSentry_startdate,$mShowYear,$mShowMonth,$mShowDay);
+      echo addsentryformtable("./sentry.php?updatesentry=$mSentry_key","800","update","<b>edit schedule entry</b>","./sentry.php?show=$mSentry_key");
       if ($mNotice != "") {
-         echo wtfpanel_sentrynoticetable($mNotice);
+         echo sentrynoticetable($mNotice);
       }
    } else
    if ($mMode == "editcustlink") {
       //$mSentry_Heading,$mSentry_Startdate
-      echo wtfpanel_customerlistforlink("change customer linked $mSentry_heading","show_sentry");
+      echo customerlistforlink("change customer linked $mSentry_heading","show_sentry");
       if ($mNotice != "") {
-         echo wtfpanel_sentrynoticetable($mNotice);
+         echo sentrynoticetable($mNotice);
       }
    } else
    if ($mMode == "showday") {
-      echo wtfpanel_sentriesbyday("all entries for " . date("F j,Y",$mShowStamp),$mShowMonth,$mShowYear,$mShowDay);
+      echo sentriesbyday("all entries for " . date("F j,Y",$mShowStamp),$mShowMonth,$mShowYear,$mShowDay);
       if ($mNotice != "") {
-         echo wtfpanel_sentrynoticetable($mNotice);
+         echo sentrynoticetable($mNotice);
       }
    } else
    if ($mMode == "delistconfirm") {
-      echo wtfpanel_confirmsentrydelist("./sentry.php?delist=$mSentry_key&amp;confirm");
+      echo confirmsentrydelist("./sentry.php?delist=$mSentry_key&amp;confirm");
       if ($mNotice != "") {
-         echo wtfpanel_sentrynoticetable($mNotice);
+         echo sentrynoticetable($mNotice);
       }
    } else
    if ($mMode == "printday") {
-      echo wtfpanel_sentriesbydayforprint("all entries for " . date("F j,Y",$mShowStamp),$mShowMonth,$mShowYear,$mShowDay);
+      echo sentriesbydayforprint("all entries for " . date("F j,Y",$mShowStamp),$mShowMonth,$mShowYear,$mShowDay);
       if ($mNotice != "") {
-         echo wtfpanel_sentrynoticetable($mNotice);
+         echo sentrynoticetable($mNotice);
       }
    } else
    if ($mMode == "duplicate") {
       //$mSentry_heading,$mSentry_startdate,$mSentry_starttime,$mSentry_sentrytype,$mSentry_custkey,$mSentry_custname
       $mShow_heading = substr($mSentry_heading,0,6);
       $mShow_custname = substr($mSentry_custname,0,6);
-      echo wtfpanel_actionmonthv("./sentry.php?submitdupe=%entry.key%&amp;month=%date:n%&amp;day=%date:j%&amp;year=%date:Y%",$mShowMonth,$mShowYear,"dupeselect","select day to duplicate sentry $mSentry_key ($mShow_custname:$mSentry_sentrytype $mShow_heading)","duplicate",$mShow_sentries,"./sentry.php?show=$mSentry_key");
+      echo actionmonthv("./sentry.php?submitdupe=%entry.key%&amp;month=%date:n%&amp;day=%date:j%&amp;year=%date:Y%",$mShowMonth,$mShowYear,"dupeselect","select day to duplicate sentry $mSentry_key ($mShow_custname:$mSentry_sentrytype $mShow_heading)","duplicate",$mShow_sentries,"./sentry.php?show=$mSentry_key");
       if ($mNotice != "") {
-         echo wtfpanel_sentrynoticetable($mNotice);
+         echo sentrynoticetable($mNotice);
       }
    } else
    if ($mMode == "godate") {
       if ($mNotice != "") {
-         echo wtfpanel_sentrynoticetable($mNotice);
+         echo sentrynoticetable($mNotice);
       }
    }
 
 
    if ($mMode != "printday") {
-      echo wtfpanel_bottom();
+      echo bottom();
    }
    if ($mMode == "printday") {
-      echo wtfpanel_bottomminimal();
+      echo bottomminimal();
    }

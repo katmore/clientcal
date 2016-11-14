@@ -10,10 +10,18 @@
         "dshafik/php7-mysql-shim": "^0.1.0"
    },
     "autoload": {
+        "psr-4": { 
+            "clientcal\\": "src"
+         },
         "files": [
-            "include/wtfpanel.inc.php",
-            "include/html.inc.php",
-            "include/html.menu.inc.php"
+            "include/customer.php",
+            "include/geoloc.php",
+            "include/pop3.php",
+            "include/sentry.php",
+            "include/site.php",
+            "include/supervisor.php",
+            "include/user.php",
+            "include/version.php"
          ]
     }   
 }

@@ -1,13 +1,14 @@
 <?php 
-require_once("wtfpanel.err.inc.php");
-//   define("CAL_GREGORIAN","");
+
+namespace clientcal;
+
 function days_in_month($ignore_cal,$month, $year) { 
  return date('t', mktime(0, 0, 0, $month+1, 0, $year)); 
 }
 
-   function PanelAddSentry($My,$Table,$Heading,$Notes,$Startdate,$Starttime,$Supervisorkey,$Sentrytype,&$pKey) {
+   function AddSentry($My,$Table,$Heading,$Notes,$Startdate,$Starttime,$Supervisorkey,$Sentrytype,&$pKey) {
       if (!is_numeric($Supervisorkey)) {
-         return PanelError(-10,"bad format for Supervisorkey '$Supervisorkey'");
+         throw new Error(-10,"bad format for Supervisorkey '$Supervisorkey'");
       }
       $sql = "
       INSERT INTO
@@ -21,15 +22,15 @@ function days_in_month($ignore_cal,$month, $year) {
          sentrytype='$Sentrytype'
       ";
       if (!($result = @mysql_query($sql,$My)))
-         return PanelError(-4,"while insert: " . mysql_error());
+         throw new Error(-4,"while insert: " . mysql_error());
       $pKey = @mysql_insert_id($My);
       return 0;
    }
-   function PanelEnumerateSentriesByMonthAndYear($My,$Table,$MonthNo,$Year,$LimitStart,$LimitMax,&$pCount,&$pKey,&$pHeading,&$pNotes,&$pStartdate,&$pStarttime,&$pSupervisor,&$pSentrytype,&$pCustomer,&$pLastUpdated) {
+   function EnumerateSentriesByMonthAndYear($My,$Table,$MonthNo,$Year,$LimitStart,$LimitMax,&$pCount,&$pKey,&$pHeading,&$pNotes,&$pStartdate,&$pStarttime,&$pSupervisor,&$pSentrytype,&$pCustomer,&$pLastUpdated) {
       $pCount = 0;
       $pKey = array();$pHeading = array();$pNotes = array();$pStartdate = array();$pStarttime = array();$pSupervisor = array();$pSentrytype = array();$pCustomer = array();$pLastUpdated = array();
-      if (!is_numeric($MonthNo)) return PanelError(-5,"month given in bad format:$MonthNo");
-      if (($MonthNo > 12) || ($MonthNo < 1)) return PanelError(-6,"bad month given:$MonthNo");
+      if (!is_numeric($MonthNo)) throw new Error(-5,"month given in bad format:$MonthNo");
+      if (($MonthNo > 12) || ($MonthNo < 1)) throw new Error(-6,"bad month given:$MonthNo");
       $sql = "
       SELECT
          id,
@@ -54,7 +55,7 @@ function days_in_month($ignore_cal,$month, $year) {
       ASC
       ";
       if (!($result = @mysql_query($sql,$My)))
-         return PanelError(-4,"while update: " . mysql_error());
+         throw new Error(-4,"while update: " . mysql_error());
       while ($row = mysql_fetch_assoc($result)) {
          $pKey[$pCount] = $row["id"];
          $pHeading[$pCount] = $row["heading"];
@@ -69,9 +70,9 @@ function days_in_month($ignore_cal,$month, $year) {
       }
       return 0;
    }
-   function PanelUpdateSentry($My,$TableSentry,$Sentrykey,$NewHeading,$NewNotes,$NewStartdate,$NewStarttime,$NewSupervisorkey,$NewSentrytype) {
-      if (!is_numeric($Sentrykey)) return PanelError(-5,"bad sentry key given");
-      if (!is_numeric($NewSupervisorkey)) return PanelError(-5,"bad sentry key given");
+   function UpdateSentry($My,$TableSentry,$Sentrykey,$NewHeading,$NewNotes,$NewStartdate,$NewStarttime,$NewSupervisorkey,$NewSentrytype) {
+      if (!is_numeric($Sentrykey)) throw new Error(-5,"bad sentry key given");
+      if (!is_numeric($NewSupervisorkey)) throw new Error(-5,"bad sentry key given");
       $sql = "
       UPDATE
          $TableSentry
@@ -86,12 +87,12 @@ function days_in_month($ignore_cal,$month, $year) {
          id=$Sentrykey
       ";
       if (!($result = @mysql_query($sql,$My)))
-         return PanelError(-4,"while update: " . mysql_error());
+         throw new Error(-4,"while update: " . mysql_error());
       return 0;
    }
-   function PanelUpdateSentryCustomer($My,$Table,$Key,$CustomerKey) {
-      if (!is_numeric($Key)) return PanelError(-5,"bad sentry key given");
-      if (!is_numeric($CustomerKey)) return PanelError(-5,"bad customer key given");
+   function UpdateSentryCustomer($My,$Table,$Key,$CustomerKey) {
+      if (!is_numeric($Key)) throw new Error(-5,"bad sentry key given");
+      if (!is_numeric($CustomerKey)) throw new Error(-5,"bad customer key given");
       $sql = "
       UPDATE
          $Table
@@ -101,12 +102,12 @@ function days_in_month($ignore_cal,$month, $year) {
          id=$Key
       ";
       if (!($result = @mysql_query($sql,$My)))
-         return PanelError(-4,"while update: " . mysql_error());
+         throw new Error(-4,"while update: " . mysql_error());
       return 0;
    }
-   function PanelGetSomeSentryAndSiteInfo($My,$TableSentry,$TableSite,$SentryKey,&$pSentry_Heading,&$pSentry_Startdate,&$pSentry_Starttime,&$pSite_streetaddr,&$pSite_city,&$pSite_state,&$pSite_zip,&$pSite_sdirections,&$pSentry_LastUpdated,&$pSite_LastUpdated) {
+   function GetSomeSentryAndSiteInfo($My,$TableSentry,$TableSite,$SentryKey,&$pSentry_Heading,&$pSentry_Startdate,&$pSentry_Starttime,&$pSite_streetaddr,&$pSite_city,&$pSite_state,&$pSite_zip,&$pSite_sdirections,&$pSentry_LastUpdated,&$pSite_LastUpdated) {
       $pSentry_Heading = "";$pSentry_Startdate = "";$pSentry_Starttime = "";$pSite_streetaddr = "";$pSite_city = "";$pSite_state = "";$pSite_zip = "";$pSite_sdirections = "";$pSentry_LastUpdated = "";$pSite_LastUpdated = "";
-      if (!is_numeric($SentryKey)) return PanelError(-5,"bad sentry key given");
+      if (!is_numeric($SentryKey)) throw new Error(-5,"bad sentry key given");
      $sql = "
       SELECT
          $TableSentry.heading AS sentry_heading,
@@ -131,9 +132,9 @@ function days_in_month($ignore_cal,$month, $year) {
          0,1
       ";
       if (!($result = @mysql_query($sql,$My)))
-         return PanelError(-4,"while get: " . mysql_error());
+         throw new Error(-4,"while get: " . mysql_error());
       if (!($row = mysql_fetch_assoc($result)))
-         return PanelError(-1,"no sentry found with that key:$SentryKey");
+         throw new Error(-1,"no sentry found with that key:$SentryKey");
       $pSentry_Heading = $row["sentry_heading"];
       $pSentry_Startdate = $row["sentry_startdate"];
       $pSentry_Starttime = $row["sentry_starttime"];
@@ -158,9 +159,9 @@ function days_in_month($ignore_cal,$month, $year) {
       */
       return 0;
    }
-   function PanelGetSentryHeading($My,$TableSentry,$SentryKey,&$pHeading) {
+   function GetSentryHeading($My,$TableSentry,$SentryKey,&$pHeading) {
       $pHeading = "";
-      if (!is_numeric($SentryKey)) return PanelError(-7,"sentry key given in bad format:$SentryKey");
+      if (!is_numeric($SentryKey)) throw new Error(-7,"sentry key given in bad format:$SentryKey");
       $sql = "
       SELECT
          heading
@@ -170,15 +171,15 @@ function days_in_month($ignore_cal,$month, $year) {
          id=$SentryKey
       ";
       if (!($result = @mysql_query($sql,$My)))
-         return PanelError(-4,"while get: " . mysql_error());
+         throw new Error(-4,"while get: " . mysql_error());
       if (mysql_num_rows($result) < 1)
-         return PanelError(-1,"no sentry with that key");
+         throw new Error(-1,"no sentry with that key");
       $row = mysql_fetch_assoc($result);
       $pHeading = $row["heading"];
       return 0;
    }
-   function PanelDelistSentry($My,$TableSentry,$SentryKey) {
-      if (!is_numeric($SentryKey)) return PanelError(-7,"sentry key given in bad format:$SentryKey");
+   function DelistSentry($My,$TableSentry,$SentryKey) {
+      if (!is_numeric($SentryKey)) throw new Error(-7,"sentry key given in bad format:$SentryKey");
       $sql = "
       UPDATE
          $TableSentry
@@ -188,14 +189,14 @@ function days_in_month($ignore_cal,$month, $year) {
          id=$SentryKey
       ";
       if (!($result = @mysql_query($sql,$My)))
-         return PanelError(-4,"while update: " . mysql_error());
+         throw new Error(-4,"while update: " . mysql_error());
       if (mysql_affected_rows($My) < 1)
-         return PanelError(-1,"no sentry by that key:$SentryKey");
+         throw new Error(-1,"no sentry by that key:$SentryKey");
       return 0;
    }
-   function PanelGetSentryWCustName($My,$TableSentry,$TableCust,$SentryKey,&$pHeading,&$pStartdate,&$pStarttime,&$pSentrytype,&$pCust_key,&$pCust_name) {
+   function GetSentryWCustName($My,$TableSentry,$TableCust,$SentryKey,&$pHeading,&$pStartdate,&$pStarttime,&$pSentrytype,&$pCust_key,&$pCust_name) {
       $pHeading = "";$pStartdate = "";$pStarttime = "";$pSentrytype = "";$pCust_key = "";$pCust_name = "";
-      if (!is_numeric($SentryKey)) return PanelError(-7,"sentry key given in bad format:$SentryKey");
+      if (!is_numeric($SentryKey)) throw new Error(-7,"sentry key given in bad format:$SentryKey");
       $sql = "
       SELECT
          $TableSentry.id AS sentry_key,
@@ -216,9 +217,9 @@ function days_in_month($ignore_cal,$month, $year) {
          $TableSentry.id=$SentryKey
       ";
       if (!($result = @mysql_query($sql,$My)))
-         return PanelError(-4,"while update: " . mysql_error());
+         throw new Error(-4,"while update: " . mysql_error());
       if (mysql_num_rows($result) < 1) {
-         return PanelError(-1,"no record with that sentry");
+         throw new Error(-1,"no record with that sentry");
       }
       $row = mysql_fetch_assoc($result);
       $pHeading = $row["sentry_heading"];
@@ -229,9 +230,9 @@ function days_in_month($ignore_cal,$month, $year) {
       $pCust_name = $row["customer_name"];
       return 0;
    }
-   function PanelGetSentryWSomeSiteAndCustInfoB($My,$TableSentry,$TableSupervisor,$TableCust,$TableSite,$SentryKey,&$pHeading,&$pNotes,&$pStartdate,&$pStarttime,&$pSentrytype,&$pSupervisor_key,&$pSupervisor_name,&$pCust_key,&$pCust_name,&$pSite_streetaddr,&$pSite_city,&$pSite_state,&$pSite_zip,&$pSite_sdirections) {
+   function GetSentryWSomeSiteAndCustInfoB($My,$TableSentry,$TableSupervisor,$TableCust,$TableSite,$SentryKey,&$pHeading,&$pNotes,&$pStartdate,&$pStarttime,&$pSentrytype,&$pSupervisor_key,&$pSupervisor_name,&$pCust_key,&$pCust_name,&$pSite_streetaddr,&$pSite_city,&$pSite_state,&$pSite_zip,&$pSite_sdirections) {
       $pHeading = "";$pNotes = "";$pStartdate = "";$pStarttime = "";$pSentrytype = "";$pSupervisor_key = "";$pSupervisor_name = "";$pCust_name = "";$pSite_streetaddr = "";$pSite_city = "";$pSite_state = "";$pSite_zip = "";$pSite_sdirections = "";
-      if (!is_numeric($SentryKey)) return PanelError(-7,"sentry key given in bad format:$SentryKey");
+      if (!is_numeric($SentryKey)) throw new Error(-7,"sentry key given in bad format:$SentryKey");
       $sql = "
       SELECT
          $TableSentry.id AS sentry_key,
@@ -269,9 +270,9 @@ function days_in_month($ignore_cal,$month, $year) {
          $TableSentry.id=$SentryKey
       ";
       if (!($result = @mysql_query($sql,$My)))
-         return PanelError(-4,"while update: " . mysql_error());
+         throw new Error(-4,"while update: " . mysql_error());
       if (mysql_num_rows($result) < 1) {
-         return PanelError(-1,"no record with that sentry");
+         throw new Error(-1,"no record with that sentry");
       }
       $row = mysql_fetch_assoc($result);
       $pHeading = $row["sentry_heading"];
@@ -292,9 +293,9 @@ function days_in_month($ignore_cal,$month, $year) {
       //$pPriphone_type = $row["phone_type"];
       return 0;
    }
-   function PanelGetSentryWSomeSiteAndCustInfo($My,$TableSentry,$TableSupervisor,$TableCust,$TableSite,$TablePhone,$SentryKey,&$pHeading,&$pStartdate,&$pStarttime,&$pSentrytype,&$pSupervisor_name,&$pCust_key,&$pCust_name,&$pSite_streetaddr,&$pSite_city,&$pSite_state,&$pSite_zip,&$pPriphone_num,&$pPriphone_type) {
+   function GetSentryWSomeSiteAndCustInfo($My,$TableSentry,$TableSupervisor,$TableCust,$TableSite,$TablePhone,$SentryKey,&$pHeading,&$pStartdate,&$pStarttime,&$pSentrytype,&$pSupervisor_name,&$pCust_key,&$pCust_name,&$pSite_streetaddr,&$pSite_city,&$pSite_state,&$pSite_zip,&$pPriphone_num,&$pPriphone_type) {
       $pHeading = "";$pStartdate = "";$pStarttime = "";$pSentrytype = "";$pSupervisor_name = "";$pCust_name = "";$pSite_streetaddr = "";$pSite_city = "";$pSite_state = "";$pSite_zip = "";$pPriphone_num = "";$pPriphone_type = "";
-      if (!is_numeric($SentryKey)) return PanelError(-7,"sentry key given in bad format:$SentryKey");
+      if (!is_numeric($SentryKey)) throw new Error(-7,"sentry key given in bad format:$SentryKey");
       $sql = "
       SELECT
          $TableSentry.id AS sentry_key,
@@ -339,9 +340,9 @@ function days_in_month($ignore_cal,$month, $year) {
          $TableSentry.id=$SentryKey
       ";
       if (!($result = @mysql_query($sql,$My)))
-         return PanelError(-4,"while update: " . mysql_error());
+         throw new Error(-4,"while update: " . mysql_error());
       if (mysql_num_rows($result) < 1) {
-         return PanelError(-1,"no record with that sentry");
+         throw new Error(-1,"no record with that sentry");
       }
       $row = mysql_fetch_assoc($result);
       $pHeading = $row["sentry_heading"];
@@ -359,7 +360,7 @@ function days_in_month($ignore_cal,$month, $year) {
       $pPriphone_type = $row["phone_type"];
       return 0;
    }
-   function PanelEnumerateSentryCountByDay($My,$TableSentry,$MonthNo,$Year,&$pSentryCount) {
+   function EnumerateSentryCountByDay($My,$TableSentry,$MonthNo,$Year,&$pSentryCount) {
       //account for repeat in here (maybe)
       $pSentryCount = array();
       $sql = "
@@ -377,7 +378,7 @@ function days_in_month($ignore_cal,$month, $year) {
       ASC 
       ";
       if (!($result = @mysql_query($sql,$My)))
-         return PanelError(-4,"while get: " . mysql_error());
+         throw new Error(-4,"while get: " . mysql_error());
       $sCheckCount = mysql_num_rows($result);
       $sDaysInMonth = days_in_month(CAL_GREGORIAN,$MonthNo,$Year);
       $sCurDay = 1;
@@ -409,12 +410,12 @@ function days_in_month($ignore_cal,$month, $year) {
       }
       return 0;
    }
-   function PanelEnumerateSentriesWCustNameByDay($My,$TableSentry,$TableSupervisor,$TableCust,$MonthNo,$Day,$Year,$LimitStart,$LimitMax,&$pCount,&$pSentryKey,&$pHeading,&$pStarttime,&$pSentrytype,&$pSupervisor,&$pSupervisorKey,&$pCustName) {
+   function EnumerateSentriesWCustNameByDay($My,$TableSentry,$TableSupervisor,$TableCust,$MonthNo,$Day,$Year,$LimitStart,$LimitMax,&$pCount,&$pSentryKey,&$pHeading,&$pStarttime,&$pSentrytype,&$pSupervisor,&$pSupervisorKey,&$pCustName) {
       //account for repeat in here! (actually not i dont think)
       $pCount = 0;
       $pSentryKey = array();$pHeading = array();$pStarttime = array();$pSentrytype = array();$pSupervisor = array();$pSupervisorKey = array();$pCustName = array();
-      if (!is_numeric($MonthNo)) return PanelError(-5,"month given in bad format:$MonthNo");
-      if (($MonthNo > 12) || ($MonthNo < 1)) return PanelError(-6,"bad month given:$MonthNo");
+      if (!is_numeric($MonthNo)) throw new Error(-5,"month given in bad format:$MonthNo");
+      if (($MonthNo > 12) || ($MonthNo < 1)) throw new Error(-6,"bad month given:$MonthNo");
       //$sDate = "$Year-$MonthNo-$Day";
       $sStamp = mktime(0,0,0,$MonthNo,$Day,$Year);
       $sDate = date("Y-m-d",$sStamp);
@@ -448,7 +449,7 @@ function days_in_month($ignore_cal,$month, $year) {
       ASC
       ";
       if (!($result = @mysql_query($sql,$My)))
-         return PanelError(-4,"while get: " . mysql_error());
+         throw new Error(-4,"while get: " . mysql_error());
       //$pSentryKey = array();$pHeading = array();$pStartdate = array();$pStarttime = array();$pSentrytype = array();$pSupervisor = array();$pCust_name = array();
       while($row = mysql_fetch_assoc($result)) {
          $pCustName[$pCount] = $row["cust_name"];
@@ -464,14 +465,14 @@ function days_in_month($ignore_cal,$month, $year) {
       //trigger_error($pCount);
       return 0;
    }
-   function PanelEnumerateSentriesWSomeSiteAndCustInfoForDayB($My,$TableSentry,$TableSupervisor,$TableCust,$TableSite,$TablePhone,$MonthNo,$Year,$Day,$LimitStart,$LimitMax,&$pCount,&$pSentryKey,&$pHeading,&$pStartdate,&$pStarttime,&$pSentrytype,&$pSupervisor_name,&$pSupervisor_key,&$pCust_name,&$pCust_phone,&$pSite_streetaddr,&$pSite_city,&$pSite_state,&$pSite_zip,&$pPriphone_num,&$pPriphone_type) {
+   function EnumerateSentriesWSomeSiteAndCustInfoForDayB($My,$TableSentry,$TableSupervisor,$TableCust,$TableSite,$TablePhone,$MonthNo,$Year,$Day,$LimitStart,$LimitMax,&$pCount,&$pSentryKey,&$pHeading,&$pStartdate,&$pStarttime,&$pSentrytype,&$pSupervisor_name,&$pSupervisor_key,&$pCust_name,&$pCust_phone,&$pSite_streetaddr,&$pSite_city,&$pSite_state,&$pSite_zip,&$pPriphone_num,&$pPriphone_type) {
       $pCount = 0;
       $pSentryKey = array();$pHeading = array();$pStartdate = array();$pStarttime = array();$pSentrytype = array();$pSupervisor_name = array();$pSupervisor_key = array();$pCust_name = array();$pCust_phone = array();$pSite_streetaddr = array();$pSite_city = array();$pSite_state = array();$pSite_zip = array();$pPriphone_num = array();$pPriphone_type = array();
-      if (!is_numeric($MonthNo)) return PanelError(-5,"month given in bad format:$MonthNo");
-      if (($MonthNo > 12) || ($MonthNo < 1)) return PanelError(-6,"bad month given:$MonthNo");
-      if (!is_numeric($Year)) return PanelError(-7,"year given in bad format:$Year");
-      if (!is_numeric($Day)) return PanelError(-8,"day given in bad format:$Day");
-      if ($Day > days_in_month(CAL_GREGORIAN,$MonthNo,$Year)) return PanelError(-9,"bad day given based on given month:$Day");
+      if (!is_numeric($MonthNo)) throw new Error(-5,"month given in bad format:$MonthNo");
+      if (($MonthNo > 12) || ($MonthNo < 1)) throw new Error(-6,"bad month given:$MonthNo");
+      if (!is_numeric($Year)) throw new Error(-7,"year given in bad format:$Year");
+      if (!is_numeric($Day)) throw new Error(-8,"day given in bad format:$Day");
+      if ($Day > days_in_month(CAL_GREGORIAN,$MonthNo,$Year)) throw new Error(-9,"bad day given based on given month:$Day");
       $sDate = date("Y-m-d",mktime(0,0,0,$MonthNo,$Day,$Year));
       $sql = "
       SELECT
@@ -524,7 +525,7 @@ function days_in_month($ignore_cal,$month, $year) {
       ";
       //trigger_error($sql);
       if (!($result = @mysql_query($sql,$My)))
-         return PanelError(-4,"while update: " . mysql_error());
+         throw new Error(-4,"while update: " . mysql_error());
       while($row = mysql_fetch_assoc($result)) {
          $pSentryKey[$pCount] = $row["sentry_key"];
          $pHeading[$pCount] = $row["sentry_heading"];
@@ -544,14 +545,14 @@ function days_in_month($ignore_cal,$month, $year) {
       }
       return 0;
    }
-   function PanelEnumerateSentriesWSomeSiteAndCustInfoForDayC($My,$TableSentry,$TableSupervisor,$TableCust,$TableSite,$TablePhone,$MonthNo,$Year,$Day,$LimitStart,$LimitMax,&$pCount,&$pSentryKey,&$pHeading,&$pStartdate,&$pStarttime,&$pSentrytype,&$pSupervisor_name,&$pCust_name,&$pCust_phone,&$pSite_streetaddr,&$pSite_city,&$pSite_state,&$pSite_zip,&$pSite_sdirections,&$pPriphone_num,&$pPriphone_type) {
+   function EnumerateSentriesWSomeSiteAndCustInfoForDayC($My,$TableSentry,$TableSupervisor,$TableCust,$TableSite,$TablePhone,$MonthNo,$Year,$Day,$LimitStart,$LimitMax,&$pCount,&$pSentryKey,&$pHeading,&$pStartdate,&$pStarttime,&$pSentrytype,&$pSupervisor_name,&$pCust_name,&$pCust_phone,&$pSite_streetaddr,&$pSite_city,&$pSite_state,&$pSite_zip,&$pSite_sdirections,&$pPriphone_num,&$pPriphone_type) {
       $pCount = 0;
       $pSentryKey = array();$pHeading = array();$pStartdate = array();$pStarttime = array();$pSentrytype = array();$pSupervisor_name = array();$pCust_name = array();$pCust_phone = array();$pSite_streetaddr = array();$pSite_city = array();$pSite_state = array();$pSite_zip = array();$pSite_sdirections = array();$pPriphone_num = array();$pPriphone_type = array();
-      if (!is_numeric($MonthNo)) return PanelError(-5,"month given in bad format:$MonthNo");
-      if (($MonthNo > 12) || ($MonthNo < 1)) return PanelError(-6,"bad month given:$MonthNo");
-      if (!is_numeric($Year)) return PanelError(-7,"year given in bad format:$Year");
-      if (!is_numeric($Day)) return PanelError(-8,"day given in bad format:$Day");
-      if ($Day > days_in_month(CAL_GREGORIAN,$MonthNo,$Year)) return PanelError(-9,"bad day given based on given month:$Day");
+      if (!is_numeric($MonthNo)) throw new Error(-5,"month given in bad format:$MonthNo");
+      if (($MonthNo > 12) || ($MonthNo < 1)) throw new Error(-6,"bad month given:$MonthNo");
+      if (!is_numeric($Year)) throw new Error(-7,"year given in bad format:$Year");
+      if (!is_numeric($Day)) throw new Error(-8,"day given in bad format:$Day");
+      if ($Day > days_in_month(CAL_GREGORIAN,$MonthNo,$Year)) throw new Error(-9,"bad day given based on given month:$Day");
       $sDate = date("Y-m-d",mktime(0,0,0,$MonthNo,$Day,$Year));
       $sql = "
       SELECT
@@ -604,7 +605,7 @@ function days_in_month($ignore_cal,$month, $year) {
       ASC
       ";
       if (!($result = @mysql_query($sql,$My)))
-         return PanelError(-4,"while update: " . mysql_error());
+         throw new Error(-4,"while update: " . mysql_error());
       while($row = mysql_fetch_assoc($result)) {
          $pSentryKey[$pCount] = $row["sentry_key"];
          $pHeading[$pCount] = $row["sentry_heading"];
@@ -624,14 +625,14 @@ function days_in_month($ignore_cal,$month, $year) {
       }
       return 0;
    }
-   function PanelEnumerateSentriesWSomeSiteAndCustInfoForDay($My,$TableSentry,$TableSupervisor,$TableCust,$TableSite,$TablePhone,$MonthNo,$Year,$Day,$LimitStart,$LimitMax,&$pCount,&$pSentryKey,&$pHeading,&$pStartdate,&$pStarttime,&$pSentrytype,&$pSupervisor_name,&$pCust_name,&$pCust_phone,&$pSite_streetaddr,&$pSite_city,&$pSite_state,&$pSite_zip,&$pPriphone_num,&$pPriphone_type) {
+   function EnumerateSentriesWSomeSiteAndCustInfoForDay($My,$TableSentry,$TableSupervisor,$TableCust,$TableSite,$TablePhone,$MonthNo,$Year,$Day,$LimitStart,$LimitMax,&$pCount,&$pSentryKey,&$pHeading,&$pStartdate,&$pStarttime,&$pSentrytype,&$pSupervisor_name,&$pCust_name,&$pCust_phone,&$pSite_streetaddr,&$pSite_city,&$pSite_state,&$pSite_zip,&$pPriphone_num,&$pPriphone_type) {
       $pCount = 0;
       $pSentryKey = array();$pHeading = array();$pStartdate = array();$pStarttime = array();$pSentrytype = array();$pSupervisor_name = array();$pCust_name = array();$pCust_phone = array();$pSite_streetaddr = array();$pSite_city = array();$pSite_state = array();$pSite_zip = array();$pPriphone_num = array();$pPriphone_type = array();
-      if (!is_numeric($MonthNo)) return PanelError(-5,"month given in bad format:$MonthNo");
-      if (($MonthNo > 12) || ($MonthNo < 1)) return PanelError(-6,"bad month given:$MonthNo");
-      if (!is_numeric($Year)) return PanelError(-7,"year given in bad format:$Year");
-      if (!is_numeric($Day)) return PanelError(-8,"day given in bad format:$Day");
-      if ($Day > days_in_month(CAL_GREGORIAN,$MonthNo,$Year)) return PanelError(-9,"bad day given based on given month:$Day");
+      if (!is_numeric($MonthNo)) throw new Error(-5,"month given in bad format:$MonthNo");
+      if (($MonthNo > 12) || ($MonthNo < 1)) throw new Error(-6,"bad month given:$MonthNo");
+      if (!is_numeric($Year)) throw new Error(-7,"year given in bad format:$Year");
+      if (!is_numeric($Day)) throw new Error(-8,"day given in bad format:$Day");
+      if ($Day > days_in_month(CAL_GREGORIAN,$MonthNo,$Year)) throw new Error(-9,"bad day given based on given month:$Day");
       $sDate = date("Y-m-d",mktime(0,0,0,$MonthNo,$Day,$Year));
       $sql = "
       SELECT
@@ -683,7 +684,7 @@ function days_in_month($ignore_cal,$month, $year) {
       ASC
       ";
       if (!($result = @mysql_query($sql,$My)))
-         return PanelError(-4,"while update: " . mysql_error());
+         throw new Error(-4,"while update: " . mysql_error());
       while($row = mysql_fetch_assoc($result)) {
          $pSentryKey[$pCount] = $row["sentry_key"];
          $pHeading[$pCount] = $row["sentry_heading"];
@@ -702,14 +703,14 @@ function days_in_month($ignore_cal,$month, $year) {
       }
       return 0;
    }
-   function PanelEnumerateSentriesWSomeSiteAndCustInfoForWeek($My,$TableSentry,$TableSupervisor,$TableCust,$TableSite,$TablePhone,$WeekNo,$Year,$LimitStart,$LimitMax,&$pCount,&$pSentryKey,&$pHeading,&$pStartdate,&$pStarttime,&$pSentrytype,&$pSupervisor_name,&$pCust_name,&$pCust_phone,&$pSite_streetaddr,&$pSite_city,&$pSite_state,&$pSite_zip,&$pPriphone_num,&$pPriphone_type) {
+   function EnumerateSentriesWSomeSiteAndCustInfoForWeek($My,$TableSentry,$TableSupervisor,$TableCust,$TableSite,$TablePhone,$WeekNo,$Year,$LimitStart,$LimitMax,&$pCount,&$pSentryKey,&$pHeading,&$pStartdate,&$pStarttime,&$pSentrytype,&$pSupervisor_name,&$pCust_name,&$pCust_phone,&$pSite_streetaddr,&$pSite_city,&$pSite_state,&$pSite_zip,&$pPriphone_num,&$pPriphone_type) {
       $pCount = 0;
       $pSentryKey = array();$pHeading = array();$pStartdate = array();$pStarttime = array();$pSentrytype = array();$pSupervisor_name = array();$pCust_name = array();$pCust_phone = array();$pSite_streetaddr = array();$pSite_city = array();$pSite_state = array();$pSite_zip = array();$pPriphone_num = array();$pPriphone_type = array();
-      //if (!is_numeric($MonthNo)) return PanelError(-5,"month given in bad format:$MonthNo");
-      //if (($MonthNo > 12) || ($MonthNo < 1)) return PanelError(-6,"bad month given:$MonthNo");
+      //if (!is_numeric($MonthNo)) throw new Error(-5,"month given in bad format:$MonthNo");
+      //if (($MonthNo > 12) || ($MonthNo < 1)) throw new Error(-6,"bad month given:$MonthNo");
       //echo "WeekNo=$WeekNo"; die();
       $WeekNo = $WeekNo - 1; //ISO Compliancy!! 
-      if (!is_numeric($Year)) return PanelError(-7,"year given in bad format:$Year");
+      if (!is_numeric($Year)) throw new Error(-7,"year given in bad format:$Year");
       $sql = "
       SELECT
          $TableSentry.id AS sentry_key,
@@ -762,7 +763,7 @@ function days_in_month($ignore_cal,$month, $year) {
       ASC
       ";
       if (!($result = @mysql_query($sql,$My)))
-         return PanelError(-4,"while update: " . mysql_error());
+         throw new Error(-4,"while update: " . mysql_error());
       while($row = mysql_fetch_assoc($result)) {
          $pSentryKey[$pCount] = $row["sentry_key"];
          $pHeading[$pCount] = $row["sentry_heading"];
@@ -781,12 +782,12 @@ function days_in_month($ignore_cal,$month, $year) {
       }
       return 0;
    }
-   function PanelEnumerateSentriesWSomeSiteAndCustInfo($My,$TableSentry,$TableSupervisor,$TableCust,$TableSite,$TablePhone,$MonthNo,$Year,$LimitStart,$LimitMax,&$pCount,&$pSentryKey,&$pHeading,&$pStartdate,&$pStarttime,&$pSentrytype,&$pSupervisor_name,&$pCust_name,&$pCust_phone,&$pSite_streetaddr,&$pSite_city,&$pSite_state,&$pSite_zip,&$pPriphone_num,&$pPriphone_type) {
+   function EnumerateSentriesWSomeSiteAndCustInfo($My,$TableSentry,$TableSupervisor,$TableCust,$TableSite,$TablePhone,$MonthNo,$Year,$LimitStart,$LimitMax,&$pCount,&$pSentryKey,&$pHeading,&$pStartdate,&$pStarttime,&$pSentrytype,&$pSupervisor_name,&$pCust_name,&$pCust_phone,&$pSite_streetaddr,&$pSite_city,&$pSite_state,&$pSite_zip,&$pPriphone_num,&$pPriphone_type) {
       $pCount = 0;
       $pSentryKey = array();$pHeading = array();$pStartdate = array();$pStarttime = array();$pSentrytype = array();$pSupervisor_name = array();$pCust_name = array();$pCust_phone = array();$pSite_streetaddr = array();$pSite_city = array();$pSite_state = array();$pSite_zip = array();$pPriphone_num = array();$pPriphone_type = array();
-      if (!is_numeric($MonthNo)) return PanelError(-5,"month given in bad format:$MonthNo");
-      if (($MonthNo > 12) || ($MonthNo < 1)) return PanelError(-6,"bad month given:$MonthNo");
-      if (!is_numeric($Year)) return PanelError(-7,"year given in bad format:$Year");
+      if (!is_numeric($MonthNo)) throw new Error(-5,"month given in bad format:$MonthNo");
+      if (($MonthNo > 12) || ($MonthNo < 1)) throw new Error(-6,"bad month given:$MonthNo");
+      if (!is_numeric($Year)) throw new Error(-7,"year given in bad format:$Year");
       $sql = "
       SELECT
          $TableSentry.id AS sentry_key,
@@ -837,7 +838,7 @@ function days_in_month($ignore_cal,$month, $year) {
       ASC
       ";
       if (!($result = @mysql_query($sql,$My)))
-         return PanelError(-4,"while update: " . mysql_error());
+         throw new Error(-4,"while update: " . mysql_error());
       while($row = mysql_fetch_assoc($result)) {
          $pSentryKey[$pCount] = $row["sentry_key"];
          $pHeading[$pCount] = $row["sentry_heading"];
@@ -856,10 +857,10 @@ function days_in_month($ignore_cal,$month, $year) {
       }
       return 0;
    }
-   function PanelGetSentryLastUpdate($My,$Table,$Key,&$pLastUpdate) {
+   function GetSentryLastUpdate($My,$Table,$Key,&$pLastUpdate) {
       $pLastUpdate = "";
       if (!is_numeric($Key)) {
-         return PanelError(-10,"bad format for key:'$Key' (non numeric)");
+         throw new Error(-10,"bad format for key:'$Key' (non numeric)");
       }
       $sql = "
       SELECT
@@ -870,18 +871,18 @@ function days_in_month($ignore_cal,$month, $year) {
          id=$Key
       ";
       if (!($result = @mysql_query($sql,$My)))
-         return PanelError(-4,"while get: " . mysql_error());
+         throw new Error(-4,"while get: " . mysql_error());
       if (mysql_num_rows($result) < 1) {
-         return PanelError(-1,"no sentry found with that key:$Key");
+         throw new Error(-1,"no sentry found with that key:$Key");
       }
       $row = mysql_fetch_assoc($result);
       $pLastUpdate = $row["last_updated"];
       return 0;
    }
-   function PanelGetSentryStartdate($My,$Table,$Key,$pStartdate,$pLastUpdate) {
+   function GetSentryStartdate($My,$Table,$Key,$pStartdate,$pLastUpdate) {
       $pStartdate = "";$pLastUpdate = "";
       if (!is_numeric($Key)) {
-         return PanelError(-10,"bad format for key:'$Key' (non numeric)");
+         throw new Error(-10,"bad format for key:'$Key' (non numeric)");
       }
       $sql = "
       SELECT
@@ -895,19 +896,19 @@ function days_in_month($ignore_cal,$month, $year) {
          0,1
       ";
       if (!($result = @mysql_query($sql,$My)))
-         return PanelError(-4,"while get: " . mysql_error());
+         throw new Error(-4,"while get: " . mysql_error());
       if (mysql_num_rows($result) < 1) {
-         return PanelError(-1,"no sentry found with that key");
+         throw new Error(-1,"no sentry found with that key");
       }
       $row = mysql_fetch_assoc($result);
       $pStartdate = $row["startdate"];
       $pLastUpdate = $row["last_updated"];
       return 0;
    }
-   function PanelGetSentry($My,$Table,$Key,&$pHeading,&$pNotes,&$pStartdate,&$pStarttime,&$pSupervisor,&$pSentrytype,&$pLastUpdate) {
+   function GetSentry($My,$Table,$Key,&$pHeading,&$pNotes,&$pStartdate,&$pStarttime,&$pSupervisor,&$pSentrytype,&$pLastUpdate) {
       $pHeading = "";$pNotes = "";$pStartdate = "";$pStarttime = "";$pSupervisor = "";$pSentrytype = "";$pLastUpdate = "";
       if (!is_numeric($Key)) {
-         return PanelError(-10,"bad format for key:'$Key' (non numeric)");
+         throw new Error(-10,"bad format for key:'$Key' (non numeric)");
       }
       //
       $sql = "
@@ -925,9 +926,9 @@ function days_in_month($ignore_cal,$month, $year) {
          id=$Key
       ";
       if (!($result = @mysql_query($sql,$My)))
-         return PanelError(-4,"while get: " . mysql_error());
+         throw new Error(-4,"while get: " . mysql_error());
       if (mysql_num_rows($result) < 1) {
-         return PanelError(-1,"no sentry found with that key");
+         throw new Error(-1,"no sentry found with that key");
       }
       $row = mysql_fetch_assoc($result);
       $pHeading =  $row["heading"];
@@ -939,7 +940,7 @@ function days_in_month($ignore_cal,$month, $year) {
       //$pWeekdayrepeat = $row["weekdayrepeat"];
       $pLastUpdate = $row["last_updated"];
    }
-   function PanelEnumerateSentrytypes($My,$Table,&$pCount,&$pName,&$pBrief,&$pDescription) {
+   function EnumerateSentrytypes($My,$Table,&$pCount,&$pName,&$pBrief,&$pDescription) {
       $pCount = 0;$pName = array();$pBrief = array();$pDescription = array();
       $sql = "
       SELECT
@@ -953,7 +954,7 @@ function days_in_month($ignore_cal,$month, $year) {
       DESC
       ";
       if (!($result = @mysql_query($sql,$My)))
-         return PanelError(-4,"while get: " . mysql_error());
+         throw new Error(-4,"while get: " . mysql_error());
       while ($row = mysql_fetch_assoc($result)) {
          $pName[$pCount] = $row["name"];
          $pBrief[$pCount] = $row["brief"];

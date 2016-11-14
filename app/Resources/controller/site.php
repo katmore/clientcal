@@ -1,6 +1,8 @@
 <?php 
-   require_once("wtfpanel.site.inc.php");
-   function wtfpanel_globalizesitepostvars() {
+
+namespace clientcal;
+
+   function globalizesitepostvars() {
       global $mSite_streetaddr,$mSite_city,$mSite_state,$mSite_zip,$mSite_sdirections;
       if (isset($_POST["streetaddr"])) {
          $mSite_streetaddr = $_POST["streetaddr"];
@@ -18,7 +20,7 @@
          $mSite_sdirections = $_POST["sdirections"];
       }
    }
-   function wtfpanel_sitesuggest($caption,$action,$cancel) {
+   function sitesuggest($caption,$action,$cancel) {
       global $mSite_streetaddr,$mSite_city,$mSite_state,$mSite_zip,$mSite_sdirections;
       $ret = "
       <table width=\"400\">

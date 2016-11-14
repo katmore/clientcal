@@ -1,8 +1,10 @@
 <?php
-   require_once("wtfpanel.geoloc.inc.php");
-   function PanelGetSiteLatLon($My,$Table,$Sentry,&$pLat,&$pLon) {
+
+namespace clientcal;
+
+   function GetSiteLatLon($My,$Table,$Sentry,&$pLat,&$pLon) {
       //echo $Sentry; die();
-      //if (!is_int($Sentry)) return PanelError(-2,"invalid Sentry");
+      //if (!is_int($Sentry)) throw new Error(-2,"invalid Sentry");
       $pLat = 0;$pLon = 0;
       //see if valid lat/lon exists in entry
       $sql = "
@@ -16,9 +18,9 @@ WHERE
 LIMIT 0,1
       ";
       if (!($result = @mysql_query($sql,$My)))
-         return PanelError(-4,"while get: " . mysql_error());
+         throw new Error(-4,"while get: " . mysql_error());
       if (mysql_num_rows($result) < 1) {
-         return PanelError(-1,"while get: no sentry with that name");
+         throw new Error(-1,"while get: no sentry with that name");
       }
       $row = mysql_fetch_assoc($result);
       $sValid = false;
@@ -45,9 +47,9 @@ WHERE
 LIMIT 0,1
       ";
       if (!($result = @mysql_query($sql,$My)))
-         return PanelError(-4,"while get addr: " . mysql_error());
+         throw new Error(-4,"while get addr: " . mysql_error());
       if (mysql_num_rows($result) < 1) {
-         return PanelError(-1,"while get addr: no sentry with that name");
+         throw new Error(-1,"while get addr: no sentry with that name");
       }
       $row = mysql_fetch_assoc($result);
       if ($row["state"] == "") {
@@ -64,7 +66,7 @@ LIMIT 0,1
       $sStrAddr = str_replace("FR ","Farm Road ",$sStrAddr);
       $sAddr = $sStrAddr . ", " . $row["city"] . ", " . $sState . ", U.S.A. ";
       
-      $sRet = PanelGetGeoReverse($sAddr,$sLat,$sLon);
+      $sRet = GetGeoReverse($sAddr,$sLat,$sLon);
 
       //echo "addr:'$sAddr'<br>Loc:$sLat,$sLon";die();
       $pLat = $sLat;
@@ -80,12 +82,12 @@ WHERE
    site.sentry=$Sentry
       ";
       if (!($result = @mysql_query($sql,$My)))
-         return PanelError(-4,"while update addr: " . mysql_error());
+         throw new Error(-4,"while update addr: " . mysql_error());
 
 
       return 0;
    }
-   function PanelGetSiteLastUpdate($My,$Table,$Sentry,&$pLastUpdated) {
+   function GetSiteLastUpdate($My,$Table,$Sentry,&$pLastUpdated) {
       $pLastUpdated = "";
       $sql = "
       SELECT
@@ -97,17 +99,17 @@ WHERE
       LIMIT 0,1
       ";
       if (!($result = @mysql_query($sql,$My)))
-         return PanelError(-4,"while get: " . mysql_error());
+         throw new Error(-4,"while get: " . mysql_error());
       if (mysql_num_rows($result) < 1) {
-         return PanelError(-1,"no sentry with that name");
+         throw new Error(-1,"no sentry with that name");
       }
       $row = mysql_fetch_assoc($result);
       $pLastUpdated = $row["last_updated"];
       return 0;
    }
-   function PanelGetSite($My,$TableSite,$SentryKey,&$pStreetaddr,&$pCity,&$pState,&$pZip,&$pSdirections,&$pLastUpdated) {
+   function GetSite($My,$TableSite,$SentryKey,&$pStreetaddr,&$pCity,&$pState,&$pZip,&$pSdirections,&$pLastUpdated) {
       $pStreetaddr = "";$pCity = "";$pState = "";$pZip = "";$pSdirections = "";$pLastUpdated = "";
-      if (!is_numeric($SentryKey)) return PanelError(-5,"sentry key given in bad format:$SentryKey");
+      if (!is_numeric($SentryKey)) throw new Error(-5,"sentry key given in bad format:$SentryKey");
       $sql = "
       SELECT
          streetaddr,
@@ -124,9 +126,9 @@ WHERE
          0,1
       ";
       if (!($result = @mysql_query($sql,$My)))
-         return PanelError(-4,"while get: " . mysql_error());
+         throw new Error(-4,"while get: " . mysql_error());
       if (!($row = mysql_fetch_assoc($result)))
-         return PanelError(-1,"nothing found with that SentryKey:$SentryKey");
+         throw new Error(-1,"nothing found with that SentryKey:$SentryKey");
       $pStreetaddr = $row["streetaddr"];
       $pCity = $row["city"];
       $pState = $row["state"];
@@ -135,8 +137,8 @@ WHERE
       $pLastUpdated = $row["last_updated"];
       return 0;
    }
-   function PanelUpdateSite($My,$Table,$Sentry,$Streetaddr,$City,$State,$Zip,$Sdirections) {
-      if (!is_numeric($Sentry)) return PanelError(-5,"sentry key given in bad format");
+   function UpdateSite($My,$Table,$Sentry,$Streetaddr,$City,$State,$Zip,$Sdirections) {
+      if (!is_numeric($Sentry)) throw new Error(-5,"sentry key given in bad format");
       $sql = "
       UPDATE
          $Table
@@ -152,13 +154,13 @@ WHERE
          sentry=$Sentry
       ";
       if (!($result = @mysql_query($sql,$My)))
-         return PanelError(-4,"while update: " . mysql_error());
+         throw new Error(-4,"while update: " . mysql_error());
       if (mysql_affected_rows($My) < 1)
-         return PanelError(-1,"no customer with that key");
+         throw new Error(-1,"no customer with that key");
       return 0;
    }
-   function PanelAddSite($My,$Table,$Sentry,$Streetaddr,$City,$State,$Zip,$Sdirections) {
-      if (!is_numeric($Sentry)) return PanelError(-5,"sentry key given in bad format");
+   function AddSite($My,$Table,$Sentry,$Streetaddr,$City,$State,$Zip,$Sdirections) {
+      if (!is_numeric($Sentry)) throw new Error(-5,"sentry key given in bad format");
       $sql = "
       INSERT INTO
          $Table
@@ -171,28 +173,28 @@ WHERE
          sdirections='$Sdirections'
       ";
       if (!($result = @mysql_query($sql,$My)))
-         return PanelError(-4,"while get: " . mysql_error());
+         throw new Error(-4,"while get: " . mysql_error());
       return 0;
    }
-   function PanelAssociateSite($My,$Table,$Sentry,$Streetaddr,$City,$State,$Zip,$Sdirections) {
-      if (!is_numeric($Sentry)) return PanelError(-5,"bad sentry key given");
-      $sRet = PanelGetSiteLastUpdate($My,$Table,$Sentry,$sLastUpdated);
+   function AssociateSite($My,$Table,$Sentry,$Streetaddr,$City,$State,$Zip,$Sdirections) {
+      if (!is_numeric($Sentry)) throw new Error(-5,"bad sentry key given");
+      $sRet = GetSiteLastUpdate($My,$Table,$Sentry,$sLastUpdated);
       if ($sRet == 0) {
-         $sRet = PanelUpdateSite($My,$Table,$Sentry,$Streetaddr,$City,$State,$Zip,$Sdirections);
+         $sRet = UpdateSite($My,$Table,$Sentry,$Streetaddr,$City,$State,$Zip,$Sdirections);
          if ($sRet != 0) {
-            global $mPanelError;
-            return PanelError(-300,"problem ($sRet) while updating site info:" . $mPanelError);
+            global $mError;
+            throw new Error(-300,"problem ($sRet) while updating site info:" . $mError);
          }
       } else
       if ($sRet == -1) {
-         $sRet = PanelAddSite($My,$Table,$Sentry,$Streetaddr,$City,$State,$Zip,$Sdirections);
+         $sRet = AddSite($My,$Table,$Sentry,$Streetaddr,$City,$State,$Zip,$Sdirections);
          if ($sRet != 0) {
-            global $mPanelError;
-            return PanelError(-200,"problem ($sRet) while adding site info:" . $mPanelError);
+            global $mError;
+            throw new Error(-200,"problem ($sRet) while adding site info:" . $mError);
          }
       } else {
-         global $mPanelError;
-         return PanelError(-100,"problem ($sRet) while getting last site update" . $mPanelError);
+         global $mError;
+         throw new Error(-100,"problem ($sRet) while getting last site update" . $mError);
       }
       return 0;
    }
