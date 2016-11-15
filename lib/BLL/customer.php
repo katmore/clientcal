@@ -2,6 +2,15 @@
 
 namespace clientcal;
 
+   function enumcustomerconfig() {
+      $config = [];
+      
+      $config=array_merge($config,(new config('tables'))->getAssoc());
+      
+      $config=array_merge($config,(new config('customer'))->getAssoc());
+      
+      return $config;
+   }
    function customerjobs() {
       global $mCust_key,$mMySched;
 
@@ -56,11 +65,7 @@ namespace clientcal;
          $sSentryKey,
          $sHeading,
          $sStartdate,
-         $sSentrytype,
-         $sSiteaddr,
-         $sSitecity,
-         $sSitestate,
-         $sSitezip
+         $sSentrytype
       )
       ))
       { /*--begin if error on enumjobs--*/
@@ -149,9 +154,7 @@ FormatCustomerPhone($sPhonenumber) . "</span><br>
 . "<div style=\"padding:0px;margin:0px;\"><div style=\"float:left;width:5em;\" class=\"weekly_entrytype_" . str_replace(" ","_",$sSentrytype[$i]) . "\">&nbsp;$sSentrytype[$i]</div></div>"
 . "&nbsp;" . date("M j",$sStamp)
 . ":<span style=\"font-size:7pt;\">"
-. "&nbsp;" . $sSiteaddr[$i]
-. "&nbsp;" . $sSitecity[$i]
-. "&nbsp;" . $sSitestate[$i]
+
 . "</span></div>"
 . " $sHeading[$i]";
          $ret .= "
@@ -215,7 +218,7 @@ class=\"custq\"
    function customeralphaforlink($letter,$next) {
       global $mMySched;
       global $mSentry_key;
-      require("settings.php");
+      foreach(enumcustomerconfig() as $k=>$v) $$k=$v;
       $sRet = EnumerateCustomerWPriPhoneByAlpha($mMySched,"customer","customer_phone",$letter,$sCount,$sCustKey,$sName,$sStreetaddr,$sCity,$sState,$sZip,$sCusttype,$sPriphonetype,$sPriphone,$sLastUpdated);
       if ($sRet != 0) {
          global $mError;
@@ -575,7 +578,7 @@ search results<br>";
    function customeralpha($letter,$showsearch = false) {
       global $mMySched;
       $customer_table = "customer";$customerphone_table = "customer_phone";
-      require("settings.php");
+      foreach(enumcustomerconfig() as $k=>$v) $$k=$v;
       $sRet = EnumerateCustomerWPriPhoneByAlpha($mMySched,$customer_table,$customerphone_table,$letter,$sCount,$sCustKey,$sName,$sStreetaddr,$sCity,$sState,$sZip,$sCusttype,$sPriphonetype,$sPriphone,$sLastUpdated);
       if ($sRet != 0) {
          global $mError;
@@ -682,7 +685,7 @@ search results<br>";
 //       return $sName;
 //    }
    function updatecustomerprocess() {
-      require("settings.php");
+      foreach(enumcustomerconfig() as $k=>$v) $$k=$v;
       global $mNotice;
       global $mCust_key;
       global $mMySched;
@@ -879,7 +882,7 @@ search results<br>";
    function getcustomerprocess() {
       global $mCust_key;
       global $mMySched;
-      require("settings.php");
+      foreach(enumcustomerconfig() as $k=>$v) $$k=$v;
       global $mCust_nametype,$mCust_lastname,$mCust_firstname,$mCust_name,$mCust_streetaddr,$mCust_city,$mCust_state,$mCust_zip,$mCust_customertype;
       $mCust_lastname = "";$mCust_firstname = "";$mCust_name = "";
       $mRet = GetCustomer($mMySched,"customer",$mCust_key,$sName,$mCust_streetaddr,$mCust_city,$mCust_state,$mCust_zip,$mCust_customertype,$sLastUpdated);
@@ -1045,7 +1048,7 @@ search results<br>";
    function customerlistforlink($caption,$next) {
       global $mMySched;
       global $mSentry_key;
-      require("settings.php");
+      foreach(enumcustomerconfig() as $k=>$v) $$k=$v;
       $ret = "
       <table width=\"400\">
          <tr>
@@ -1108,7 +1111,7 @@ search results<br>";
    }
    
    function custfile_delete_confirm() {
-      require("settings.php");
+      foreach(enumcustomerconfig() as $k=>$v) $$k=$v;
       global $mCustfile_embed,$mCust_key,$mCustfile_name,$mCustfile_handle,$mCustfile_md5;
       $_SESSION["custfile_delete_token_sess"] = mt_rand ( 1000 , 9999 );
       
@@ -1164,7 +1167,7 @@ search results<br>";
    function customerfilestable() {
       global $mMySched,$mCust_key;
       global $mCustfile_embed;
-      require("settings.php");
+      foreach(enumcustomerconfig() as $k=>$v) $$k=$v;
       $ret = "";
       $sRet = EnumerateCustfiles(
       $mMySched,
@@ -1274,7 +1277,11 @@ search results<br>";
                </div>
                <div>";
                $mCustfile_handle = hash($hashalgo_custfile,$mCust_key . "." . $sHandle[$i]);
-               $mCustfile_md5 = md5_file($dir_custfiles . $mCustfile_handle);
+               if (is_file($dir_custfiles . $mCustfile_handle)) {
+                  $mCustfile_md5 = md5_file($dir_custfiles . $mCustfile_handle);
+               } else {
+                  $mCustfile_md5 = null;
+               }
                $ret .= "
             <span style=\"font-size:0.70em;\"><a target=\"_blank\" href=\"./customer.php?id=$mCust_key&amp;file=" . $sHandle[$i] . "\">[download original...]</a> md5:$mCustfile_md5</span>
             	";
@@ -1335,7 +1342,7 @@ search results<br>";
       global $mAuthorized_username;
       global $mCustfile_showadd,$mCustfile_showemailup,$mCustfile_showcheckemail;
       
-      include("settings.php");
+      foreach(enumcustomerconfig() as $k=>$v) $$k=$v;
       
       $ret = "";
       
@@ -1437,7 +1444,7 @@ search results<br>";
       global $mAddcustomerErr;
       global $mCust_hmphone,$mCust_wkphone,$mCust_mbphone,$mCust_fxphone;
       global $mCust_nametype,$mCust_lastname,$mCust_firstname,$mCust_name,$mCust_streetaddr,$mCust_city,$mCust_state,$mCust_zip,$mCust_customertype;
-      require("settings.php");
+      foreach(enumcustomerconfig() as $k=>$v) $$k=$v;
       $sState = $default_customerstate;
       if ($mCust_state != "") {
          $sState = $mCust_state;

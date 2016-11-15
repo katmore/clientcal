@@ -387,6 +387,7 @@ unset($configName);
       }
    }
    if ($mMode == "updatesentry") {
+      global $mAddSentryerr;
       globalizesentryformpostvars();
       if (!testsentryvars($mAddSentryerr)) {
          $mNotice .= "<b>problems with the entry</b><br />";
@@ -754,7 +755,7 @@ unset($configName);
    $mSubtitle = "";
    $mHeadExtra = "";
    $mHeadExtra = "
-      <link rel=\"STYLESHEET\" href=\"style.sentry.css.php\" type=\"text/css\">";
+      <link rel=\"STYLESHEET\" href=\"style.sentry.css\" type=\"text/css\">";
    if (($mMode == "login") || ($mMode == "failed_login")) {
       $mSubtitle = "Please Sign In";
    } else

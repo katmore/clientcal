@@ -51,7 +51,7 @@ namespace clientcal;
       if (!is_numeric($CustKey)) throw new Error(-2,"invalid customer key given");
       
       //require("settings.php");
-      foreach(require(CLIENTCAL_CONFIG_DIR."/customer.php") as $k=>$v) $$k=$v;
+      foreach(enumcustomerconfig() as $k=>$v) $$k=$v;
       
       $sSalt1 = openssl_random_pseudo_bytes ( 1024 );
       $sSalt2 = uniqid ("",true );
@@ -210,7 +210,8 @@ namespace clientcal;
    $Mimetype,
    $Filedebug
    ) { //assuming $Filedebug = $_FILES['userfile'] or something similar for filedebugstr
-      $hashalgo_custfile = require(CLIENTCAL_CONFIG_DIR."/customer.php")['hashalgo_custfile'];
+      foreach(enumcustomerconfig() as $k=>$v) $$k=$v;
+      
       //create hash of $File
       $file_hash = hash_file ( $hashalgo_custfile , $Filename);
       
@@ -305,7 +306,7 @@ namespace clientcal;
    }
    function ProcessCustfileMailqueue($My,&$pReport=NULL) {
       //require("settings.php");
-      foreach(require(CLIENTCAL_CONFIG_DIR."/customer.php") as $k=>$v) $$k=$v;
+      foreach(enumcustomerconfig() as $k=>$v) $$k=$v;
       //lock table to prevent race condition
       $sql = "
       LOCK TABLES
@@ -532,7 +533,7 @@ namespace clientcal;
       return 0;
    }
    
-   function RemoveCustfile($My,$CustKey,$Hash,$pName) {
+   function RemoveCustfile($My,$CustKey,$Hash,&$pName) {
       $sql = "
       SELECT 
       	name
@@ -565,7 +566,7 @@ namespace clientcal;
       if (mysql_affected_rows($My) < 1)
          throw new Error(-1,"no rows deleted");
          
-      foreach(require(CLIENTCAL_CONFIG_DIR."/customer.php") as $k=>$v) $$k=$v;
+      foreach(enumcustomerconfig() as $k=>$v) $$k=$v;
       
       //get file handle
       $sHandle = hash($hashalgo_custfile,$CustKey . "." . $Hash);
@@ -649,7 +650,8 @@ ORDER BY
          $sNo = preg_replace("/([0-9]{3})([0-9]{4})/", "$1-$2", $sNo);
          $default_customerareacode = "000";
          //require("settings.php");
-         foreach(require(CLIENTCAL_CONFIG_DIR."/customer.php") as $k=>$v) $$k=$v;
+         foreach((new config("customer"))->getAssoc() as $k=>$v) $$k=$v;
+         
          $sNo = "($default_customerareacode) " . $sNo;
          return $sNo;
       } else
@@ -669,7 +671,7 @@ ORDER BY
       $sNme = ucwords($sNme);
       return $sNme;
    }
-   function AddCustomer($My,$Table,$Name,$Streetaddr,$City,$State,$Zip,$Customertype,$pKey) {
+   function AddCustomer($My,$Table,$Name,$Streetaddr,$City,$State,$Zip,$Customertype,&$pKey) {
       $pKey = -1;
       $sql = "
       INSERT INTO
@@ -1001,16 +1003,16 @@ AGAINST
 
    function SearchQCustomerExact(
    $My,$TableCust,$CustQ,
-   $pCount,
-   $pCustKey,
-   $pName,
-   $pCusttype,
-   $pPhone,
-   $pPhonetype,
-   $pAddr,
-   $pCity,
-   $pState,
-   $pZip
+   &$pCount,
+   &$pCustKey,
+   &$pName,
+   &$pCusttype,
+   &$pPhone,
+   &$pPhonetype,
+   &$pAddr,
+   &$pCity,
+   &$pState,
+   &$pZip
    ) {
       $pCount = 0;
       //see if query is exact match

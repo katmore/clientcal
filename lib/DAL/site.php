@@ -101,7 +101,8 @@ WHERE
       if (!($result = @mysql_query($sql,$My)))
          throw new Error(-4,"while get: " . mysql_error());
       if (mysql_num_rows($result) < 1) {
-         throw new Error(-1,"no sentry with that name");
+         return -1;
+         //throw new Error(-1,"no sentry with that name");
       }
       $row = mysql_fetch_assoc($result);
       $pLastUpdated = $row["last_updated"];

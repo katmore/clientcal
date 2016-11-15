@@ -2,24 +2,24 @@
 
 namespace clientcal;
 
-function htmlformatconfig() {
-   $format['actionm_headingcells_height'] = 95;
-   $format['actionm_headingcells_width'] = 100;
-   $format['actionm_headingcells_format'] = "";
-   $format['actionm_cellheading_class'] = "cellheading";
-   //$format['actionm_cellheadingsel_class'] = "cellheadingsel";
-   $format['actionm_cellcontent_class'] = "cellcontent";
-   //$format['actionm_cellcontentsel_class'] = "cellcontentsel";
+function enumsentryconfig() {
+   $config['actionm_headingcells_height'] = 95;
+   $config['actionm_headingcells_width'] = 100;
+   $config['actionm_headingcells_format'] = "";
+   $config['actionm_cellheading_class'] = "cellheading";
+   //$config['actionm_cellheadingsel_class'] = "cellheadingsel";
+   $config['actionm_cellcontent_class'] = "cellcontent";
+   //$config['actionm_cellcontentsel_class'] = "cellcontentsel";
    //<div class=\"supervisor_%entry.supervisorkey%\">
    //./sentry.php?submitdupe=%entry.key%&amp;month=%date:n%&amp;day=%date:j%&amp;year=%date:Y%
-   $format['actionm_entrycaption_format'] = "
+   $config['actionm_entrycaption_format'] = "
          <div title=\"%entry.custname%: %entry.heading% - %site.streetaddr% (%entry.type%)\" class=\"entrycaption_%entry.supervisorkey%\">
             %entry.custname:limitchar:10%%dashifcustandheading%%entry.heading:limitchar:8%
          </div>
          ";
-   $format['actionm_blankcell_format'] = "
+   $config['actionm_blankcell_format'] = "
    <div style=\"height:100%;border: 1px solid #000000;background:#D6D2CE;\">&nbsp;</div>";
-   $format['actionm_daycell_format'] = "
+   $config['actionm_daycell_format'] = "
    <div class=\"%cellcontentclass%\">
       <div title=\"select %date:l%, %date:F% %date:j%, %date:Y%\" class=\"%cellheadingclass%\" onclick=\"location.href='./sentry.php?%actionmselect%=%actionmentry.key%&amp;month=%date:n%&day=%date:j%&year=%date:Y%'\">
          <div style=\"float: left;width:15px;font-family:Tahoma;font-size:8pt;vertical-align:top;\">%date:j%</div>
@@ -28,12 +28,12 @@ function htmlformatconfig() {
       </div>
       %entries%
    </div>";
-   $format['actionm_start_dayofweekw'] = 1;
+   $config['actionm_start_dayofweekw'] = 1;
    //Sunday, June 4, 1972sssss
-   //$format['actionm_headingcaption
-   $format['actionm_headingcaption'] = "%actionmcaption%";
-   $format['actionmcaption_style'] = "font-family:Tahoma;font-size:11pt;font-weight:bold;color:#000000;vertical-align:top;float:left;";
-   $format['actionm_headingtools'] = "
+   //$config['actionm_headingcaption
+   $config['actionm_headingcaption'] = "%actionmcaption%";
+   $config['actionmcaption_style'] = "font-family:Tahoma;font-size:11pt;font-weight:bold;color:#000000;vertical-align:top;float:left;";
+   $config['actionm_headingtools'] = "
    <a href=\"./sentry.php?%actionmbrowse%=%actionmentry.key%&amp;month=%date:n%&amp;year=%date:Y%&amp;%toggleshowsentries.toggle%\">[%toggleshowsentries.caption%]</a>
    %date:F% %date:Y%
    
@@ -42,25 +42,25 @@ function htmlformatconfig() {
    <a title=\"show selection for next month: %nextmonth.date:F% %nextmonth.date:Y%\" href=\"./sentry.php?%actionmbrowse%=%actionmentry.key%&amp;month=%nextmonth.date:n%&amp;year=%nextmonth.date:Y%\">&gt;</a>
    ";
    
-   $format['monthv_headingcells_width'] = 100;
-   $format['monthv_headingcells_height'] = 95;
-   $format['monthv_headingcells_format'] = "";
-   $format['monthv_cellheading_class'] = "cellheading";
-   $format['monthv_cellheadingsel_class'] = "cellheadingsel";
-   $format['monthv_cellcontent_class'] = "cellcontent";
-   $format['monthv_cellcontentsel_class'] = "cellcontentsel";
+   $config['monthv_headingcells_width'] = 100;
+   $config['monthv_headingcells_height'] = 95;
+   $config['monthv_headingcells_format'] = "";
+   $config['monthv_cellheading_class'] = "cellheading";
+   $config['monthv_cellheadingsel_class'] = "cellheadingsel";
+   $config['monthv_cellcontent_class'] = "cellcontent";
+   $config['monthv_cellcontentsel_class'] = "cellcontentsel";
    //<div class=\"supervisor_%entry.supervisorkey%\">
-   $format['monthv_entrytype_legend_format'] = "
+   $config['monthv_entrytype_legend_format'] = "
    <span class=\"entrycaption_entrytype_%entry.type%\">%entry.typebrief%</span>
    ";
-   $format['monthv_entrycaption_format'] = "
+   $config['monthv_entrycaption_format'] = "
          <div title=\"%entry.custname%: %entry.heading% - %site.streetaddr% (%entry.type%)\" onclick=\"location.href='./sentry.php?show=%entry.key%'\" class=\"entrycaption_entrytype_%entry.type%\">
             %entry.custname:limitchar:10%%dashifcustandheading%%entry.heading:limitchar:8%
          </div>
          ";
-   $format['monthv_blankcell_format'] = "
+   $config['monthv_blankcell_format'] = "
    <div style=\"height:100%;border: 1px solid #000000;background:#D6D2CE;\">&nbsp;</div>";
-   $format['monthv_daycell_format'] = "
+   $config['monthv_daycell_format'] = "
    <div class=\"%cellcontentclass%\">
       <div title=\"select %date:l%, %date:F% %date:j%, %date:Y%\" class=\"%cellheadingclass%\" onclick=\"location.href='./sentry.php?showsentries=%date:n%&day=%date:j%&year=%date:Y%'\">
          <div style=\"float: left;width:15px;font-family:Tahoma;font-size:8pt;vertical-align:top;\">%date:j%</div>
@@ -69,22 +69,25 @@ function htmlformatconfig() {
       </div>
       %entries%
    </div>";
-   $format['monthv_start_dayofweekw'] = 1;
+   $config['monthv_start_dayofweekw'] = 1;
    //Sunday, June 4, 1972sssss
-   $format['monthv_headingtools'] = "
+   $config['monthv_headingtools'] = "
    <a title=\"show entries for %date:l%, %date:F% %date:j%, %date:Y%\" href=\"sentry.php?showday&amp;month=%date:n%&amp;day=%date:j%&amp;year=%date:Y%\">[day]</a>
    <a href=\"./sentry.php?addwprocess&amp;cancel=showsentries&amp;month=%date:n%&amp;day=%date:j%&amp;year=%date:Y%\" title=\"create a new entry for %date:l%, %date:F% %date:j%, %date:Y%\">[new]</a>";
-   $format['monthv_headingcaption'] = "
+   $config['monthv_headingcaption'] = "
    <a title=\"show entries for previous month:%prevmonth.date:l%, %prevmonth.date:F% %prevmonth.date:j%, %prevmonth.date:Y%\" href=\"./sentry.php?showsentries=%prevmonth.date:n%&amp;year=%prevmonth.date:Y%&amp;day=%prevmonth.date:j%\">&lt;</a>
    <a title=\"refresh this month\" href=\"./sentry.php?showsentries=%date:n%&amp;year=%date:Y%&amp;day=%date:j%\">||</a>
    <a title=\"show entries for next month: %nextmonth.date:l%, %nextmonth.date:F% %nextmonth.date:j%, %nextmonth.date:Y%\" href=\"./sentry.php?showsentries=%nextmonth.date:n%&amp;year=%nextmonth.date:Y%&amp;day=%nextmonth.date:j%\">&gt;</a>
    %jumpmonthform%
    %date:l%, %date:F% %date:j%, %date:Y%";
-   return $format;
+   
+   foreach((new config("tables"))->getAssoc() as $k=>$v) $config[$k]=$v;
+
+   return $config;
 }
 
 
-   function nextsentrymonth($monthno,$year,$pNextmonth,$pNextyear) {
+   function nextsentrymonth($monthno,$year,&$pNextmonth,&$pNextyear) {
       if (($monthno + 1) > 12) {
          $pNextmonth = 1;
          $pNextyear = $year + 1;
@@ -94,7 +97,7 @@ function htmlformatconfig() {
       $pNextyear = $year;
       return 0;
    }
-   function previoussentrymonth($monthno,$year,$pPrevmonth,$pPrevyear) {
+   function previoussentrymonth($monthno,$year,&$pPrevmonth,&$pPrevyear) {
       if (($monthno - 1) < 1) {
          $sPrevmonth = 12;
          $pPrevyear = $year;
@@ -151,7 +154,7 @@ function htmlformatconfig() {
       $actionm_headingcaption = "";
       
       //require("../../../include/settings.sentry.php");
-      foreach(htmlformatconfig() as $v) $$v=$v;
+      foreach(enumsentryconfig() as $k=>$v) $$k=$v;
       
       global $mSentry_key;
       $ret = sentrydatebits($actionm_headingcaption,$Timestamp);
@@ -209,7 +212,8 @@ class=\"jumpmonth\"
    }
    function monthvcaption($Timestamp) {
       //require("../../../include/settings.sentry.php");
-      foreach(htmlformatconfig() as $v) $$v=$v;
+      
+      foreach(enumsentryconfig() as $k=>$v) $$k=$v;
       $ret = "";
       //$ret = "<div>";
 
@@ -355,7 +359,8 @@ yyyy:" . htmlentities($mGodate_yyyy) . "<br>
    }
    function sentriesbyday($caption,$monthno,$year,$day) {
       global $mMySched;
-      require("settings.php");
+      //require("settings.php");
+      foreach((new config("tables"))->getAssoc() as $k=>$v) $$k=$v;
       $sRet = EnumerateSentriesWSomeSiteAndCustInfoForDay($mMySched,$sentry_table,$supervisor_table,$customer_table,$site_table,$customerphone_table,$monthno,$year,$day,"","",$sCount,$sSentryKey,$sHeading,$sStartdate,$sStarttime,$sSentrytype,$sSupervisor_name,$sCust_name,$sCust_phone,$sSite_streetaddr,$sSite_city,$sSite_state,$sSite_zip,$sPriphone_num,$sPriphone_type);
       if ($sRet != 0) {
          global $mError;
@@ -407,7 +412,8 @@ yyyy:" . htmlentities($mGodate_yyyy) . "<br>
    }
    function sentriesbydayforprint($caption,$monthno,$year,$day) {
       global $mMySched;
-      require("settings.php");
+      //require("settings.php");
+      foreach((new config("tables"))->getAssoc() as $k=>$v) $$k=$v;
       $sRet = EnumerateSentriesWSomeSiteAndCustInfoForDayC($mMySched,$sentry_table,$supervisor_table,$customer_table,$site_table,$customerphone_table,$monthno,$year,$day,"","",$sCount,$sSentryKey,$sHeading,$sStartdate,$sStarttime,$sSentrytype,$sSupervisor_name,$sCust_name,$sCust_phone,$sSite_streetaddr,$sSite_city,$sSite_state,$sSite_zip,$sSite_sdirections,$sPriphone_num,$sPriphone_type);
       if ($sRet != 0) {
          global $mError;
@@ -463,12 +469,12 @@ yyyy:" . htmlentities($mGodate_yyyy) . "<br>
    }
    function monthvtools($Timestamp) {
       //require("../../../include/settings.sentry.php");
-      foreach(htmlformatconfig() as $v) $$v=$v;
+      foreach(enumsentryconfig() as $k=>$v) $$k=$v;
       return sentrydatebits($monthv_headingtools,$Timestamp);
    }
    function actionmtools($Timestamp,$actionmcaption,$actionmbrowse,$showsentries) {
       //require("../../../include/settings.sentry.php");
-      foreach(htmlformatconfig() as $v) $$v=$v;
+      foreach(enumsentryconfig() as $k=>$v) $$k=$v;
       global $mSentry_key;
       $ret = sentrydatebits($actionm_headingtools,$Timestamp);
       $ret = str_replace("%actionmcaption%",$actionmcaption,$ret);
@@ -490,14 +496,14 @@ yyyy:" . htmlentities($mGodate_yyyy) . "<br>
    function blankcell($Area) {
       $monthv_blankcell_format = "";
       //require("../../../include/settings.sentry.php");
-      foreach(htmlformatconfig() as $v) $$v=$v;
+      foreach(enumsentryconfig() as $k=>$v) $$k=$v;
       $ret = $monthv_blankcell_format;
       return $ret;
    }
    function actionmblankcell($Area) {
       $actionm_blankcell_format = "";
       //require("../../../include/settings.sentry.php");
-      foreach(htmlformatconfig() as $v) $$v=$v;
+      foreach(enumsentryconfig() as $k=>$v) $$k=$v;
       $ret = $actionm_blankcell_format;
       return $ret;
    }
@@ -525,7 +531,7 @@ yyyy:" . htmlentities($mGodate_yyyy) . "<br>
    }
    function entrycaption($Key,$Heading,$Starttime,$Sentrytype,$Supervisor,$Supervisorkey,$CustName) {
       //require("../../../include/settings.sentry.php");
-      foreach(htmlformatconfig() as $v) $$v=$v;
+      foreach(enumsentryconfig() as $k=>$v) $$k=$v;
       $ret = $monthv_entrycaption_format;
       $ret = str_replace("%entry.custname%",htmlentities($CustName),$ret);
       $ret = str_replace("%entry.heading%",htmlentities($Heading),$ret);
@@ -578,7 +584,7 @@ yyyy:" . htmlentities($mGodate_yyyy) . "<br>
    function actionmentrycaption($Key,$Heading,$Starttime,$Sentrytype,$Supervisor,$Supervisorkey,$CustName) {
       $actionm_entrycaption_format = "";
       //require("../../../include/settings.sentry.php");
-      foreach(htmlformatconfig() as $v) $$v=$v;
+      foreach(enumsentryconfig() as $k=>$v) $$k=$v;
       $ret = $actionm_entrycaption_format;
       $ret = str_replace("%entry.custname%",htmlentities($CustName),$ret);
       $ret = str_replace("%entry.heading%",htmlentities($Heading),$ret);
@@ -633,7 +639,7 @@ yyyy:" . htmlentities($mGodate_yyyy) . "<br>
       $actionm_cellheading_class = "";
       $actionm_cellcontent_class = "";
       //require("../../../include/settings.sentry.php");
-      foreach(htmlformatconfig() as $v) $$v=$v;
+      foreach(enumsentryconfig() as $k=>$v) $$k=$v;
       global $mSentry_key;
       $ret = $actionm_daycell_format;
       $ret = str_replace("%date:j%",date("j",$Timestamp),$ret);
@@ -650,7 +656,8 @@ yyyy:" . htmlentities($mGodate_yyyy) . "<br>
       if ($SentryCount > 0) {
          $ret = str_replace("%entrycountabove0%",$SentryCount,$ret);
          global $mMySched;
-         require("settings.php");
+         //require("settings.php");
+         foreach((new config("tables"))->getAssoc() as $k=>$v) $$k=$v;
          $sRet = EnumerateSentriesWSomeSiteAndCustInfoForDayB($mMySched,$sentry_table,$supervisor_table,$customer_table,$site_table,$customerphone_table,date("n",$Timestamp),date("Y",$Timestamp),date("j",$Timestamp),"","",$sCount,$sSentryKey,$sHeading,$sStartdate,$sStarttime,$sSentrytype,$sSupervisor,$sSupervisorKey,$sCustName,$sCust_phone,$sSite_streetaddr,$sSite_city,$sSite_state,$sSite_zip,$sPriphone_num,$sPriphone_type);
          if ($sRet == 0) {
             if ($showsentries === TRUE) {
@@ -684,7 +691,7 @@ yyyy:" . htmlentities($mGodate_yyyy) . "<br>
       $monthv_cellheading_class = "";
       $monthv_cellcontent_class = "";
       //require("../../../include/settings.sentry.php");
-      foreach(htmlformatconfig() as $v) $$v=$v;
+      foreach(enumsentryconfig() as $k=>$v) $$k=$v;
       $ret = $monthv_daycell_format;
       $ret = str_replace("%date:j%",date("j",$Timestamp),$ret);
       $ret = str_replace("%date:D%",date("D",$Timestamp),$ret);
@@ -705,7 +712,7 @@ yyyy:" . htmlentities($mGodate_yyyy) . "<br>
          global $mMySched;
          $sentry_table = "sentry";
          $supervisor_table = "supervisor";
-         require("settings.php");
+         foreach((new config("tables"))->getAssoc() as $k=>$v) $$k=$v;
          $sRet = EnumerateSentriesWSomeSiteAndCustInfoForDayB($mMySched,$sentry_table,$supervisor_table,$customer_table,$site_table,$customerphone_table,date("n",$Timestamp),date("Y",$Timestamp),date("j",$Timestamp),"","",$sCount,$sSentryKey,$sHeading,$sStartdate,$sStarttime,$sSentrytype,$sSupervisor,$sSupervisorKey,$sCustName,$sCust_phone,$sSite_streetaddr,$sSite_city,$sSite_state,$sSite_zip,$sPriphone_num,$sPriphone_type);
          if ($sRet == 0) {
             $sEntries = "";
@@ -731,7 +738,7 @@ yyyy:" . htmlentities($mGodate_yyyy) . "<br>
       global $mMySched;
       global $mNotice;
       //require("../../../include/settings.sentry.php");
-      foreach(htmlformatconfig() as $v) $$v=$v;
+      foreach(enumsentryconfig() as $k=>$v) $$k=$v;
       //require("settings.php");
       $sDummy = mktime(0,0,0,3,$actionm_start_dayofweekw,2004);
       if (($sDummy === FALSE) || ($sDummy == -1)) {
@@ -850,6 +857,9 @@ yyyy:" . htmlentities($mGodate_yyyy) . "<br>
       global $mNotice;
 //       require("../../../include/settings.sentry.php");
 //       require("settings.php");
+      foreach(enumsentryconfig() as $k=>$v) $$k=$v;
+      unset($k);
+      unset($v);
       $sDummy = mktime(0,0,0,3,$monthv_start_dayofweekw,2004);
       if (($sDummy === FALSE) || ($sDummy == -1)) {
          $mNotice .= "invalid Start day of week monthv_start_dayofweekw:$monthv_start_dayofweekw, defaulting to Monday (1)";
@@ -972,7 +982,8 @@ yyyy:" . htmlentities($mGodate_yyyy) . "<br>
    function sentrywithinfotable($caption,$showmap) {
       global $mMySched;
       global $mSentry_key;
-      require("settings.php");
+      //require("settings.php");
+      foreach((new config("tables"))->getAssoc() as $k=>$v) $$k=$v;
       $sRet = GetSentryWSomeSiteAndCustInfo($mMySched,$sentry_table,$supervisor_table,$customer_table,$site_table,$customerphone_table,$mSentry_key,$sHeading,$sStartdate,$sStarttime,$sSentrytype,$sSupervisor_name,$sCust_key,$sCust_name,$sSite_streetaddr,$sSite_city,$sSite_state,$sSite_zip,$sPriphone_num,$sPriphone_type);
       if ($sRet != 0) {
          global $mError;
@@ -1020,8 +1031,9 @@ yyyy:" . htmlentities($mGodate_yyyy) . "<br>
             <a href=\"./sentry.php?editsite=$mSentry_key\">[site info]</a>
             </td>
          </tr>";
-      $sGmapAnchor = "<a href=\"./sentry.php?show=$mSentry_key&amp;showmap=true&amp;maptype=google\">[google map]</a>";
-      $sBmapAnchor = "<a href=\"./sentry.php?show=$mSentry_key&amp;showmap=true&amp;maptype=bing\">[bing map]</a>";
+      //$sGmapAnchor = "<a href=\"./sentry.php?show=$mSentry_key&amp;showmap=true&amp;maptype=google\">[google map]</a>";
+      $sGmapAnchor = "";
+      $sBmapAnchor = "<a href=\"./sentry.php?show=$mSentry_key&amp;showmap=true&amp;maptype=bing\">[map]</a>";
       $sSmapAnchor = "<a href=\"./sentry.php?show=$mSentry_key&amp;showmap=true&amp;maptype=street\">[street view]</a>";
 
       if ($showmap) {
@@ -1043,7 +1055,7 @@ yyyy:" . htmlentities($mGodate_yyyy) . "<br>
          }
          $ret .= "
          <tr>
-            <td class=\"project\"><a href=\"./sentry.php?show=$mSentry_key\">[hide map]</a>$sMapDebug
+            <td class=\"project\"><a href=\"./sentry.php?show=$mSentry_key\">[-]</a>$sMapDebug
          ";
          $sMapType = "bing";
          if (isset($_GET["maptype"])) {
@@ -1056,15 +1068,15 @@ yyyy:" . htmlentities($mGodate_yyyy) . "<br>
          }
          if ($sMapType == "bing") {
             $ret .= "$sGmapAnchor $sSmapAnchor";
-            require("../routine/do.sentrybingmap.php");
+            require("routine/do.sentrybingmap.php");
          } else
          if ($sMapType == "google") {
             $ret .= "$sBmapAnchor $sSmapAnchor";
-            require("../../app/Resources/controller/routine/do.sentrygooglemap.php");
+            require("routine/do.sentrygooglemap.php");
          } else
          if ($sMapType == "street") {
             $ret .= "$sGmapAnchor $sBmapAnchor";
-            require("../routine/do.gstreetmap.php");
+            require("routine/do.gstreetmap.php");
          }
          $ret .= "
             </td>
@@ -1074,9 +1086,9 @@ yyyy:" . htmlentities($mGodate_yyyy) . "<br>
          $ret .= "
          <tr>
             <td class=\"project\">
-            $sGmapAnchor
-            $sSmapAnchor
+            <a href=\"./sentry.php?show=$mSentry_key&amp;showmap=true&amp;maptype=bing\">[+]</a>
             $sBmapAnchor
+            $sSmapAnchor
             </td>
          </tr>";
       }
@@ -1124,7 +1136,7 @@ yyyy:" . htmlentities($mGodate_yyyy) . "<br>
       </table>";
       return $ret;
    }
-   function sentrygetstartdateparts($startdate,$pYYYY,$pMM,$pDD) {
+   function sentrygetstartdateparts($startdate,&$pYYYY,&$pMM,&$pDD) {
       $pYYYY = 0;$pMM = 0;$pDD = 0;
       $sDateparts = explode("-",$startdate);
       if (count($sDateparts) == 3) {
@@ -1137,7 +1149,8 @@ yyyy:" . htmlentities($mGodate_yyyy) . "<br>
    }
    function sentriesbyweektable_poop() {
       global $mMySched;
-      require("settings.php");
+      //require("settings.php");
+      foreach((new config("tables"))->getAssoc() as $k=>$v) $$k=$v;
       $sRet = EnumerateSentriesWSomeSiteAndCustInfo($mMySched,$sentry_table,$supervisor_table,$customer_table,$site_table,$customerphone_table,$monthno,$year,"","",$sCount,$sSentryKey,$sHeading,$sStartdate,$sStarttime,$sSentrytype,$sSupervisor_name,$sCust_name,$sCust_phone,$sSite_streetaddr,$sSite_city,$sSite_state,$sSite_zip,$sPriphone_num,$sPriphone_type);
       if ($sRet != 0) {
          global $mError;
@@ -1155,7 +1168,7 @@ yyyy:" . htmlentities($mGodate_yyyy) . "<br>
    }
    function sentriesbyweektable($caption,$weekno,$year) {
       global $mMySched;
-      require("settings.php");
+      foreach((new config("tables"))->getAssoc() as $k=>$v) $$k=$v;
       $sRet = EnumerateSentriesWSomeSiteAndCustInfoForWeek($mMySched,$sentry_table,$supervisor_table,$customer_table,$site_table,$customerphone_table,$weekno,$year,"","",$sCount,$sSentryKey,$sHeading,$sStartdate,$sStarttime,$sSentrytype,$sSupervisor_name,$sCust_name,$sCust_phone,$sSite_streetaddr,$sSite_city,$sSite_state,$sSite_zip,$sPriphone_num,$sPriphone_type);
       if ($sRet != 0) {
          global $mError;
@@ -1272,7 +1285,8 @@ yyyy:" . htmlentities($mGodate_yyyy) . "<br>
    }
    function sentriesbymonthtable_old($caption,$monthno,$year) {
       global $mMySched;
-      require("settings.php");
+      //require("settings.php");
+      foreach((new config("tables"))->getAssoc() as $k=>$v) $$k=$v;
       $sRet = EnumerateSentriesWSomeSiteAndCustInfo($mMySched,$sentry_table,$supervisor_table,$customer_table,$site_table,$customerphone_table,$monthno,$year,"","",$sCount,$sSentryKey,$sHeading,$sStartdate,$sStarttime,$sSentrytype,$sSupervisor_name,$sCust_name,$sCust_phone,$sSite_streetaddr,$sSite_city,$sSite_state,$sSite_zip,$sPriphone_num,$sPriphone_type);
       if ($sRet != 0) {
          global $mError;
@@ -1328,7 +1342,7 @@ yyyy:" . htmlentities($mGodate_yyyy) . "<br>
       </table>";
       return $ret;
    }
-   function addsentryvarerrmsg($pErrArea,$Area,$Msg,$Delimiter) {
+   function addsentryvarerrmsg(&$pErrArea,$Area,$Msg,$Delimiter) {
       if (isset($pErrArea[$Area])) {
          $pErrArea[$Area] .= $Delimiter;
       } else {
@@ -1336,7 +1350,7 @@ yyyy:" . htmlentities($mGodate_yyyy) . "<br>
       }
       $pErrArea[$Area] .= $Msg;
    }
-   function testsentryvars($pErrArea) {
+   function testsentryvars(&$pErrArea) {
       $pErrArea = array();
       $sNoErrors = TRUE;
       global $mSentry_sentrytype,$mSentry_heading,$mSentry_supervisorkey,$mSentry_notes,$mSentry_startdate,$mSentry_starttime;
@@ -1471,11 +1485,12 @@ yyyy:" . htmlentities($mGodate_yyyy) . "<br>
    function editsentryformtable($action,$width) {
       global $mMySched;
       global $mSentry_sentrytype,$mSentry_heading,$mSentry_supervisorkey,$mSentry_notes,$mSentry_startdate,$mSentry_starttime;
-      require("settings.php");
+      //require("settings.php");
+      foreach((new config("tables"))->getAssoc() as $k=>$v) $$k=$v;
       $ret = "";
       return $ret;
    }
-   function enumeratetimes($StartHour,$pHour,$pMin) {
+   function enumeratetimes($StartHour,&$pHour,&$pMin) {
       $pHour = array(); $pMin = array();
       if ($StartHour < 10) {
          $pHour[0] = "0$StartHour";
@@ -1508,7 +1523,8 @@ yyyy:" . htmlentities($mGodate_yyyy) . "<br>
       global $mMySched; //the resource handler for this function
       global $mAddSentryerr;
       global $mSentry_sentrytype,$mSentry_heading,$mSentry_supervisorkey,$mSentry_notes,$mSentry_startdate,$mSentry_starttime,$mSentry_weekdayrepeat,$mSentry_key;
-      require("settings.php");
+      //require("settings.php");
+      foreach((new config("tables"))->getAssoc() as $k=>$v) $$k=$v;
       global $mShowYear,$mShowMonth,$mShowDay;
       if (($mShowYear != "") && ($mShowMonth != "") && ($mShowDay != "")) {
          $sShowStamp = mktime(0,0,0,$mShowMonth,$mShowDay,$mShowYear);

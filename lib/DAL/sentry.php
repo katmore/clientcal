@@ -879,7 +879,7 @@ function days_in_month($ignore_cal,$month, $year) {
       $pLastUpdate = $row["last_updated"];
       return 0;
    }
-   function GetSentryStartdate($My,$Table,$Key,$pStartdate,$pLastUpdate) {
+   function GetSentryStartdate($My,$Table,$Key,&$pStartdate,&$pLastUpdate) {
       $pStartdate = "";$pLastUpdate = "";
       if (!is_numeric($Key)) {
          throw new Error(-10,"bad format for key:'$Key' (non numeric)");

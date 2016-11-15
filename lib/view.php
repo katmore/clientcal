@@ -239,7 +239,6 @@ namespace clientcal;
       $ret .= "</span>";
       $ret .= "
    <div style=\"margin-top:5px;background-color:white; width:128px; height:32px;\">
-   <img src=\"https://www.startssl.com/img/startcom_secured_keys_80x15.png\" border=\"0\" alt=\"Free SSL Secured By StartCom\" title=\"Free SSL Secured By StartCom\">
 
       ";
       if ($mAuthorized == "true")

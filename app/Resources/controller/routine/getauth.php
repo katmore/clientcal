@@ -9,6 +9,7 @@ global $mAuthorized,$mAuthorized_username;
           $mAuthorized_username = $_SESSION['username'];
        }
        if (isset($_SESSION['username'])) {
+
             if (($mRet = userexists($_SESSION['username'])) != 1) {
                if ($mRet < 0) {
                   $mNotice .= "problem with user lookup during session authentication:<br />$mError<br />";
@@ -19,6 +20,7 @@ global $mAuthorized,$mAuthorized_username;
             }
        }
    }
+
    if ($mAuthorized == "false") {
       killsession();
    }

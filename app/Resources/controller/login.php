@@ -17,6 +17,7 @@ namespace clientcal;
       getloginvals();
 
       $sRet = verifyuserinfo($mUsername,$mPassword,$mLoggedUsername);
+
       if ($sRet === TRUE) {
          $_SESSION["authorized"] = "true";
          $_SESSION["username"] = $mLoggedUsername;
@@ -70,6 +71,7 @@ namespace clientcal;
             echo failedlogintable($default_tableclass,"./");
          } else
             if ($mMode == "show_menu") {
+
                echo panelmenu($default_tableclass);
             }
          echo bottom();

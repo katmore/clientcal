@@ -2,6 +2,9 @@
 
 namespace clientcal;
 
+use SoapClient;
+use stdClass;
+
 /*
  *
  * geocode.php of bingmaps
@@ -13,8 +16,11 @@ namespace clientcal;
  */
 class BingMapsGeocodeSoapService {
     /* Member variables */
-    const API_KEY       = "";
     const GEOCODE_WSDL  = "http://dev.virtualearth.net/webservices/v1/metadata/geocodeservice/geocodeservice.wsdl";
+    
+    protected static function _bing_api_key() {
+       return (new config("geoloc"))->getValue("BING_API_KEY");
+    }
 
     /**
      * __construct
@@ -28,6 +34,8 @@ class BingMapsGeocodeSoapService {
     public function __construct() {
         /* void */
     }
+    
+
 
     /**
      * geocode_lookup_raw
@@ -122,7 +130,7 @@ class BingMapsGeocodeSoapService {
                 $soap_client = new SoapClient(self::GEOCODE_WSDL);
                 $geocode_response = $soap_client->Geocode(array(
                     'request' => array(
-                        'Credentials' => array('ApplicationId' => self::API_KEY),
+                        'Credentials' => array('ApplicationId' => self::_bing_api_key()),
                         'Query' => $query
                      )
                 ));

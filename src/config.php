@@ -71,6 +71,7 @@ class config {
       if (!isset($this->_assoc[$configKey])) {
          throw new invalidConfigKey("the specified config key does not exist", $this->_name, $this->_file, $configKey);
       }  
+      return $this->_assoc[$configKey];
    }
    /**
     * @return array
@@ -127,7 +128,7 @@ class config {
     */
    public static function LoadAssoc(string $configName) :array {
       if (!in_array($configName,static::$_configNameList,true)) {
-         throw new invalidConfig("the specified configName does not exist", $configName, $configFile);
+         throw new invalidConfig("the specified configName does not exist", $configName, "$configName.php");
       }
       $config=[];
       foreach(require(self::$_baseDir."/$configName.php") as $k=>$v) {
