@@ -4,8 +4,9 @@ composer.lock
 **/vendor/*
 /include/settings.inc.php
 /include/settings.balive.inc.php
-/custfilequeue
-/custfiles
+**/custfilequeue/*
+**/custfiles/*
 /app/config/clientcal/app.php
 /app/config/clientcal/customer.php
 /app/config/clientcal/mysql.php
+/app/config/clientcal/geoloc.php
