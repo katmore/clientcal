@@ -4,6 +4,9 @@
  * do.bingmap.php of schedule
  *
  */
+namespace clientcal;
+
+$bing_api_key = (new config("geoloc"))->getValue("BING_API_KEY");
 
          $ret .= "
 
@@ -12,7 +15,7 @@
 <script type=\"text/javascript\">
 function BingMap() {
    var mapOptions = {
-   credentials: \"AqDTKhvuw7F2nEctDzqAOTVW2v_mIxGJ8n_QwCT8CeVfRIzhkSlz3KnpvaGxZgQk\",
+   credentials: \"$bing_api_key\",
    mapTypeId: Microsoft.Maps.MapTypeId.road,
    enableClickableLogo: 0,
    showLogo: false,
