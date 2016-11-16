@@ -1,0 +1,21 @@
+{
+  "directory": "web/components",
+  "name": "clientcal",
+  "homepage": "https://github.com/katmore/clientcal",
+  "description": "Clientcal Scheduler",
+  "main": "",
+  "authors": [
+    "Doug Bird"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "font-awesome": "^4.6.3"
+  }
+}

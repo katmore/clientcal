@@ -78,47 +78,15 @@ namespace clientcal;
    function header($subtitle) {
       global $mHeadExtra;
       
+      $sitename = (new config("app"))->getValue("sitename");
       
-      foreach((new config("app"))->getAssoc() as $k=>$v) $$k=$v;
+      (function() use($mHeadExtra,$subtitle,$sitename){
+         
+         require((new config("template"))->getValue("base_dir")."/header.php");
+         
+      })();
       
-      
-      
-      foreach((new config("balive"))->getAssoc() as $k=>$v)  $$k=$v;
-      
-      
-      $ret = "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\">
-<html>
-   <head>
-      $mHeadExtra";
-      /*
-      $ret .= "
-      <title>$sitename";
-      if ($subtitle != "") {
-         $ret .= " | " . $subtitle;
-      }
-      */
-      $ret .= "
-      <title>";
-      if ($subtitle != "") {
-         $ret .= "$subtitle | ";
-      }
-      $ret .= $sitename;
-      $ret .= "</title>
-      <link rel=\"STYLESHEET\" href=\"style.css\" type=\"text/css\">
-<link rel=\"shortcut icon\"
- href=\"images/clientcal_favicon.ico\" />
-      ";
-      if (isset($balive_interval)) {
-         if ($balive_interval > 0) {
-            //$ret .= balivescript();
-            $ret .= "
-      <script type=\"text/javascript\" src=\"balive.js.php\"></script>";
-         }
-      }
-      $ret .= "
-   </head>
-      ";
-      return $ret;
+      //return $ret;
    }
    function topminimal() {
 //       include("settings.php");

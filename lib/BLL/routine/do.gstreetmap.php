@@ -22,6 +22,9 @@ namespace clientcal;
       }
     };
     var panorama = new  google.maps.StreetViewPanorama(document.getElementById('mapDiv'),panoramaOptions);
+    var map = new google.maps.Map(document.getElementById('mapDiv'), {
+    zoom: 14
+  });
     map.setStreetView(panorama);
 
   }

@@ -1390,25 +1390,26 @@ search results<br>";
             }
             $ret .= "</div>";
          } else {
-            $ret .= "
-            	<div><a style=\"
-            		font-family:courier new, courier, monospace;
-            		color:blue;\" 
-            		href=\"./customer.php?edit=$mCust_key&amp;mailup&amp;addcustfile\">[+]</a><a 
-            		style=\"color:black;\" 
-            		href=\"./customer.php?edit=$mCust_key&amp;mailup&amp;addcustfile\">email file</a>
-            	</div>
-            ";
+//             $ret .= "
+//             	<div><a style=\"
+//             		font-family:courier new, courier, monospace;
+//             		color:blue;\" 
+//             		href=\"./customer.php?edit=$mCust_key&amp;mailup&amp;addcustfile\">[+]</a>
+//             		<a 
+//             		style=\"color:black;\" 
+//             		href=\"./customer.php?edit=$mCust_key&amp;mailup&amp;addcustfile\">email file</a>
+//             	</div>
+//             ";
          } /*end if/else show-email-upload*/
-         $ret .= "
-         	<div><a style=\"
-         		font-family:courier new, courier, monospace;
-         		color:blue;\" 
-         		href=\"./customer.php?edit=$mCust_key&amp;addcustfile&amp;checkup\">[o]</a><a 
-         		style=\"color:black;\" 
-         		href=\"./customer.php?edit=$mCust_key&amp;addcustfile&amp;checkup\">check for email'ed files</a>
-         	</div>
-         ";
+//          $ret .= "
+//          	<div><a style=\"
+//          		font-family:courier new, courier, monospace;
+//          		color:blue;\" 
+//          		href=\"./customer.php?edit=$mCust_key&amp;addcustfile&amp;checkup\">[o]</a><a 
+//          		style=\"color:black;\" 
+//          		href=\"./customer.php?edit=$mCust_key&amp;addcustfile&amp;checkup\">check for email'ed files</a>
+//          	</div>
+//          ";
          if ($mCustfile_showcheckemail === true) {
             $ret .= "<div>";
             if (0 == ($mRet = ProcessCustfileMailqueue($mMySched,$sReport))) {

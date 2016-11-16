@@ -16,7 +16,7 @@ function UniqueModuleList() {
 
 function VersionNo() {
    $sMajor = "1";
-   $sMinor = "53";
+   $sMinor = "99";
    return "$sMajor.$sMinor";
 }
 

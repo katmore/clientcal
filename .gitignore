@@ -1,7 +1,10 @@
 .*
 !/.gitignore
+!/.bowerrc
+npm-debug.log
 composer.lock
 **/vendor/*
+/web/components/
 /include/settings.inc.php
 /include/settings.balive.inc.php
 **/custfilequeue/*

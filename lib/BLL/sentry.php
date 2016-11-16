@@ -1034,7 +1034,12 @@ yyyy:" . htmlentities($mGodate_yyyy) . "<br>
       //$sGmapAnchor = "<a href=\"./sentry.php?show=$mSentry_key&amp;showmap=true&amp;maptype=google\">[google map]</a>";
       $sGmapAnchor = "";
       $sBmapAnchor = "<a href=\"./sentry.php?show=$mSentry_key&amp;showmap=true&amp;maptype=bing\">[map]</a>";
-      $sSmapAnchor = "<a href=\"./sentry.php?show=$mSentry_key&amp;showmap=true&amp;maptype=street\">[street view]</a>";
+      if (!empty((new config("geoloc"))->getValue("GOOGLE_API_KEY"))) {
+         $sSmapAnchor = "<a href=\"./sentry.php?show=$mSentry_key&amp;showmap=true&amp;maptype=street\">[street view]</a>";
+      } else {
+         $sSmapAnchor = "";
+      }
+      
 
       if ($showmap) {
          $sRet = GetSiteLatLon($mMySched,"site",$mSentry_key,$sLat,$sLon);
@@ -1055,7 +1060,7 @@ yyyy:" . htmlentities($mGodate_yyyy) . "<br>
          }
          $ret .= "
          <tr>
-            <td class=\"project\"><a href=\"./sentry.php?show=$mSentry_key\">[-]</a>$sMapDebug
+            <td class=\"project\"><a href=\"./sentry.php?show=$mSentry_key\"><i class=\"fa fa-compress\" aria-hidden=\"true\"></i></a>$sMapDebug
          ";
          $sMapType = "bing";
          if (isset($_GET["maptype"])) {
@@ -1067,7 +1072,7 @@ yyyy:" . htmlentities($mGodate_yyyy) . "<br>
             }
          }
          if ($sMapType == "bing") {
-            $ret .= "$sGmapAnchor $sSmapAnchor";
+            $ret .= "$sBmapAnchor $sSmapAnchor";
             require("routine/do.sentrybingmap.php");
          } else
          if ($sMapType == "google") {
@@ -1075,7 +1080,7 @@ yyyy:" . htmlentities($mGodate_yyyy) . "<br>
             require("routine/do.sentrygooglemap.php");
          } else
          if ($sMapType == "street") {
-            $ret .= "$sGmapAnchor $sBmapAnchor";
+            $ret .= "$sBmapAnchor $sSmapAnchor";
             require("routine/do.gstreetmap.php");
          }
          $ret .= "
@@ -1086,7 +1091,7 @@ yyyy:" . htmlentities($mGodate_yyyy) . "<br>
          $ret .= "
          <tr>
             <td class=\"project\">
-            <a href=\"./sentry.php?show=$mSentry_key&amp;showmap=true&amp;maptype=bing\">[+]</a>
+            <a href=\"./sentry.php?show=$mSentry_key&amp;showmap=true&amp;maptype=bing\"><i class=\"fa fa-expand\" aria-hidden=\"true\"></i></a>
             $sBmapAnchor
             $sSmapAnchor
             </td>
