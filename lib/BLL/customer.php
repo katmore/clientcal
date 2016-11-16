@@ -1141,11 +1141,17 @@ search results<br>";
       ";
       return $ret;
    }
-   function custfiletypes($checked="invoice",$idsuffix="{RAND}") {
+   function custfiletypes($checked="photo",$idsuffix="{RAND}") {
       if ($idsuffix == "{RAND}") {
          $idsuffix = "_" . mt_rand(10000,99999);
       }
       $ret = "
+                     <input ";
+      if ($checked == "photo") {
+         $ret .= "checked ";
+      }
+      $ret .= "type=\"radio\" name=\"custfile_type\" value=\"photo\" id=\"photo$idsuffix\"><label for=\"photo$idsuffix\">photo</label>";
+      $ret .= "
                      <input ";
       if ($checked == "invoice") {
          $ret .= "checked ";
@@ -1155,12 +1161,8 @@ search results<br>";
       if ($checked == "quote") {
          $ret .= "checked ";
       }
-      $ret .= "type=\"radio\" name=\"custfile_type\" value=\"quote\" id=\"quote$idsuffix\"><label for=\"quote$idsuffix\">quote</label>
-                     <input ";
-      if ($checked == "photo") {
-         $ret .= "checked ";
-      }
-      $ret .= "type=\"radio\" name=\"custfile_type\" value=\"photo\" id=\"photo$idsuffix\"><label for=\"photo$idsuffix\">photo</label>";
+      $ret .= "type=\"radio\" name=\"custfile_type\" value=\"quote\" id=\"quote$idsuffix\"><label for=\"quote$idsuffix\">quote</label>";
+
       return $ret;
    }
    
@@ -1353,18 +1355,18 @@ search results<br>";
                   <form style=\"margin:0;\" enctype=\"multipart/form-data\" action=\"./customer.php?id=$mCust_key\" method=\"POST\">
                   <div>
                      
-                     <div style=\"font-weight:normal;\" id=\"file_label\"><a style=\"font-family:courier new, courier, monospace;color:blue;\" href=\"./customer.php?edit=$mCust_key\">[-]</a><a style=\"color:black;\" href=\"./customer.php?edit=$mCust_key\">add file</a>
+                     <div style=\"font-weight:normal;\" id=\"file_label\"><a style=\"font-family:courier new, courier, monospace;color:blue;\" href=\"./customer.php?edit=$mCust_key\"><i class=\"fa fa-compress\" aria-hidden=\"true\"></i></a><a style=\"color:black;\" href=\"./customer.php?edit=$mCust_key\">add file</a>
                      </div>
                      <input type=\"file\" name=\"userfile\">
                      
 							<div id=\"custfiletypes\">
-							<div style='font-weight:bold;'>document type:</div>
+							<div style='font-weight:bold;'>file type</div>
 							";
          $ret .= custfiletypes();
          $ret .= "	</div><!--#custfiletypes-->
                   </div>
                   <div>
-                     <input type=\"submit\" name=\"custfile_upload\" value=\"upload\">
+                     <input type=\"submit\" name=\"custfile_upload\" value=\"start upload\">
                   </div>";
          $ret .= "</form>";
          if ($mCustfile_showemailup === true) {
@@ -1432,7 +1434,7 @@ search results<br>";
                   <td class=\"project\">
          			<div>
                      
-                     <div style=\"font-weight:normal;\" id=\"file_label\"><a style=\"font-family:courier new, courier, monospace;color:blue;\" href=\"./customer.php?addcustfile&amp;edit=$mCust_key\">[+]</a><a style=\"color:black;\" href=\"./customer.php?addcustfile&amp;edit=$mCust_key\">add file</a></div>
+                     <div style=\"font-weight:normal;\" id=\"file_label\"><a style=\"font-family:courier new, courier, monospace;color:blue;\" href=\"./customer.php?addcustfile&amp;edit=$mCust_key\"><i class=\"fa fa-expand\" aria-hidden=\"true\"></i></a><a style=\"color:black;\" href=\"./customer.php?addcustfile&amp;edit=$mCust_key\">add file</a></div>
                   </div>
                   </td>
                </tr>";
