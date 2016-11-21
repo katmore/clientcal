@@ -48,7 +48,6 @@ if ($mAuthorized == "true") {
                               $mMode = "custfile";
                            }
 }
-
 $mNotice = "";
 $mSubtitle = "";
 $mRet = ConnectToDB($dbhost,$dbname,$dbuser,$dbpasswd,$mMySched);

@@ -56,6 +56,10 @@ li.rescal-day {
    visibility: hidden;
 }
 
+.rescal-other-month .rescal-day-summary {
+   visibility: hidden;
+}
+
 .rescal-entry-label {
    font-weight: normal;
    font-family: Roboto;
@@ -104,27 +108,43 @@ ul.rescal-day-items {
   padding: 0;
   margin: 0;
 }
+
 ul.rescal-day-items li {
 	padding: 0;
 	border:0;
 	border-bottom: 1px solid #666;
+	float: left;
+	white-space: nowrap;
+	width:100%;
+	overflow: hidden;
+}
+
+.rescal-day-summary {
+	display: none;
 }
 
 /* ============================
                 Mobile Responsiveness
    ============================*/
 @media (max-width: 768px) {
-  .rescal-weekdays, .rescal .rescal-other-month {
-    display: none;
-  }
 
-  li.rescal-day {
-    height: auto !important;
-    border: 1px solid #ededed;
-    width: 100%;
-    margin-bottom: -1px;
-  }
-
-
+   li.rescal-day {
+      height: 5em;
+   }
+   ul.rescal-day-items {
+      display: none;
+   }
+   .rescal-day-summary {
+      display: block;
+   }
 
 }
+
+
+
+
+
+
+
+
+

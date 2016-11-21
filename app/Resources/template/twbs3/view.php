@@ -82,15 +82,15 @@
    
    </div><!-- /.rescal -->
 </div><!-- /[data-role="sched-wrap"] -->
-         <div>
-            <div class="label rescal-entry-label sentrytype-estimate" >estimate</div>
-            <div class="label rescal-entry-label sentrytype-install" >install</div>
-            <div class="label rescal-entry-label sentrytype-refinish" >refinish</div>
-            <div class="label rescal-entry-label sentrytype-finish" >finish</div>
-            <div class="label rescal-entry-label sentrytype-repair" >repair</div>
-            <div class="label rescal-entry-label sentrytype-tear_out" >tear_out</div>
-            <div class="label rescal-entry-label sentrytype-sand_only" >sand_only</div>
-         </div>
+   <div>
+      <div class="label rescal-entry-label sentrytype-estimate" >estimate</div>
+      <div class="label rescal-entry-label sentrytype-install" >install</div>
+      <div class="label rescal-entry-label sentrytype-refinish" >refinish</div>
+      <div class="label rescal-entry-label sentrytype-finish" >finish</div>
+      <div class="label rescal-entry-label sentrytype-repair" >repair</div>
+      <div class="label rescal-entry-label sentrytype-tear_out" >tear_out</div>
+      <div class="label rescal-entry-label sentrytype-sand_only" >sand_only</div>
+   </div>
 
 <div style="display:none;" data-role="rescal-tmpl">
    <ul data-tmpl="week" class="rescal-week"></ul>
@@ -101,12 +101,17 @@
             <div class="rescal-day-dow-label" data-formatdate="ddd"></div>
             <div class="rescal-day-dow-separator"></div>
          </div>
-         <ul class="rescal-day-items">
-            <li class="rescal-entry-label sentrytype-estimate">Johnson, John</li>
-            <li class="rescal-entry-label sentrytype-refinish">McGee, Mumford</li>
-         </ul>
+         <ul class="rescal-day-items"></ul>
+         <div class="rescal-day-summary">
+            <i style="display: none;" class="fa fa-usd" aria-hidden="true" data-has-estimate></i>
+            <i style="display: none;" class="fa fa-truck" aria-hidden="true" data-has-install data-has-refinish data-has-finish data-has-repair data-has-tear_out data-has-sand_only></i>
+         </div>
      </li>
+     <li data-tmpl="sentry" class="rescal-entry-label"></li>         
    </ul>
+   <div data-tmpl="rescal-day-summary-example" class="rescal-day-summary">
+
+   </div>
 </div><!--/rescal-tmpl-->
 
     <!-- Moment -->

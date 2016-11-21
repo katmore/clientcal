@@ -2,10 +2,11 @@
 namespace clientcal\apiMethod;
 
 use clientcal\apiMethod;
+use clientcal\apiResponse;
 
-interface methodGET extends apiMethod {
+interface GET extends apiMethod {
    /**
     * provides response data for a GET request
     */
-   public function responseGET(array $requestData): array;
+   public function responseGET(array $requestData): apiResponse;
 }

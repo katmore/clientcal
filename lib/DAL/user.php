@@ -4,7 +4,7 @@ namespace clientcal;
 
    function getuserkey($username) {
       $myconfig=(new config("mysql"))->getAssoc();
-      if (!($my = mysqli_connect($myconfig['dbhost'],$myconfig['dbuser'],$myconfig['dbpasswd'])))
+      if (!($my = mysqli_connect($myconfig['dbhost'],$myconfig['username'],$myconfig['password'])))
          throw new Error(-4,"while connect: " . mysql_error($my));
          if (!mysqli_select_db($my,$myconfig['dbname']))
             throw new Error(-4,"while db: " . mysql_error($my));
@@ -26,7 +26,7 @@ namespace clientcal;
    }
    function adduserprivilege($userkey,$privkey) {
       $myconfig=(new config("mysql"))->getAssoc();
-      if (!($my = mysqli_connect($myconfig['dbhost'],$myconfig['dbuser'],$myconfig['dbpasswd'])))
+      if (!($my = mysqli_connect($myconfig['dbhost'],$myconfig['username'],$myconfig['password'])))
          throw new Error(-4,"while connect: " . mysql_error($my));
          if (!mysqli_select_db($my,$myconfig['dbname']))
             throw new Error(-4,"while db: " . mysql_error($my));
@@ -40,7 +40,7 @@ namespace clientcal;
       $privkey = array();   $privapi = array();   $privname = array();   $privdesc = array();
       
       $myconfig=(new config("mysql"))->getAssoc();
-      if (!($my = mysqli_connect($myconfig['dbhost'],$myconfig['dbuser'],$myconfig['dbpasswd'])))
+      if (!($my = mysqli_connect($myconfig['dbhost'],$myconfig['username'],$myconfig['password'])))
          throw new Error(-4,"while connect: " . mysql_error($my));
          if (!mysqli_select_db($my,$myconfig['dbname']))
             throw new Error(-4,"while db: " . mysql_error($my));
@@ -95,7 +95,7 @@ namespace clientcal;
    function userexists($user) {
       $myconfig=(new config("mysql"))->getAssoc();
       
-      if (!($my = mysql_connect($myconfig['dbhost'],$myconfig['dbuser'],$myconfig['dbpasswd']))) {
+      if (!($my = mysql_connect($myconfig['dbhost'],$myconfig['username'],$myconfig['password']))) {
          throw new Error(-4,"while connect: " . mysql_error());
       }
       if (!mysql_select_db($myconfig['dbname'],$my)) {
@@ -115,7 +115,7 @@ namespace clientcal;
       }
       $myconfig=(new config("mysql"))->getAssoc();
       
-      if (!($my = mysqli_connect($myconfig['dbhost'],$myconfig['dbuser'],$myconfig['dbpasswd'])))
+      if (!($my = mysqli_connect($myconfig['dbhost'],$myconfig['username'],$myconfig['password'])))
          throw new Error(-4,"while connect: " . mysql_error($my));
          if (!mysqli_select_db($my,$myconfig['dbname']))
             throw new Error(-4,"while db: " . mysql_error($my));
@@ -140,7 +140,7 @@ namespace clientcal;
       
       $myconfig=(new config("mysql"))->getAssoc();
       
-      if (!($my = mysqli_connect($myconfig['dbhost'],$myconfig['dbuser'],$myconfig['dbpasswd'])))
+      if (!($my = mysqli_connect($myconfig['dbhost'],$myconfig['username'],$myconfig['password'])))
          throw new Error(-4,"while connect: " . mysql_error($my));
       if (!mysqli_select_db($my,$myconfig['dbname']))
          throw new Error(-4,"while db: " . mysql_error($my));
@@ -171,7 +171,7 @@ namespace clientcal;
    }
    function userhaspriv($pHasPriv,$userkey,$privapi) {
       $myconfig=(new config("mysql"))->getAssoc();
-      if (!($my = mysqli_connect($myconfig['dbhost'],$myconfig['dbuser'],$myconfig['dbpasswd'])))
+      if (!($my = mysqli_connect($myconfig['dbhost'],$myconfig['username'],$myconfig['password'])))
          throw new Error(-4,"while connect: " . mysql_error($my));
          if (!mysqli_select_db($my,$myconfig['dbname']))
             throw new Error(-4,"while db: " . mysql_error($my));

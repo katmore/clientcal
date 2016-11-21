@@ -1,7 +1,6 @@
 (function() {
    
    $('[data-role="month-wrap"]').empty();
-   //$('[ data-role="rescal-tmpl"] [data-tmpl="month-example"]').appendTo($('[data-role="month-wrap"]'));
    
    var startDOW=1;
    var endDOW=0;
@@ -35,14 +34,10 @@
       }
       calEndMom.add(1,'day');
    }
-   
-//   console.log('start of display...');
-//   console.debug(curMoment.toISOString());   
-//   
-//   console.log('end of cal...');
-//   console.debug(calEndMom.toISOString());      
+    
    var curW;
    var weekUI;
+   var sentryTmpl = $('[data-role="rescal-tmpl"] [data-tmpl="sentry"]').clone();
    for(;;) {
       /*
        * do stuff...
@@ -55,6 +50,11 @@
          weekUI = $('[data-role="rescal-tmpl"] [data-tmpl="week"]').clone().attr('data-weekno',curW);
       }
       var dayUI = $('[data-role="rescal-tmpl"] [data-tmpl="day"]').clone();
+      
+      dayUI.attr('data-dayofmonth',curMoment.format('D'));
+      dayUI.attr('data-year',curMoment.format('Y'));
+      dayUI.attr('data-month',curMoment.format('M'));
+      
       //data-formatdate="DD"
       dayUI.find('[data-formatdate]').each(function() {
          var f=$(this).data('formatdate');
@@ -82,8 +82,38 @@
          break;
       }
       curMoment.add(1,'day');
-   }
+   }/*finished creating empty 'rescal'*/
    
+   var jqxhr = $.ajax({
+      type: "GET",
+      url: '/clientcal/api/calendar.php',
+      data : {
+         month : reqMoment.format('YM'),
+      },
+   })
+   .done(function(data, textStatus, jqXHR) {
+      console.log('complete...');
+      console.debug(data);
+      var dayUI;
+      for(var i=0;i<data.length;i++) {
+         var sentry=data[i];
+         var timeMom = moment(sentry.time,moment.ISO_8601);
+         var target = {
+            dayofmonth : timeMom.format('D'),
+            year : timeMom.format('Y'),
+            month : timeMom.format('M'),
+         };
+         dayUI=$('[data-dayofmonth="'+target.dayofmonth+'"][data-year="'+target.year+'"][data-month="'+target.month+'"] .rescal-day-items');
+         var sentryUI = sentryTmpl.clone();
+         sentryUI.text(sentry.label);
+         dayUI.find('[data-has-estimate]').length;
+         
+         dayUI.append(sentryUI);
+      }
+   })
+   .fail(function(jqXHR, textStatus, errorThrown) {
+      console.log('failed');
+   }); 
    
    
    

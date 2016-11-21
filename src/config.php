@@ -1,7 +1,7 @@
 <?php
 namespace clientcal;
 
-class config {
+class config implements \ArrayAccess {
    
    const DEFAULT_BASE_DIR = __DIR__.'/../app/config/clientcal';
    
@@ -13,6 +13,29 @@ class config {
    private static $_baseDir;
    
    
+   public function offsetExists (  $offset ) {
+      try {
+         $this->getValue($offset);
+      } catch (invalidConfigKey $e) {
+         return false;
+      }
+      return true;
+   }
+   public function offsetGet (  $offset ) {
+      $value = null;
+      try {
+         $value = $this->getValue($offset);
+      } catch (invalidConfigKey $e) {
+         
+      }
+      return $value;
+   }
+   public function offsetSet (  $offset ,  $value ) {
+      
+   }
+   public function offsetUnset (  $offset ) {
+      
+   }
    
    /**
     * @return void

@@ -2,10 +2,11 @@
 namespace clientcal\apiMethod;
 
 use clientcal\apiMethod;
+use clientcal\apiResponse;
 
-interface methodPUT extends apiMethod {
+interface PUT extends apiMethod {
    /**
     * provides response data for a PUT request
     */
-   public function responsePUT(array $requestData): array;
+   public function responsePUT(array $requestData): apiResponse;
 }
