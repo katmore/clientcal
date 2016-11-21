@@ -73,14 +73,16 @@
 
 
 <div data-role="sched-wrap">
-   <header>
-       <h1 data-role="month-year-label"></h1>
-   </header>
-   <div class="rescal" data-role="month-wrap">
-   
-
-   
-   </div><!-- /.rescal -->
+   <div class="rescal-month-nav-wrap" >
+      <div class="rescal-month-nav-dummycel"></div>
+      <div class="rescal-month-nav-dummycel"></div>
+      <div class="rescal-month-nav-dummycel"></div>
+      <div class="rescal-month-nav-dummycel"></div>
+      <div class="rescal-month-nav-dummycel"></div>
+      <div class="rescal-month-nav-dummycel"></div>
+      <div class="rescal-month-nav-dummycel"></div>
+   </div>   
+   <div class="rescal" data-role="month-wrap"></div><!-- /.rescal -->
 </div><!-- /[data-role="sched-wrap"] -->
 <div class="sentrytype-color-legend">
    <div class="label rescal-entry-label sentrytype-estimate" >estimate</div>
