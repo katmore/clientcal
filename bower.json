@@ -16,6 +16,10 @@
     "tests"
   ],
   "dependencies": {
-    "font-awesome": "^4.6.3"
+    "font-awesome": "^4.6.3",
+    "bootstrap": "^3.3.7",
+    "flat-js": "katmore/flat-js",
+    "moment": "^2.16.0",
+    "shareTechMono": "https://google-fonts.azurewebsites.net/googleFonts/sharetechmono?family=Share+Tech+Mono"
   }
 }
