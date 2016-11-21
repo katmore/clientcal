@@ -1,0 +1,130 @@
+ul.rescal-week {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  width: 100%;
+}
+
+li.rescal-day {
+  display: block;
+  float: left;
+  width: 14.342%;
+  box-sizing: border-box;
+  border: 1px solid #ccc;
+  margin-right: -1px;
+  margin-bottom: -1px;
+  height: 10em;
+  background: #f5f5f5;
+}
+
+.rescal-day-header {
+   font-family: 'Droid Sans Mono';
+   background: white;
+   height: 1.25em;
+}
+
+.rescal-date {
+  width: 1.5em;
+  float: left;
+  height: 1.25em;
+  padding-left:0.1em;
+}
+
+.rescal-day-dow-label {
+   border-left: 1px solid #666; 
+   float: left;
+   height: 1.25em;
+   padding-left:0.1em;
+}
+
+.rescal-day-dow-separator {
+   border-bottom: 1px solid #666; 
+   width:100%;
+   float:left;
+}
+
+.rescal-selday-header {
+   background: #840084;
+   color: white;
+}
+
+.rescal-other-month .rescal-day-header {
+   visibility: hidden;
+}
+
+.rescal-other-month .rescal-day-items {
+   visibility: hidden;
+}
+
+.rescal-entry-label {
+   font-weight: normal;
+   font-family: Roboto;
+   border: 1px solid black;
+   padding: 1px;
+   margin: 0;
+}
+
+.rescal-entry-label.sentrytype-estimate {
+	background-color: #00FFFF;
+	color: black;
+}
+
+.rescal-entry-label.sentrytype-install {
+   background-color: #FFFF00;
+   color: black;
+}
+
+.rescal-entry-label.sentrytype-refinish {
+   background-color: #F0000F;
+   color: white;
+}
+
+.rescal-entry-label.sentrytype-finish {
+   background-color: #FF00FF;
+   color: white;
+}
+
+.rescal-entry-label.sentrytype-repair {
+   background-color: #1eff00;
+   color: black;
+}
+
+.rescal-entry-label.sentrytype-tear_out {
+   background-color: #ffb400;
+   color: black;
+}
+
+.rescal-entry-label.sentrytype-sand_only {
+   background-color: #FFFFFF;
+   color: black;
+}
+
+ul.rescal-day-items {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+ul.rescal-day-items li {
+	padding: 0;
+	border:0;
+	border-bottom: 1px solid #666;
+}
+
+/* ============================
+                Mobile Responsiveness
+   ============================*/
+@media (max-width: 768px) {
+  .rescal-weekdays, .rescal .rescal-other-month {
+    display: none;
+  }
+
+  li.rescal-day {
+    height: auto !important;
+    border: 1px solid #ededed;
+    width: 100%;
+    margin-bottom: -1px;
+  }
+
+
+
+}

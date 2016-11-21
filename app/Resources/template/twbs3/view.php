@@ -11,119 +11,13 @@
 <link href="components/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
 
 <!-- Angular Bootstrap Calendar-->
-<link href="components/angular-bootstrap-calendar/dist/css/angular-bootstrap-calendar.min.css" rel="stylesheet">
+<link href="components/font-awesome/css/font-awesome.min.css" rel="stylesheet">
 
 <!-- https://fonts.googleapis.com/css?family=Share+Tech+Mono -->
-<link href='https://fonts.googleapis.com/css?family=Roboto' rel='stylesheet' >
+<link href='https://fonts.googleapis.com/css?family=Roboto|Droid+Sans+Mono' rel='stylesheet' >
 
 
-  <style>
-body {
-  font-family: Tahoma;
-}
-
-header {
-  text-align: center;
-}
-
-.rescal {
-  width: 100%;
-}
-
-.rescal a {
-  color: #8e352e;
-  text-decoration: none;
-}
-
-.rescal ul {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-  width: 100%;
-}
-
-.rescal li {
-  display: block;
-  float: left;
-  width: 14.342%;
-  box-sizing: border-box;
-  border: 1px solid #ccc;
-  margin-right: -1px;
-  margin-bottom: -1px;
-}
-
-.rescal ul.rescal-weekdays {
-  height: 40px;
-  background: #8e352e;
-}
-
-.rescal ul.rescal-weekdays li {
-  text-align: center;
-  text-transform: uppercase;
-  line-height: 20px;
-  border: none !important;
-  color: #fff;
-  font-size: 13px;
-}
-
-.rescal-week li {
-  height: 180px;
-}
-
-.rescal-week li:hover {
-  background: #d3d3d3;
-}
-
-.rescal-day-header {
-   font-family: 'Roboto';
-}
-
-.rescal-date {
-  width: 20px;
-  float: left;
-  
-}
-
-.rescal-day-dow-label {
-   border-left: 1px solid #666; 
-   float: left;
-}
-
-.rescal-day-dow-separator {
-   border-bottom: 1px solid #666; 
-   width:100%;
-   float:left;
-}
-
-.rescal-other-month {
-  background: #f5f5f5;
-  color: #666;
-  
-}
-
-.rescal-other-month .rescal-day-header {
-   visibility: hidden;
-}
-
-/* ============================
-                Mobile Responsiveness
-   ============================*/
-@media (max-width: 768px) {
-  .rescal-weekdays, .rescal .rescal-other-month {
-    display: none;
-  }
-
-  .rescal li {
-    height: auto !important;
-    border: 1px solid #ededed;
-    width: 100%;
-    margin-bottom: -1px;
-  }
-
-
-
-}
-  </style>
+<link href="asset/css/rescal.css" rel="stylesheet">
   </head>
   <body>
 <nav class="navbar navbar-default">
@@ -180,175 +74,40 @@ header {
 
 <div data-role="sched-wrap">
    <header>
-       <h1 data-role="month-year-label">August 2014</h1>
+       <h1 data-role="month-year-label"></h1>
    </header>
    <div class="rescal" data-role="month-wrap">
-   </div><!-- /.rescal -->
-
+   
 
    
+   </div><!-- /.rescal -->
 </div><!-- /[data-role="sched-wrap"] -->
+         <div>
+            <div class="label rescal-entry-label sentrytype-estimate" >estimate</div>
+            <div class="label rescal-entry-label sentrytype-install" >install</div>
+            <div class="label rescal-entry-label sentrytype-refinish" >refinish</div>
+            <div class="label rescal-entry-label sentrytype-finish" >finish</div>
+            <div class="label rescal-entry-label sentrytype-repair" >repair</div>
+            <div class="label rescal-entry-label sentrytype-tear_out" >tear_out</div>
+            <div class="label rescal-entry-label sentrytype-sand_only" >sand_only</div>
+         </div>
 
-
-<div style="display:none;" data-role="tmpl">
-   <div data-tmpl="month">
-       <!-- Days from previous month -->
-       <ul class="rescal-week">
-           <li class="rescal-day rescal-other-month">
-               <div class="rescal-day-header">
-                  <div class="rescal-date">27</div>
-                  <div class="rescal-day-dow-label" >Sun</div>  
-                  <div class="rescal-day-dow-separator"></div>
-               </div>                    
-           </li>
-           <li class="rescal-day rescal-other-month">
-               <div class="rescal-day-header">
-               <div class="rescal-date">28</div>
-               <div class="rescal-day-dow-label" >Mon</div>  
-               <div class="rescal-day-dow-separator"></div>         
-               </div> 
-           </li>
-           <li class="rescal-day rescal-other-month">
-               <div class="rescal-day-header">
-               <div class="rescal-date">29</div>     
-               <div class="rescal-day-dow-label" >Tue</div>  
-               <div class="rescal-day-dow-separator"></div>
-               </div>                                           
-           </li>
-           <li class="rescal-day rescal-other-month">
-               <div class="rescal-day-header">
-               <div class="rescal-date">30</div>     
-               <div class="rescal-day-dow-label" >Wed</div>  
-               <div class="rescal-day-dow-separator"></div>  
-               </div>                                         
-           </li>
-           <li class="rescal-day rescal-other-month">
-               <div class="rescal-day-header">
-               <div class="rescal-date">31</div>     
-               <div class="rescal-day-dow-label" >Thu</div>  
-               <div class="rescal-day-dow-separator"></div>  
-               </div>                                          
-           </li>
-
-           <!-- Days in current month -->
-
-           <li class="rescal-day">
-               <div class="rescal-date">1</div>   
-               <div class="rescal-day-dow-label" >Fri</div>  
-               <div class="rescal-day-dow-separator"></div>                                              
-           </li>
-           <li class="rescal-day">
-               <div class="rescal-date">2</div>
-               <div class="rescal-day-dow-label" >Sat</div>  
-               <div class="rescal-day-dow-separator"></div>                                               
-           </li>
-       </ul>
-
-           <!-- Row #2 -->
-
-       <ul class="rescal-week">
-           <li class="rescal-day">
-               <div class="rescal-date">3</div>                       
-           </li>
-           <li class="rescal-day">
-               <div class="rescal-date">4</div>                       
-           </li>
-           <li class="rescal-day">
-               <div class="rescal-date">5</div>                       
-           </li>
-           <li class="rescal-day">
-               <div class="rescal-date">6</div>                       
-           </li>
-           <li class="rescal-day">
-               <div class="rescal-date">7</div>                     
-           </li>
-           <li class="rescal-day">
-               <div class="rescal-date">8</div>                       
-           </li>
-           <li class="rescal-day">
-               <div class="rescal-date">9</div>                       
-           </li>
-       </ul>
-
-           <!-- Row #3 -->
-
-       <ul class="rescal-week">
-           <li class="rescal-day">
-               <div class="rescal-date">10</div>                      
-           </li>
-           <li class="rescal-day">
-               <div class="rescal-date">11</div>                      
-           </li>
-           <li class="rescal-day">
-               <div class="rescal-date">12</div>                      
-           </li>
-           <li class="rescal-day">
-               <div class="rescal-date">13</div>                      
-           </li>
-           <li class="rescal-day">
-               <div class="rescal-date">14</div>                     
-           </li>
-           <li class="rescal-day">
-               <div class="rescal-date">15</div>                      
-           </li>
-           <li class="rescal-day">
-               <div class="rescal-date">16</div>                      
-           </li>
-       </ul>
-
-           <!-- Row #4 -->
-
-       <ul class="rescal-week">
-           <li class="rescal-day">
-               <div class="rescal-date">17</div>                      
-           </li>
-           <li class="rescal-day">
-               <div class="rescal-date">18</div>                      
-           </li>
-           <li class="rescal-day">
-               <div class="rescal-date">19</div>                      
-           </li>
-           <li class="rescal-day">
-               <div class="rescal-date">20</div>                      
-           </li>
-           <li class="rescal-day">
-               <div class="rescal-date">21</div>                      
-           </li>
-           <li class="rescal-day">
-               <div class="rescal-date">22</div>                     
-           </li>
-           <li class="rescal-day">
-               <div class="rescal-date">23</div>                      
-           </li>
-       </ul>
-
-               <!-- Row #5 -->
-
-       <ul class="rescal-week">
-           <li class="rescal-day">
-               <div class="rescal-date">24</div>                      
-           </li>
-           <li class="rescal-day">
-               <div class="rescal-date">25</div>                     
-           </li>
-           <li class="rescal-day">
-               <div class="rescal-date">26</div>                      
-           </li>
-           <li class="rescal-day">
-               <div class="rescal-date">27</div>                      
-           </li>
-           <li class="rescal-day">
-               <div class="rescal-date">28</div>                      
-           </li>
-           <li class="rescal-day">
-               <div class="rescal-date">29</div>                      
-           </li>
-           <li class="rescal-day">
-               <div class="rescal-date">30</div>                      
-           </li>
-       </ul>
-  </div>
-</div>
+<div style="display:none;" data-role="rescal-tmpl">
+   <ul data-tmpl="week" class="rescal-week"></ul>
+   <ul>
+     <li data-tmpl="day" class="rescal-day" data-othermonthclass="rescal-other-month" >
+         <div class="rescal-day-header" data-seldayclass="rescal-selday-header">
+            <div class="rescal-date" data-formatdate="D"></div>
+            <div class="rescal-day-dow-label" data-formatdate="ddd"></div>
+            <div class="rescal-day-dow-separator"></div>
+         </div>
+         <ul class="rescal-day-items">
+            <li class="rescal-entry-label sentrytype-estimate">Johnson, John</li>
+            <li class="rescal-entry-label sentrytype-refinish">McGee, Mumford</li>
+         </ul>
+     </li>
+   </ul>
+</div><!--/rescal-tmpl-->
 
     <!-- Moment -->
     <script src="components/moment/min/moment.min.js"></script>
