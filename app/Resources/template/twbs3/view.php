@@ -17,8 +17,6 @@
 <link href='https://fonts.googleapis.com/css?family=Roboto' rel='stylesheet' >
 
 
-<link href='components/' rel='stylesheet' type='text/css'>
-
   <style>
 body {
   font-family: Tahoma;
@@ -68,11 +66,11 @@ header {
   font-size: 13px;
 }
 
-.rescal-days li {
+.rescal-week li {
   height: 180px;
 }
 
-.rescal-days li:hover {
+.rescal-week li:hover {
   background: #d3d3d3;
 }
 
@@ -184,7 +182,7 @@ header {
    <header>
        <h1 data-role="month-year-label">August 2014</h1>
    </header>
-   <div class="rescal">
+   <div class="rescal" data-role="month-wrap">
    </div><!-- /.rescal -->
 
 
@@ -192,9 +190,10 @@ header {
 </div><!-- /[data-role="sched-wrap"] -->
 
 
-<div style="display:none;" data-role="prototype">
+<div style="display:none;" data-role="tmpl">
+   <div data-tmpl="month">
        <!-- Days from previous month -->
-       <ul class="rescal-days">
+       <ul class="rescal-week">
            <li class="rescal-day rescal-other-month">
                <div class="rescal-day-header">
                   <div class="rescal-date">27</div>
@@ -247,7 +246,7 @@ header {
 
            <!-- Row #2 -->
 
-       <ul class="rescal-days">
+       <ul class="rescal-week">
            <li class="rescal-day">
                <div class="rescal-date">3</div>                       
            </li>
@@ -273,7 +272,7 @@ header {
 
            <!-- Row #3 -->
 
-       <ul class="rescal-days">
+       <ul class="rescal-week">
            <li class="rescal-day">
                <div class="rescal-date">10</div>                      
            </li>
@@ -299,7 +298,7 @@ header {
 
            <!-- Row #4 -->
 
-       <ul class="rescal-days">
+       <ul class="rescal-week">
            <li class="rescal-day">
                <div class="rescal-date">17</div>                      
            </li>
@@ -325,7 +324,7 @@ header {
 
                <!-- Row #5 -->
 
-       <ul class="rescal-days">
+       <ul class="rescal-week">
            <li class="rescal-day">
                <div class="rescal-date">24</div>                      
            </li>
@@ -348,6 +347,7 @@ header {
                <div class="rescal-date">30</div>                      
            </li>
        </ul>
+  </div>
 </div>
 
     <!-- Moment -->
@@ -361,7 +361,7 @@ header {
     
 
 
-
+   <script src="asset/js/view.js"></script>
 
     </body>
 </html>
