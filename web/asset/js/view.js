@@ -103,12 +103,12 @@
             year : timeMom.format('Y'),
             month : timeMom.format('M'),
          };
-         dayUI=$('[data-dayofmonth="'+target.dayofmonth+'"][data-year="'+target.year+'"][data-month="'+target.month+'"] .rescal-day-items');
+         dayUI=$('[data-dayofmonth="'+target.dayofmonth+'"][data-year="'+target.year+'"][data-month="'+target.month+'"]');
          var sentryUI = sentryTmpl.clone();
          sentryUI.text(sentry.label);
-         dayUI.find('[data-has-estimate]').length;
-         
-         dayUI.append(sentryUI);
+         sentryUI.addClass('sentrytype-'+sentry.type);
+         dayUI.find('.rescal-day-items').append(sentryUI);
+         dayUI.find('.rescal-day-summary [data-for-'+sentry.type+']').show();
       }
    })
    .fail(function(jqXHR, textStatus, errorThrown) {

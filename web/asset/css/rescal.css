@@ -123,6 +123,16 @@ ul.rescal-day-items li {
 	display: none;
 }
 
+.sentrytype-badge-legend {
+	display: none;
+}
+
+.sentrytype-color-legend {
+	display: block;
+}
+img.badge-img {
+	max-height: 14px;
+}
 /* ============================
                 Mobile Responsiveness
    ============================*/
@@ -137,7 +147,12 @@ ul.rescal-day-items li {
    .rescal-day-summary {
       display: block;
    }
-
+   .sentrytype-badge-legend {
+      display: block;
+   }
+   .sentrytype-color-legend {
+      display: none;
+   }
 }
 
 

@@ -82,15 +82,47 @@
    
    </div><!-- /.rescal -->
 </div><!-- /[data-role="sched-wrap"] -->
-   <div>
-      <div class="label rescal-entry-label sentrytype-estimate" >estimate</div>
-      <div class="label rescal-entry-label sentrytype-install" >install</div>
-      <div class="label rescal-entry-label sentrytype-refinish" >refinish</div>
-      <div class="label rescal-entry-label sentrytype-finish" >finish</div>
-      <div class="label rescal-entry-label sentrytype-repair" >repair</div>
-      <div class="label rescal-entry-label sentrytype-tear_out" >tear_out</div>
-      <div class="label rescal-entry-label sentrytype-sand_only" >sand_only</div>
-   </div>
+<div class="sentrytype-color-legend">
+   <div class="label rescal-entry-label sentrytype-estimate" >estimate</div>
+   <div class="label rescal-entry-label sentrytype-install" >install</div>
+   <div class="label rescal-entry-label sentrytype-refinish" >refinish</div>
+   <div class="label rescal-entry-label sentrytype-finish" >finish</div>
+   <div class="label rescal-entry-label sentrytype-repair" >repair</div>
+   <div class="label rescal-entry-label sentrytype-tear_out" >tear_out</div>
+   <div class="label rescal-entry-label sentrytype-sand_only" >sand_only</div>
+</div>
+<div class="sentrytype-badge-legend" >
+   <i class="fa fa-usd" aria-hidden="true" data-for-estimate></i>
+      estimate
+      <div>   
+   <img class="badge-img" src="asset/img/recycle.png" data-for-refinish>
+      refinish
+      </div>    
+      <div>   
+   <img class="badge-img" src="asset/img/diagfloor.png" data-for-install>
+      install
+      </div>   
+      <div>
+   <img class="badge-img" src="asset/img/paintbrush.png" data-for-finish>
+      finish
+      </div>      
+      <div>   
+   <img class="badge-img" src="asset/img/wreckingball.png" data-for-tear_out>
+      tear-out
+      </div>            
+      <div>
+   <img class="badge-img" src="asset/img/wrench.png" data-for-repair>
+      repair
+      </div>
+
+      <div>   
+   <img class="badge-img" src="asset/img/sandbelt.png" data-for-sand_only>
+      sand-only
+      </div>
+
+
+
+</div>
 
 <div style="display:none;" data-role="rescal-tmpl">
    <ul data-tmpl="week" class="rescal-week"></ul>
@@ -103,8 +135,13 @@
          </div>
          <ul class="rescal-day-items"></ul>
          <div class="rescal-day-summary">
-            <i style="display: none;" class="fa fa-usd" aria-hidden="true" data-has-estimate></i>
-            <i style="display: none;" class="fa fa-truck" aria-hidden="true" data-has-install data-has-refinish data-has-finish data-has-repair data-has-tear_out data-has-sand_only></i>
+            <i style="display: none;" class="fa fa-usd" aria-hidden="true" data-for-estimate></i>
+            <img class="badge-img" style="display: none;" src="asset/img/wrench.png" data-for-repair>
+            <img class="badge-img" style="display: none;" src="asset/img/paintbrush.png" data-for-finish>
+            <img class="badge-img" style="display: none;" src="asset/img/sandbelt.png" data-for-sand_only>
+            <img class="badge-img" style="display: none;" src="asset/img/wreckingball.png" data-for-tear_out>
+            <img class="badge-img" style="display: none;" src="asset/img/diagfloor.png" data-for-install>
+            <img class="badge-img" style="display: none;" src="asset/img/recycle.png" data-for-refinish>
          </div>
      </li>
      <li data-tmpl="sentry" class="rescal-entry-label"></li>         
