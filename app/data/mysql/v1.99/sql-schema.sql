@@ -1,8 +1,10 @@
--- MySQL dump 10.14  Distrib 5.5.52-MariaDB, for debian-linux-gnu (x86_64)
---
--- Host: localhost    Database: clientcal_bbhw
--- ------------------------------------------------------
--- Server version	5.5.52-MariaDB-1ubuntu0.14.04.1
+/*
+ * ClientCal Schema v1.99
+ * 
+ * @author Doug Bird
+ * 
+ * @version 1.99
+ */
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -14,6 +16,16 @@
 /*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
+
+--
+-- Table structure for table `cc_schema`
+--
+CREATE TABLE `cc_schema` (
+  `version` varchar(20) COLLATE utf8_bin NOT NULL,
+  `installed_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`version`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+INSERT INTO cc_schema SET version='1.99';
 
 --
 -- Table structure for table `customer`
@@ -32,7 +44,7 @@ CREATE TABLE `customer` (
   `active` tinyint(4) NOT NULL DEFAULT '1',
   `last_updated` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
-  FULLTEXT KEY `name` (`name`)
+  KEY `name` (`name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -42,7 +54,7 @@ CREATE TABLE `customer` (
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `customer_file` (
-  `hash` varchar(256) NOT NULL,
+  `hash` varchar(64) NOT NULL,
   `customer` int(11) NOT NULL,
   `name` varchar(256) NOT NULL,
   `doctype` varchar(12) NOT NULL,
@@ -169,13 +181,6 @@ CREATE TABLE `user` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
-
-CREATE TABLE `cc_schema` (
-  `version` varchar(20) COLLATE utf8_bin NOT NULL,
-  `installed_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`version`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-INSERT INTO cc_schema SET version='1.99';
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
