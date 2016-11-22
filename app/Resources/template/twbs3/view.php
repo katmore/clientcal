@@ -77,11 +77,11 @@
       <i class="fa fa-caret-left" aria-hidden="true"></i>
       <h1 class="mcal-month-heading" data-month-formatdate="MMM Y"></h1>
    </button>
-   <button type="button" class="btn btn-secondary mcal-month-nav-button" >
+   <button type="button" class="btn btn-secondary mcal-month-nav-button" data-role="prior-month">
       <i class="fa fa-caret-up" aria-hidden="true"></i>
    </button>   
    <div class="mcal" data-role="month-wrap"></div>
-   <button type="button" class="btn btn-secondary mcal-month-nav-button" >
+   <button type="button" class="btn btn-secondary mcal-month-nav-button" data-role="next-month">
       <i class="fa fa-caret-down" aria-hidden="true"></i>
    </button>   
 </div><!--/mcal-wrap -->

@@ -64,9 +64,9 @@ var responsiveCal;
          
          var startDOW=1;
          var endDOW=0;
-         var selDay=moment().dayOfYear();
+         var selDay=param.reqMoment.dayOfYear();
          
-         var reqMonth=moment().format('M');
+         var reqMonth=param.reqMoment.format('M');
          
          var calStartMom = moment(reqMonth,'M');
       

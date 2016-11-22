@@ -4,17 +4,31 @@
    var ccmcalWrapTarget = '#cc-sched-wrap';
    $('#cc-day').modal({keyboard: false});
    var populateMonth = function(config) {
-      var reqMoment=moment();
-      var sentryTmpl = $(ccmcalTmplTarget+' [data-tmpl="sentry"]').clone();
-      var badgeTmpl = $(ccmcalTmplTarget+' [data-tmpl="badge-wrap"]').clone();   
       
+      var param = {
+         reqMoment:moment()
+      };
+      
+      if (typeof(config)=='object') {
+         for(var p in param) {
+            if (typeof(config[p])!=='undefined') {
+               param[p]=config[p];
+            }
+         }
+         delete p;
+      }
+      
+      var sentryTmpl = $(ccmcalTmplTarget+' [data-tmpl="sentry"]').clone();
+      var badgeTmpl = $(ccmcalTmplTarget+' [data-tmpl="badge-wrap"]').clone();
+      
+      $(ccmcalTmplTarget).data('reqMoment',param.reqMoment);
       $(ccmcalTmplTarget+' .mcal-day').off('click');
       
       var jqxhr = $.ajax({
          type: "GET",
          url: '/clientcal/api/calendar.php',
          data : {
-            month : reqMoment.format('YM'),
+            month : param.reqMoment.format('YM'),
          },
       })
       .done(function(data, textStatus, jqXHR) {
@@ -94,14 +108,34 @@
    };
    
    //#cc-sched-wrap .mcal
-   populateMonth({monthWrapTarget: '#cc-sched-wrap .mcal'});
-   
    responsiveCal().generate('month');
    
+   populateMonth({monthWrapTarget: '#cc-sched-wrap .mcal'});
    
    
    
+   //data-role="prior-month"
+   $(ccmcalWrapTarget+' [data-role="prior-month"]').off('click');
+   $(ccmcalWrapTarget+' [data-role="prior-month"]').on('click',function() {
+      
+      var reqMoment = $(ccmcalTmplTarget).data('reqMoment');
+      reqMoment.add(-1,'months');
+      
+      responsiveCal({reqMoment: reqMoment}).generate('month');
+      
+      populateMonth({reqMoment: reqMoment,monthWrapTarget: '#cc-sched-wrap .mcal'});
+   });
    
+   $(ccmcalWrapTarget+' [data-role="next-month"]').off('click');
+   $(ccmcalWrapTarget+' [data-role="next-month"]').on('click',function() {
+      
+      var reqMoment = $(ccmcalTmplTarget).data('reqMoment');
+      reqMoment.add(1,'months');
+      
+      responsiveCal({reqMoment: reqMoment}).generate('month');
+      
+      populateMonth({reqMoment: reqMoment,monthWrapTarget: '#cc-sched-wrap .mcal'});
+   });   
    
    
    

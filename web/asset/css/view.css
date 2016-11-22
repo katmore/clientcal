@@ -46,23 +46,10 @@
    color: black;
 }
 
-.sentrytype-badge-legend {
-   display: none;
-}
-
 .sentrytype-color-legend {
    display: inline;
 }
 
 .mcal-day {
 	cursor: pointer;
-}
-
-@media (max-width: 768px) {
-   .sentrytype-badge-legend {
-      display: block;
-   }
-   .sentrytype-color-legend {
-      display: none;
-   }
 }
