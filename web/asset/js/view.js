@@ -1,10 +1,11 @@
 (function() {
    
-   
+   var ccmcalTmplTarget = '#cc-mcal-tmpl';
+   var ccmcalWrapTarget = '#cc-sched-wrap';
    var populateMonth = function(config) {
       var reqMoment=moment();
-      var sentryTmpl = $('[data-role="mcal-tmpl"] [data-tmpl="sentry"]').clone();
-      var badgeTmpl = $('[data-role="mcal-tmpl"] [data-tmpl="badge-wrap"]').clone();   
+      var sentryTmpl = $(ccmcalTmplTarget+' [data-tmpl="sentry"]').clone();
+      var badgeTmpl = $(ccmcalTmplTarget+' [data-tmpl="badge-wrap"]').clone();   
       
       var jqxhr = $.ajax({
          type: "GET",
@@ -14,8 +15,8 @@
          },
       })
       .done(function(data, textStatus, jqXHR) {
-         console.log('complete...');
-         console.debug(data);
+//         console.log('complete...');
+//         console.debug(data);
          var dayUI;
          for(var i=0;i<data.length;i++) {
             var sentry=data[i];
@@ -25,7 +26,7 @@
                year : timeMom.format('Y'),
                month : timeMom.format('M'),
             };
-            dayUI=$('[data-dayofmonth="'+target.dayofmonth+'"][data-year="'+target.year+'"][data-month="'+target.month+'"]');
+            dayUI=$(ccmcalWrapTarget+' [data-dayofmonth="'+target.dayofmonth+'"][data-year="'+target.year+'"][data-month="'+target.month+'"]');
             var sentryUI = sentryTmpl.clone();
             
             sentryUI.find('[data-field="label"]').text(sentry.label);
@@ -45,8 +46,8 @@
       }); 
    };
    
-   
-   populateMonth();
+   //#cc-sched-wrap .mcal
+   populateMonth({monthWrapTarget: '#cc-sched-wrap .mcal'});
    
    responsiveCal().generate('month');
    

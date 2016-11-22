@@ -16,7 +16,7 @@
 <!-- https://fonts.googleapis.com/css?family=Share+Tech+Mono -->
 <link href='https://fonts.googleapis.com/css?family=Roboto|Droid+Sans+Mono' rel='stylesheet' >
 
-<link href="asset/css/widget/responsiveCal/responsiveCal.css" rel="stylesheet">
+<link href="asset/widget/responsiveCal/responsiveCal.css" rel="stylesheet">
 
 <link href="asset/css/view.css" rel="stylesheet">
 
@@ -72,7 +72,7 @@
     </div><!-- /.navbar-collapse -->
   </div><!-- /.container-fluid -->
 </nav>  
-<div data-role="cc-sched-wrap" class="mcal-wrap">
+<div id="cc-sched-wrap" class="mcal-wrap">
    <button type="button" class="btn btn-primary">
       <i class="fa fa-chevron-left" aria-hidden="true"></i>
       <h1 class="mcal-month-heading">Nov 2016</h1>
@@ -108,26 +108,8 @@
       </div>
 </div>
 
-<div style="display:none;" data-role="mcal-tmpl">
-   <ul data-tmpl="week" class="mcal-week"></ul>
+<div style="display:none;" data-role="mcal-tmpl" id="cc-mcal-tmpl">
    <ul>
-     <li data-tmpl="day" class="mcal-day" data-othermonthclass="mcal-other-month" >
-         <div class="mcal-day-header" data-seldayclass="mcal-selday-header">
-            <div class="mcal-date" data-formatdate="D"></div>
-            <div class="mcal-day-dow-label" data-formatdate="ddd"></div>
-            <div class="mcal-day-dow-separator"></div>
-         </div>
-         <ul class="mcal-day-items"></ul>
-         <div class="mcal-day-summary">
-            <i style="display: none;" class="fa fa-usd" aria-hidden="true" data-for-estimate></i>
-            <img class="badge-img" style="display: none;" src="asset/img/wrench.png" data-for-repair>
-            <img class="badge-img" style="display: none;" src="asset/img/paintbrush.png" data-for-finish>
-            <img class="badge-img" style="display: none;" src="asset/img/sandbelt.png" data-for-sand_only>
-            <img class="badge-img" style="display: none;" src="asset/img/wreckingball.png" data-for-tear_out>
-            <img class="badge-img" style="display: none;" src="asset/img/diagfloor.png" data-for-install>
-            <img class="badge-img" style="display: none;" src="asset/img/recycle.png" data-for-refinish>
-         </div>
-     </li>
      <li data-tmpl="sentry" class="mcal-entry-item"><span data-role="badge-wrap"></span>&nbsp;<span data-field="label"></span></li>         
    </ul>
    <div data-tmpl="badge-wrap">
@@ -150,7 +132,7 @@
     <!-- Bootstrap 3 -->
     <script src="components/bootstrap/dist/js/bootstrap.min.js"></script>
     
-   <script src="asset/js/widget/responsiveCal/responsiveCal.js"></script>
+   <script src="asset/widget/responsiveCal/responsiveCal.js"></script>
 
    <script src="asset/js/view.js"></script>
 
