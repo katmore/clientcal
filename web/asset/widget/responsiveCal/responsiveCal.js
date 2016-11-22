@@ -42,7 +42,9 @@ var responsiveCal;
       
       if (typeof(config)==='object') {
          for (var p in param) {
-            
+            if (typeof(config[p])!=='undefined') {
+               param[p]=config[p];
+            }
          }
          delete p;
       }
