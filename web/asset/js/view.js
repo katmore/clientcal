@@ -224,14 +224,7 @@
       
       populateMonth({reqMoment: reqMoment,monthWrapTarget: '#cc-sched-wrap .mcal'});
    });   
-   
-   
-   
-   
-   
-   
-   
-   
+
    
    
    

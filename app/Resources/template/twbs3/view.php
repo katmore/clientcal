@@ -10,7 +10,7 @@
 <!-- Bootstrap -->
 <link href="components/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
 
-<!-- Angular Bootstrap Calendar-->
+<!-- Font Awesome -->
 <link href="components/font-awesome/css/font-awesome.min.css" rel="stylesheet">
 
 <!-- https://fonts.googleapis.com/css?family=Share+Tech+Mono -->
@@ -19,6 +19,8 @@
 <link href="asset/widget/responsiveCal/responsiveCal.css" rel="stylesheet">
 
 <link href="asset/css/view.css" rel="stylesheet">
+
+
 
   </head>
   <body>
@@ -73,10 +75,11 @@
   </div><!-- /.container-fluid -->
 </nav>
 <div id="cc-sched-wrap" class="mcal-wrap">
-   <button type="button" class="btn btn-primary">
+   <button type="button" class="btn btn-primary" id="cc-sched-monthpick">
       <i class="fa fa-caret-left" aria-hidden="true"></i>
       <h1 class="mcal-month-heading" data-month-formatdate="MMM Y"></h1>
-   </button>
+   </button >
+   <input type="date" data-month-formatdate="YYYY-MM-DD" >
    <button type="button" class="btn btn-secondary mcal-month-nav-button" data-role="prior-month">
       <i class="fa fa-caret-up" aria-hidden="true"></i>
    </button>   
