@@ -16,8 +16,10 @@
 <!-- https://fonts.googleapis.com/css?family=Share+Tech+Mono -->
 <link href='https://fonts.googleapis.com/css?family=Roboto|Droid+Sans+Mono' rel='stylesheet' >
 
+<link href="asset/css/widget/responsiveCal/responsiveCal.css" rel="stylesheet">
 
-<link href="asset/css/rescal.css" rel="stylesheet">
+<link href="asset/css/view.css" rel="stylesheet">
+
   </head>
   <body>
 <nav class="navbar navbar-default">
@@ -70,73 +72,53 @@
     </div><!-- /.navbar-collapse -->
   </div><!-- /.container-fluid -->
 </nav>  
+<div data-role="cc-sched-wrap" class="mcal-wrap">
+   <button type="button" class="btn btn-primary">
+      <i class="fa fa-chevron-left" aria-hidden="true"></i>
+      <h1 class="mcal-month-heading">Nov 2016</h1>
+   </button>
+   <button type="button" class="btn btn-secondary mcal-month-nav-button" >
+      <i class="fa fa-chevron-up" aria-hidden="true"></i>
+   </button>   
+   <div class="mcal" data-role="month-wrap"></div>
+   <button type="button" class="btn btn-secondary mcal-month-nav-button" >
+      <i class="fa fa-chevron-down" aria-hidden="true"></i>
+   </button>   
+</div><!--/mcal-wrap -->
 
-
-<div data-role="sched-wrap">
-   <div class="rescal-month-nav-wrap" >
-      <div class="rescal-month-nav-dummycel"></div>
-      <div class="rescal-month-nav-dummycel"></div>
-      <div class="rescal-month-nav-dummycel"></div>
-      <div class="rescal-month-nav-dummycel"></div>
-      <div class="rescal-month-nav-dummycel"></div>
-      <div class="rescal-month-nav-dummycel"></div>
-      <div class="rescal-month-nav-dummycel"></div>
-   </div>   
-   <div class="rescal" data-role="month-wrap"></div><!-- /.rescal -->
-</div><!-- /[data-role="sched-wrap"] -->
-<div class="sentrytype-color-legend">
-   <div class="label rescal-entry-label sentrytype-estimate" >estimate</div>
-   <div class="label rescal-entry-label sentrytype-install" >install</div>
-   <div class="label rescal-entry-label sentrytype-refinish" >refinish</div>
-   <div class="label rescal-entry-label sentrytype-finish" >finish</div>
-   <div class="label rescal-entry-label sentrytype-repair" >repair</div>
-   <div class="label rescal-entry-label sentrytype-tear_out" >tear_out</div>
-   <div class="label rescal-entry-label sentrytype-sand_only" >sand_only</div>
-</div>
 <div class="sentrytype-badge-legend" >
-   <i class="fa fa-usd" aria-hidden="true" data-for-estimate></i>
-      estimate
+   <i class="fa fa-usd" aria-hidden="true" data-for-estimate></i>&nbsp;estimate
       <div>   
-   <img class="badge-img" src="asset/img/recycle.png" data-for-refinish>
-      refinish
+   <img class="badge-img" src="asset/img/recycle.png" data-for-refinish>&nbsp;refinish
       </div>    
       <div>   
-   <img class="badge-img" src="asset/img/diagfloor.png" data-for-install>
-      install
+   <img class="badge-img" src="asset/img/diagfloor.png" data-for-install>&nbsp;install
       </div>   
       <div>
-   <img class="badge-img" src="asset/img/paintbrush.png" data-for-finish>
-      finish
+   <img class="badge-img" src="asset/img/paintbrush.png" data-for-finish>&nbsp;finish
       </div>      
       <div>   
-   <img class="badge-img" src="asset/img/wreckingball.png" data-for-tear_out>
-      tear-out
+   <img class="badge-img" src="asset/img/wreckingball.png" data-for-tear_out>&nbsp;tear&#45;out
       </div>            
       <div>
-   <img class="badge-img" src="asset/img/wrench.png" data-for-repair>
-      repair
+   <img class="badge-img" src="asset/img/wrench.png" data-for-repair>&nbsp;repair
       </div>
-
       <div>   
-   <img class="badge-img" src="asset/img/sandbelt.png" data-for-sand_only>
-      sand-only
+   <img class="badge-img" src="asset/img/sandbelt.png" data-for-sand_only>&nbsp;sand&#45;only
       </div>
-
-
-
 </div>
 
-<div style="display:none;" data-role="rescal-tmpl">
-   <ul data-tmpl="week" class="rescal-week"></ul>
+<div style="display:none;" data-role="mcal-tmpl">
+   <ul data-tmpl="week" class="mcal-week"></ul>
    <ul>
-     <li data-tmpl="day" class="rescal-day" data-othermonthclass="rescal-other-month" >
-         <div class="rescal-day-header" data-seldayclass="rescal-selday-header">
-            <div class="rescal-date" data-formatdate="D"></div>
-            <div class="rescal-day-dow-label" data-formatdate="ddd"></div>
-            <div class="rescal-day-dow-separator"></div>
+     <li data-tmpl="day" class="mcal-day" data-othermonthclass="mcal-other-month" >
+         <div class="mcal-day-header" data-seldayclass="mcal-selday-header">
+            <div class="mcal-date" data-formatdate="D"></div>
+            <div class="mcal-day-dow-label" data-formatdate="ddd"></div>
+            <div class="mcal-day-dow-separator"></div>
          </div>
-         <ul class="rescal-day-items"></ul>
-         <div class="rescal-day-summary">
+         <ul class="mcal-day-items"></ul>
+         <div class="mcal-day-summary">
             <i style="display: none;" class="fa fa-usd" aria-hidden="true" data-for-estimate></i>
             <img class="badge-img" style="display: none;" src="asset/img/wrench.png" data-for-repair>
             <img class="badge-img" style="display: none;" src="asset/img/paintbrush.png" data-for-finish>
@@ -146,12 +128,18 @@
             <img class="badge-img" style="display: none;" src="asset/img/recycle.png" data-for-refinish>
          </div>
      </li>
-     <li data-tmpl="sentry" class="rescal-entry-label"></li>         
+     <li data-tmpl="sentry" class="mcal-entry-item"><span data-role="badge-wrap"></span>&nbsp;<span data-field="label"></span></li>         
    </ul>
-   <div data-tmpl="rescal-day-summary-example" class="rescal-day-summary">
-
+   <div data-tmpl="badge-wrap">
+      <i class="fa fa-usd" aria-hidden="true" data-for-estimate></i>
+      <img class="badge-img" src="asset/img/wrench.png" data-for-repair>
+      <img class="badge-img" src="asset/img/paintbrush.png" data-for-finish>
+      <img class="badge-img" src="asset/img/sandbelt.png" data-for-sand_only>
+      <img class="badge-img" src="asset/img/wreckingball.png" data-for-tear_out>
+      <img class="badge-img" src="asset/img/diagfloor.png" data-for-install>
+      <img class="badge-img" src="asset/img/recycle.png" data-for-refinish>
    </div>
-</div><!--/rescal-tmpl-->
+</div><!--/mcal-tmpl-->
 
     <!-- Moment -->
     <script src="components/moment/min/moment.min.js"></script>
@@ -162,7 +150,7 @@
     <!-- Bootstrap 3 -->
     <script src="components/bootstrap/dist/js/bootstrap.min.js"></script>
     
-
+   <script src="asset/js/widget/responsiveCal/responsiveCal.js"></script>
 
    <script src="asset/js/view.js"></script>
 

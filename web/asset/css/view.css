@@ -1,0 +1,55 @@
+.navbar {
+	margin-bottom: 0;
+}
+
+.mcal-entry-item.sentrytype-estimate {
+   background-color: #00FFFF;
+   color: black;
+}
+
+.mcal-entry-item.sentrytype-install {
+   background-color: #FFFF00;
+   color: black;
+}
+
+.mcal-entry-item.sentrytype-refinish {
+   background-color: #F0000F;
+   color: white;
+}
+
+.mcal-entry-item.sentrytype-finish {
+   background-color: #FF00FF;
+   color: white;
+}
+
+.mcal-entry-item.sentrytype-repair {
+   background-color: #1eff00;
+   color: black;
+}
+
+.mcal-entry-item.sentrytype-tear_out {
+   background-color: #ffb400;
+   color: black;
+}
+
+.mcal-entry-item.sentrytype-sand_only {
+   background-color: #FFFFFF;
+   color: black;
+}
+
+.sentrytype-badge-legend {
+   display: none;
+}
+
+.sentrytype-color-legend {
+   display: inline;
+}
+
+@media (max-width: 768px) {
+   .sentrytype-badge-legend {
+      display: block;
+   }
+   .sentrytype-color-legend {
+      display: none;
+   }
+}
