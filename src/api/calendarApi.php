@@ -39,7 +39,7 @@ class calendarApi extends apiHandler implements apiMethod\GET {
       
       
       if (!$isOk) {
-         return new apiResponse(json_encode("badly formatted 'month' field"),"application/json",500);
+         return new apiResponse(json_encode("badly formatted 'month' field"),"application/json",400);
       }
       $pdo = new pdo;
       /*
