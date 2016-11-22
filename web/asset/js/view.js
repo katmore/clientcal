@@ -52,7 +52,7 @@
          
          $(ccmcalWrapTarget+' .mcal-day').on('click',function() {
             if (!$(this).hasClass('mcal-day-selected')) {
-               
+               $(ccmcalWrapTarget+' .mcal-day').removeClass('mcal-day-selected');
                $(ccmcalWrapTarget+' .mcal-day-header').removeClass('mcal-selday-header');
                $(this).find('[data-seldayclass]').each(function() {
                   $(this).addClass($(this).data('seldayclass'));
