@@ -115,7 +115,18 @@
    <ul>
      <li data-tmpl="sentry" class="mcal-entry-item"><span data-role="badge-wrap"></span>&nbsp;<span data-field="label"></span></li>      
    </ul>
-   <button data-tmpl="sentry-dayview" class="btn mcal-entry-item mcal-entry-item-dayview"><p><span data-role="badge-wrap"></span>&nbsp;<span data-sentry-dateformat="h:ssa"></span>&nbsp;<span data-field="label"></span></p></button>    
+   <button data-tmpl="sentry-dayview" class="btn mcal-entry-item mcal-entry-item-dayview">
+   <div>
+      <p class="mcal-entry-item-dayview-heading"><span data-role="badge-wrap"></span>&nbsp;<span data-sentry-dateformat="h:ssa"></span>&nbsp;<span data-role="type-label"></span></p>
+      <p data-role="label-display"></p>
+      <p ><i class="fa fa-user-circle" aria-hidden="true"></i>&nbsp;<span data-field="customer_full_name"></span></p>
+      <p data-role="customer-phone-display" ><i class="fa fa-phone-square" aria-hidden="true"></i>&nbsp;<span data-field="customer_phone"></span></p>
+      <p data-role="directions-display"><i class="fa fa-map" aria-hidden="true"></i>&nbsp;<span data-field="directions" class="mcal-entry-directions"></span></p>
+      <p data-role="streetaddr-display"><i class="fa fa-home" aria-hidden="true"></i>&nbsp;<span data-field="streetaddr"></span></p>
+      <p><i class="fa fa-building" aria-hidden="true"></i>&nbsp;<span data-role="citystatezip"></span></p>
+      
+   </div>
+   </button>    
    <div data-tmpl="badge-wrap">
       <i class="fa fa-usd" aria-hidden="true" data-for-estimate></i>
       <img class="badge-img" src="asset/img/wrench.png" data-for-repair>
@@ -143,7 +154,7 @@
 
 <div class="modal" tabindex="-1" role="dialog" id="cc-day" >
   <div class="modal-dialog" role="document">
-    <div class="modal-content">
+    <div class="modal-content" >
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
         <h4 class="modal-title" data-day-formatdate="dddd, MMM. D, Y"></h4>
@@ -155,6 +166,60 @@
     </div><!-- /.modal-content -->
   </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
+
+<div class="modal" tabindex="-1" role="dialog" id="cc-sentry-modal" >
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" ><span data-role="badge-wrap"></span>&nbsp;<span data-role="type-label"></span>&nbsp;&#45;&nbsp;<span data-field="label"></span></h4>
+      </div>
+
+      <div class="modal-body">
+         <div>
+        <a role="button" class="btn btn-primary" href="javascript:return false;" target="_blank" id="cc-sentry-modal-maps-link"><i class="fa fa-car" aria-hidden="true" ></i>&nbsp;View in Maps</a>
+        <a role="button" class="btn btn-primary" href="javascript:return false;" target="_blank" id="cc-sentry-modal-tel-link"><i class="fa fa-phone" aria-hidden="true" ></i>&nbsp;Call&nbsp;<span data-field="customer_phone"></span></a>
+         </div>
+        <div class="form-group">
+          <label for="cc-sentry-time-input">Time</label>
+          <input  id="cc-sentry-time-input" type="time" class="form-control">
+        </div>
+        <div class="form-group">
+          <label for="cc-sentry-date-input">Date</label>
+          <input  id="cc-sentry-date-input" type="date" class="form-control">
+        </div> 
+        <div class="form-group">
+          <label for="cc-sentry-streetaddr-input">Address</label>
+          <input  id="cc-sentry-streetaddr-input" type="text" class="form-control" data-fieldval="streetaddr">
+        </div>        
+        <div class="form-group">
+          <label for="cc-sentry-city-input">City</label>
+          <input  id="cc-sentry-city-input" type="text" class="form-control" data-fieldval="city">
+        </div>  
+        <div class="form-group">
+          <label for="cc-sentry-state-input">State</label>
+          <input  id="cc-sentry-state-input" type="text" class="form-control" data-fieldval="state">
+        </div>  
+        <div class="form-group">
+          <label for="cc-sentry-zip-input">Zip</label>
+          <input  id="cc-sentry-zip-input" type="text" class="form-control" data-fieldval="zip">
+        </div>                 
+        <div class="form-group">
+          <label for="cc-sentry-direction-textarea">Directions</label>
+          <textarea id="cc-sentry-direction-textarea" class="form-control" rows="2" data-fieldval="directions"></textarea>
+        </div>                 
+       
+      </div>
+      <div class="modal-footer">
+         <button style="float:left;" class="btn btn-default" data-dismiss="modal"><i class="fa fa-times" aria-hidden="true"></i>&nbsp;Close</button>
+         <button class="btn btn-success" disabled><i class="fa fa-check" aria-hidden="true"></i>&nbsp;Save Changes</button>
+         
+      </div>      
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+
     </body>
 </html>
 

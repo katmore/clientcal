@@ -13,13 +13,22 @@
 }
 
 .mcal-entry-item-dayview {
-	height: 6em;
+	min-height: 6em;
 	width: 100%;
 	text-align: left;
+	
+}
+.mcal-entry-item-dayview div {
+	min-height: 6em;
+	height:100%;
+	vertical-align: top;
+	width:100%;
 }
 .mcal-entry-item-dayview p {
-	vertical-align: top;
-	height:100%;
+	padding: 0;
+	margin: 0;
+	display: block;
+	white-space:normal;
 }
 .mcal-entry-item.sentrytype-refinish {
    background-color: #F0000F;
@@ -53,3 +62,28 @@
 .mcal-day {
 	cursor: pointer;
 }
+li.mcal-day-selected  {
+	background-color: gray;
+}
+.mcal-entry-item-dayview .mcal-entry-directions {
+	font-style: italic;
+}
+.mcal-entry-item-dayview-heading {
+	font-weight: bold;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

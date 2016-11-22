@@ -1,9 +1,9 @@
 <?php
-namespace clientcal\apiHandler;
+namespace clientcal\api;
 
 use clientcal\apiMethod;
 
-class sentry implements apiMethod\GET {
+class sentryApi implements apiMethod\GET {
    
    public function responseGET(array $requestData): string {
       
