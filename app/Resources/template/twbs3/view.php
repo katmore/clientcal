@@ -71,18 +71,18 @@
       </ul>
     </div><!-- /.navbar-collapse -->
   </div><!-- /.container-fluid -->
-</nav>  
+</nav>
 <div id="cc-sched-wrap" class="mcal-wrap">
    <button type="button" class="btn btn-primary">
-      <i class="fa fa-chevron-left" aria-hidden="true"></i>
-      <h1 class="mcal-month-heading">Nov 2016</h1>
+      <i class="fa fa-caret-left" aria-hidden="true"></i>
+      <h1 class="mcal-month-heading" data-month-formatdate="MMM Y"></h1>
    </button>
    <button type="button" class="btn btn-secondary mcal-month-nav-button" >
-      <i class="fa fa-chevron-up" aria-hidden="true"></i>
+      <i class="fa fa-caret-up" aria-hidden="true"></i>
    </button>   
    <div class="mcal" data-role="month-wrap"></div>
    <button type="button" class="btn btn-secondary mcal-month-nav-button" >
-      <i class="fa fa-chevron-down" aria-hidden="true"></i>
+      <i class="fa fa-caret-down" aria-hidden="true"></i>
    </button>   
 </div><!--/mcal-wrap -->
 
@@ -108,10 +108,14 @@
       </div>
 </div>
 
+
+
+
 <div style="display:none;" data-role="mcal-tmpl" id="cc-mcal-tmpl">
    <ul>
-     <li data-tmpl="sentry" class="mcal-entry-item"><span data-role="badge-wrap"></span>&nbsp;<span data-field="label"></span></li>         
+     <li data-tmpl="sentry" class="mcal-entry-item"><span data-role="badge-wrap"></span>&nbsp;<span data-field="label"></span></li>      
    </ul>
+   <button data-tmpl="sentry-dayview" class="btn mcal-entry-item mcal-entry-item-dayview"><p><span data-role="badge-wrap"></span>&nbsp;<span data-sentry-dateformat="h:ssa"></span>&nbsp;<span data-field="label"></span></p></button>    
    <div data-tmpl="badge-wrap">
       <i class="fa fa-usd" aria-hidden="true" data-for-estimate></i>
       <img class="badge-img" src="asset/img/wrench.png" data-for-repair>
@@ -136,6 +140,21 @@
 
    <script src="asset/js/view.js"></script>
 
+
+<div class="modal" tabindex="-1" role="dialog" id="cc-day" >
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" data-day-formatdate="dddd, MMM. D, Y"></h4>
+      </div>
+      <div class="modal-body">
+        <div data-role="sentrylist">
+        </div>
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
     </body>
 </html>
 

@@ -36,8 +36,9 @@ var responsiveCal;
    responsiveCal = function(config) {
       var param = {
             reqMoment : moment(),
+            wrapTarget : '.mcal-wrap',
             monthWrapTarget : '.mcal-wrap .mcal',
-            calTmplId : 'responsivecal-'+uuid(),
+            calTmplId : 'rescal-tmpl-'+uuid(),
       };
       
       if (typeof(config)==='object') {
@@ -135,9 +136,15 @@ var responsiveCal;
                break;
             }
             curMoment.add(1,'day');
-         }/*finished creating empty 'mcal'*/
-         
-      }; 
+         }/*end for(;;) loop to generate 'mcal' for specified month*/
+         $(param.wrapTarget).find('[data-month-formatdate]').each(function() {
+            //console.log($(this).data('monthFormatdate'));
+            
+            $(this).text(param.reqMoment.format($(this).data('monthFormatdate')));
+         });
+      };/*end genMonth()*/
+      
+      
       return {
          'generate' : function(config) {
             if (typeof config === 'string' || config instanceof String) {

@@ -12,6 +12,15 @@
    color: black;
 }
 
+.mcal-entry-item-dayview {
+	height: 6em;
+	width: 100%;
+	text-align: left;
+}
+.mcal-entry-item-dayview p {
+	vertical-align: top;
+	height:100%;
+}
 .mcal-entry-item.sentrytype-refinish {
    background-color: #F0000F;
    color: white;
@@ -43,6 +52,10 @@
 
 .sentrytype-color-legend {
    display: inline;
+}
+
+.mcal-day {
+	cursor: pointer;
 }
 
 @media (max-width: 768px) {

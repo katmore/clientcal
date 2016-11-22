@@ -64,8 +64,8 @@ class calendar extends apiHandler implements apiMethod\GET {
          AND
             YEAR(e.startdate)=:year
          ORDER BY
-            e.startdate DESC,
-            e.starttime DESC,
+            e.startdate ASC,
+            e.starttime ASC,
             e.sentrytype ASC
       ");
       $stmt->bindValue(":month", $monthNo,pdo::PARAM_INT);
