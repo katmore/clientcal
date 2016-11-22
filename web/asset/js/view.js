@@ -51,6 +51,15 @@
          }
          
          $(ccmcalWrapTarget+' .mcal-day').on('click',function() {
+            if (!$(this).hasClass('mcal-day-selected')) {
+               
+               $(ccmcalWrapTarget+' .mcal-day-header').removeClass('mcal-selday-header');
+               $(this).find('[data-seldayclass]').each(function() {
+                  $(this).addClass($(this).data('seldayclass'));
+               });
+               $(this).addClass('mcal-day-selected');
+               return;
+            }
             var modalTarget = '#cc-day';
             var modal = $(modalTarget);
             //data-dayofmonth="3" data-year="2016" data-month="11"

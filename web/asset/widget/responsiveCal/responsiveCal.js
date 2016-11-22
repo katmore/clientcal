@@ -20,7 +20,7 @@ var responsiveCal;
 <div style="display:none;" id="{calTmplId}">
    <ul data-tmpl="week" class="mcal-week"></ul>
    <ul>
-     <li data-tmpl="day" class="mcal-day" data-othermonthclass="mcal-other-month" >
+     <li data-tmpl="day" class="mcal-day" data-othermonthclass="mcal-other-month" data-seldayclass="mcal-day-selected">
          <div class="mcal-day-header" data-seldayclass="mcal-selday-header">
             <div class="mcal-date" data-formatdate="D"></div>
             <div class="mcal-day-dow-label" data-formatdate="ddd"></div>
@@ -123,6 +123,9 @@ var responsiveCal;
                dayUI.find('[data-seldayclass]').each(function() {
                   $(this).addClass($(this).data('seldayclass'));
                });
+               if (dayUI.data('seldayclass')) {
+                  dayUI.addClass(dayUI.data('seldayclass'));
+               }
             }
             
             dayUI.appendTo(weekUI);
