@@ -18,12 +18,17 @@
          delete p;
       }
       
+      //data-month-formatdate-val="YYYY-MM-DD" id="cc-sched-monthpick"
+      $(ccmcalWrapTarget+' [data-month-formatdate-val]').each(function() {
+         $(this).val(param.reqMoment.format($(this).data('monthFormatdateVal')));
+      });
+      
       var sentryTmpl = $(ccmcalTmplTarget+' [data-tmpl="sentry"]').clone();
       var badgeTmpl = $(ccmcalTmplTarget+' [data-tmpl="badge-wrap"]').clone();
       
       $(ccmcalTmplTarget).data('reqMoment',param.reqMoment);
       $(ccmcalTmplTarget+' .mcal-day').off('click');
-      
+      //cc-sched-monthpick
       var jqxhr = $.ajax({
          type: "GET",
          url: '/clientcal/api/calendar.php',
@@ -226,7 +231,15 @@
    });   
 
    
-   
+   $('#cc-sched-monthpick').on('change',function(e) {
+      e.preventDefault();
+      console.log('changed...');
+      var reqMoment=moment($(this).val(),"YYYY-MM-DD");
+      if (reqMoment.isValid()) {
+         responsiveCal({reqMoment: reqMoment}).generate('month');
+         populateMonth({reqMoment: reqMoment,monthWrapTarget: '#cc-sched-wrap .mcal'});
+      }
+   });
    
    /*
     * multiple modals fix
