@@ -24,6 +24,8 @@ abstract class apiController {
    
    abstract protected function _getRequestData() :array;
    
+   abstract protected function _getRequestBody() :string;
+   
    abstract protected function _getRequestMethod() :string;
    
 }

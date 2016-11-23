@@ -6,8 +6,8 @@ use clientcal\apiResponse;
 
 use clientcal\pdo;
 use clientcal\apiHandler;
-use clientcal\data\sentryData;
 
+use clientcal\data\sentryData;
 use clientcal\config;
 
 class calendarApi extends apiHandler implements apiMethod\GET {
