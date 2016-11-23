@@ -70,6 +70,7 @@
          }
          
          $(ccmcalWrapTarget+' .mcal-day').on('click',function() {
+            var dMoment=moment({date:$(this).data('dayofmonth'),year:$(this).data('year'),month:$(this).data('month')-1});
             if (!$(this).hasClass('mcal-day-selected')) {
                $(ccmcalWrapTarget+' .mcal-day').removeClass('mcal-day-selected');
                $(ccmcalWrapTarget+' .mcal-day-header').removeClass('mcal-selday-header');
@@ -77,12 +78,13 @@
                   $(this).addClass($(this).data('seldayclass'));
                });
                $(this).addClass('mcal-day-selected');
+               $('#cc-sched-monthpick').val(dMoment.format('YYYY-MM-DD'));
                return;
             }
             var modalTarget = '#cc-day';
             var modalDay = $(modalTarget);
             //data-dayofmonth="3" data-year="2016" data-month="11"
-            var dMoment=moment({date:$(this).data('dayofmonth'),year:$(this).data('year'),month:$(this).data('month')-1});
+            
             modalDay.find('[data-day-formatdate]').each(function(){
                $(this).text(dMoment.format($(this).data('dayFormatdate')));
             });
