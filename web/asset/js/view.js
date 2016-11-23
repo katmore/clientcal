@@ -275,26 +275,37 @@
                            if (data && (typeof data==='object')) {
                               if (data.updated && (Array.isArray(data.updated)) && data.updated.length) {
                                  var changedDate=false;
-                                 modalDay.find('[data-sentry-dayview="'+requestData.id+'"]').data('sentry',data.sentry);
+                                 var tMoment = moment(data.sentry.time,moment.ISO_8601);
+                                 var tUI = $(ccmcalWrapTarget+' [data-dayofmonth="'+tMoment.format('D')+'"][data-year="'+tMoment.format('YYYY')+'"][data-month="'+tMoment.format('M')+'"]');
                                  if ((data.updated.indexOf('time')!=-1) && (data.updated.indexOf('date')==-1)) {
                                     modalDay.find('[data-sentry-dayview="'+requestData.id+'"] [data-sentry-dateformat]').each(function() {
                                        if ($(this).data('sentryDateformat')) {
                                           $(this).text(moment(requestData.time,'HH:mm').format($(this).data('sentryDateformat')));
                                        }
                                     });
-                                    var tMoment = moment(data.sentry.time,moment.ISO_8601);
                                     modalDay.find('[data-sentry-dayview="'+requestData.id+'"]').attr('data-sentry-sort',tMoment.format('X'));
-                                    var tUI = $(ccmcalWrapTarget+' [data-dayofmonth="'+tMoment.format('D')+'"][data-year="'+tMoment.format('YYYY')+'"][data-month="'+tMoment.format('M')+'"]');
                                     tUI.find('[data-sentryId="'+requestData.id+'"]').attr('data-sentry-sort',tMoment.format('X'));
                                     sortDayModal(tUI);
                                     data.updated.splice(data.updated.indexOf('time'), 1);
-                                 } else {
-                                    if (data.updated.indexOf('date')!=-1) {
-                                       modalDay.find('[data-sentry-dayview="'+requestData.id+'"]').remove();
-                                       changedDate=true;
-                                       data.updated.splice(data.updated.indexOf('date'), 1);
-                                    }
+                                 } else if (data.updated.indexOf('date')!=-1) {
+                                    modalDay.find('[data-sentry-dayview="'+requestData.id+'"]').remove();
+                                    changedDate=true;
+                                    data.updated.splice(data.updated.indexOf('date'), 1);
                                  }
+                                 if (data.updated.indexOf('type')!=-1) {
+                                    modalDay.find('[data-sentry-dayview="'+requestData.id+'"]').removeClass('sentrytype-'+modalDay.find('[data-sentry-dayview="'+requestData.id+'"]').data('sentry').type);
+                                    modalDay.find('[data-sentry-dayview="'+requestData.id+'"]').addClass('sentrytype-'+data.sentry.type);
+                                    modalDay.find('[data-sentry-dayview="'+requestData.id+'"]').find('[data-role="badge-wrap"]').empty();
+                                    modalDay.find('[data-sentry-dayview="'+requestData.id+'"]').find('[data-role="badge-wrap"]').append(badgeTmpl.find('[data-for-'+data.sentry.type+']').clone());
+                                    modalDay.find('[data-sentry-dayview="'+requestData.id+'"]').find('[data-role="type-label"]').text(data.sentry.type.replace('_',' '));
+                                    
+                                    tUI.find('[data-sentryId="'+requestData.id+'"]').removeClass('sentrytype-'+modalDay.find('[data-sentry-dayview="'+requestData.id+'"]').data('sentry').type);
+                                    tUI.find('[data-sentryId="'+requestData.id+'"]').addClass('sentrytype-'+data.sentry.type);
+                                    tUI.find('[data-sentryId="'+requestData.id+'"]').find('[data-role="badge-wrap"]').empty();
+                                    tUI.find('[data-sentryId="'+requestData.id+'"]').find('[data-role="badge-wrap"]').append(badgeTmpl.find('[data-for-'+data.sentry.type+']').clone());
+                                 }
+                                 
+                                 modalDay.find('[data-sentry-dayview="'+requestData.id+'"]').data('sentry',data.sentry);
                                  if (!changedDate) {
                                     for(var i=0;i<data.updated.length;i++) {
                                        

@@ -206,7 +206,18 @@
           <label for="cc-sentry-direction-textarea">Directions</label>
           <textarea id="cc-sentry-direction-textarea" class="form-control" rows="3" data-fieldval="directions" data-save="directions"></textarea>
         </div>                 
-       
+        <div class="form-group">
+          <label for="cc-sentry-jobtype-sel">Job Type</label>
+          <select id="cc-sentry-jobtype-sel" class="form-control" data-save="type" data-fieldval="type">
+            <option value="estimate">Estimate</option>
+            <option value="install">Install</option>
+            <option value="refinish">Refinish</option>
+            <option value="finish">Finish</option>
+            <option value="repair">Repair</option>
+            <option value="tear_out">Tear Out</option>
+            <option value="sand_only">Sand Only</option>
+          </select>
+        </div>
       </div>
       <div class="modal-footer">
          <button style="float:left;" class="btn btn-default" data-dismiss="modal"><i class="fa fa-times" aria-hidden="true"></i>&nbsp;Cancel</button>

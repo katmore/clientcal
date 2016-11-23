@@ -28,7 +28,7 @@ class sentryApi extends apiHandler implements apiMethod\PUT {
       
       $sentrySetClause = [];
       $sentryBindVal = [];
-      foreach(['heading','notes','startdate'=>'date','starttime'=>'time',] as $a=>$f) {
+      foreach(['heading','notes','startdate'=>'date','starttime'=>'time','sentrytype'=>'type'] as $a=>$f) {
          if (!empty($requestData[$f])) {
             if (!empty($a) && !is_int($a)) {
                $p=$a;
