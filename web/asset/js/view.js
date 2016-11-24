@@ -38,23 +38,19 @@
          $wrap=$(modalDayTarget+' [data-role="sentrylist"]');
          $mbr=$wrap.find('[data-sentry-sort]');
          $mbr.sort(function(a,b){
-            console.log('asdf...');
-            var an = +a.getAttribute('data-sentry-sort');
-            var bn = +b.getAttribute('data-sentry-sort');
-            console.debug(an);
-            console.debug(bn);
             return +a.getAttribute('data-sentry-sort') - +b.getAttribute('data-sentry-sort');
          }).appendTo($wrap);
          
          $wrap = dayUI.find('.mcal-day-items');
          $mbr=$wrap.find('[data-sentry-sort]');
          $mbr.sort(function(a,b){
-            console.log('asdf...');
-            var an = +a.getAttribute('data-sentry-sort');
-            var bn = +b.getAttribute('data-sentry-sort');
-            console.debug(an);
-            console.debug(bn);
             return +a.getAttribute('data-sentry-sort') - +b.getAttribute('data-sentry-sort');
+         }).appendTo($wrap);
+         
+         $wrap = dayUI.find('.mcal-day-summary');
+         $mbr=$wrap.find('[data-badge-sort]');
+         $mbr.sort(function(a,b){
+            return +a.getAttribute('data-badge-sort') - +b.getAttribute('data-badge-sort');
          }).appendTo($wrap);
       };
       
@@ -93,11 +89,13 @@
             
             sentryUI.find('[data-role="badge-wrap"]').append(badgeUI.clone());
             
-            dayUI.find('.mcal-day-summary').append(badgeUI.clone());
+            dayUI.find('.mcal-day-summary').append(badgeUI.clone().attr('data-sentry-badge',sentry.id));
             if (typeof(dayUI.data('sentry'))==='undefined') {
-               dayUI.data('sentry',[sentry]);
+               var sentryobj={};
+               sentryobj[sentry.id]=sentry;
+               dayUI.data('sentry',sentryobj);
             } else {
-               dayUI.data('sentry').push(sentry);
+               dayUI.data('sentry')[sentry.id]=sentry;
             }
          }
          
@@ -121,11 +119,13 @@
                $(this).text(dMoment.format($(this).data('dayFormatdate')));
             });
             modalDay.find('[data-role="sentrylist"]').empty();
-            if ( (typeof($(this).data('sentry'))!=='undefined') && Array.isArray($(this).data('sentry'))) {
-               for(var i=0;i<$(this).data('sentry').length;i++) {
+            //if ( (typeof($(this).data('sentry'))!=='undefined') && Array.isArray($(this).data('sentry'))) {
+            if (typeof($(this).data('sentry'))!=='undefined') {
+               //for(var i=0;i<$(this).data('sentry').length;i++) {
+               for(var i in $(this).data('sentry')) {
                   var cSentry=$(this).data('sentry')[i];
-                  console.log('sentry...');
-                  console.debug(cSentry);
+//                  console.log('sentry...');
+//                  console.debug(cSentry);
                   var sUI = $(ccmcalTmplTarget+' [data-tmpl="sentry-dayview"]').clone();
                   
                   sUI.attr('data-sentry-dayview',cSentry.id);
@@ -224,6 +224,7 @@
                      }
                      
                      modalEntry.find('[data-role="save-changes"]').attr('disabled',true);
+                     modalEntry.find('[data-role="delete"]').attr('disabled',false);
                      
                      var saveData = {};
                      modalEntry.find('[data-save]').each(function() {
@@ -246,8 +247,10 @@
                         });
                         if (foundChange) {
                            modalEntry.find('[data-role="save-changes"]').attr('disabled',false);
+                           modalEntry.find('[data-role="delete"]').attr('disabled',true);
                         } else {
                            modalEntry.find('[data-role="save-changes"]').attr('disabled',true);
+                           modalEntry.find('[data-role="delete"]').attr('disabled',false);
                         }
                      });
                      
@@ -285,6 +288,7 @@
                                     });
                                     modalDay.find('[data-sentry-dayview="'+requestData.id+'"]').attr('data-sentry-sort',tMoment.format('X'));
                                     tUI.find('[data-sentryId="'+requestData.id+'"]').attr('data-sentry-sort',tMoment.format('X'));
+                                    tUI.find('[data-sentry-badge="'+requestData.id+'"]').replaceWith(badgeTmpl.find('[data-for-'+data.sentry.type+']').clone().attr('data-sentry-badge',requestData.id).attr('data-badge-sort',tMoment.format('X')));
                                     sortDayModal(tUI);
                                     data.updated.splice(data.updated.indexOf('time'), 1);
                                  } else if (data.updated.indexOf('date')!=-1) {
@@ -303,8 +307,11 @@
                                     tUI.find('[data-sentryId="'+requestData.id+'"]').addClass('sentrytype-'+data.sentry.type);
                                     tUI.find('[data-sentryId="'+requestData.id+'"]').find('[data-role="badge-wrap"]').empty();
                                     tUI.find('[data-sentryId="'+requestData.id+'"]').find('[data-role="badge-wrap"]').append(badgeTmpl.find('[data-for-'+data.sentry.type+']').clone());
+                                    
+                                    tUI.find('[data-sentry-badge="'+requestData.id+'"]').replaceWith(badgeTmpl.find('[data-for-'+data.sentry.type+']').clone().attr('data-sentry-badge',requestData.id).attr('data-badge-sort',tMoment.format('X')));
+                                    
                                  }
-                                 
+                                 tUI.data('sentry')[data.sentry.id]=data.sentry;
                                  modalDay.find('[data-sentry-dayview="'+requestData.id+'"]').data('sentry',data.sentry);
                                  if (!changedDate) {
                                     for(var i=0;i<data.updated.length;i++) {
@@ -327,7 +334,9 @@
                      modalEntry.modal('show');
                   });
                   modalDay.find('[data-role="sentrylist"]').append(sUI);
+                  sortDayModal(sUI);
                }
+              
             }
 //            console.log('sentries...');
 //            console.debug($(this).data('sentry'));

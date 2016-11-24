@@ -2,7 +2,7 @@
 <html lang="en" >
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 
 
 <title>ClientCal</title>
@@ -228,7 +228,7 @@
       <div class="modal-footer">
          <button style="float:left;" class="btn btn-default" data-dismiss="modal"><i class="fa fa-times" aria-hidden="true"></i>&nbsp;Cancel</button>
          <button class="btn btn-success" data-role="save-changes"><i class="fa fa-check" aria-hidden="true"></i>&nbsp;Save Changes</button>
-         
+         <button class="btn btn-danger" data-role="delete"><i class="fa fa-trash" aria-hidden="true">&nbsp;</i>Delete</button>
       </div>      
     </div><!-- /.modal-content -->
   </div><!-- /.modal-dialog -->
