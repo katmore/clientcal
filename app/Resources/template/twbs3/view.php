@@ -249,6 +249,33 @@
 })();
 </script>
 
+
+<ul id="sse-demo">
+   
+</ul>
+<script>
+if(typeof(EventSource) !== "undefined") {
+   // Yes! Server-sent events support!
+   var source = new EventSource("sse/calendar.php?month=201611");
+   source.onmessage = function(event) {
+      var data = JSON.parse(event.data);
+ 
+      if ( data.event) {
+         console.log('data...');
+         console.debug(data); 
+         if (data.event=='calendarChanged') {
+            for (var id in data.event.payload) {
+               console.log('sentry changed...');
+               console.debug(id);
+            }
+         }
+          $('#sse-demo').append('<li>' + $('<div/>').text(event.data).html() + '</li>');
+      }
+   };
+} else {
+   // Sorry! No server-sent events support..
+}
+</script>
     </body>
 </html>
 
