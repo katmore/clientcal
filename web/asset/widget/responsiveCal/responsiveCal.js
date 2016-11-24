@@ -68,7 +68,7 @@ var responsiveCal;
          
          var reqMonth=param.reqMoment.format('M');
          
-         var calStartMom = moment(reqMonth,'M');
+         var calStartMom = moment(param.reqMoment.format('YYYY-M'),'YYYY-M');
       
          // Clone the value before .endOf()
          var calEndMom = moment(calStartMom).endOf('month').add(-1,'day');   
