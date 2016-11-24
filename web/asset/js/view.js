@@ -352,7 +352,6 @@
       e.preventDefault();
       var reqMoment = $(ccmcalTmplTarget).data('reqMoment');
       reqMoment.add(-1,'months');
-      
       responsiveCal({reqMoment: reqMoment}).generate('month');
       
       populateMonth({reqMoment: reqMoment,monthWrapTarget: '#cc-sched-wrap .mcal'});
@@ -363,7 +362,6 @@
       e.preventDefault();
       var reqMoment = $(ccmcalTmplTarget).data('reqMoment');
       reqMoment.add(1,'months');
-      
       responsiveCal({reqMoment: reqMoment}).generate('month');
       
       populateMonth({reqMoment: reqMoment,monthWrapTarget: '#cc-sched-wrap .mcal'});
@@ -373,6 +371,7 @@
    $('#cc-sched-monthpick').on('change',function(e) {
       e.preventDefault();
       console.log('changed...');
+      console.debug($(this).val());
       var reqMoment=moment($(this).val(),"YYYY-MM-DD");
       if (reqMoment.isValid()) {
          responsiveCal({reqMoment: reqMoment}).generate('month');

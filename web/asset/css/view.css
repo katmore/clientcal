@@ -1,3 +1,6 @@
+html {
+  touch-action: manipulation;
+}
 .navbar {
 	margin-bottom: 0;
 }
