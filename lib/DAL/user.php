@@ -69,29 +69,6 @@ namespace clientcal;
       $privcount = $i;
       return 0;
    }
-   /*
-   function continuesession() {
-         session_id();
-         session_start();
-   }
-   */
-   function killsession() {
-      //$_SESSION = array();
-      if (isset($_COOKIE[session_name()])) {
-         setcookie(session_name(), '', time()-42000, '/');
-      }
-      session_unset();
-      session_destroy();
-   }
-   function newsession() {
-      session_regenerate_id();
-      session_start();
-   }
-   function isvalidsessionid($id) {
-      if ($id == "")
-         return FALSE;
-      return TRUE;
-   }
    function userexists($user) {
       $myconfig=(new config("mysql"))->getAssoc();
       

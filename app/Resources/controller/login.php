@@ -25,8 +25,11 @@ namespace clientcal;
       } else {
          $mAuthorized = "false";
          $mMode = "failed_login";
-         killsession();
-         //newsession();
+         if (session_status()==\PHP_SESSION_ACTIVE) {
+            $_SESSION['authorized']="";
+            $_SESSION["username"]="";
+            $_SESSION["custfile_delete_token_sess"]="";
+         }
          if ($sRet !== FALSE) {
             $mNotice .= "problem ($sRet) using authentication:<br />$mError<br />";
          }
@@ -34,7 +37,11 @@ namespace clientcal;
    } else
       if (isset($_GET["logout"])) {
          require "routine/getsession.php";
-         killsession();
+         if (session_status()==\PHP_SESSION_ACTIVE) {
+            $_SESSION['authorized']="";
+            $_SESSION["username"]="";
+            $_SESSION["custfile_delete_token_sess"]="";
+         }
          $mAuthorized = "false";
          $mMode = "login";
       } else {

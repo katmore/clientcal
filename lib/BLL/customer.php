@@ -1110,11 +1110,9 @@ search results<br>";
       }
    }
    
-   function custfile_delete_confirm() {
+   function custfile_delete_confirm(string $custfile_delete_token_sess) {
       foreach(enumcustomerconfig() as $k=>$v) $$k=$v;
       global $mCustfile_embed,$mCust_key,$mCustfile_name,$mCustfile_handle,$mCustfile_md5;
-      $_SESSION["custfile_delete_token_sess"] = mt_rand ( 1000 , 9999 );
-      
       $mCustfile_handle = hash($hashalgo_custfile,$mCust_key . "." . $mCustfile_embed);
       $mCustfile_md5 = md5_file($dir_custfiles . $mCustfile_handle);
       
@@ -1132,7 +1130,7 @@ search results<br>";
       '$mCustfile_name'?
       </div>
       <form style=\"margin:0;\" action=\"./customer.php?edit=$mCust_key&amp;embed=$mCustfile_embed\" method=\"POST\">
-      <input type=\"hidden\" value=\"" . $_SESSION["custfile_delete_token_sess"] . "\" name=\"custfile_delete_token\" >
+      <input type=\"hidden\" value=\"" . $custfile_delete_token_sess . "\" name=\"custfile_delete_token\" >
       <input type=\"submit\" name=\"custfile_delete_yes\" value=\"yes\">
       <input type=\"submit\" name=\"custfile_delete_no\" value=\"no\">
       <span style=\"font-size:0.70em;\">&nbsp;md5:$mCustfile_md5</span>

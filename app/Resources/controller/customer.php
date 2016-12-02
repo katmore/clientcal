@@ -505,7 +505,8 @@ if (
          }
       }
       if ($mMode == "showedit_custfile_delete_confirm") {
-         $mNotice .= custfile_delete_confirm();
+         $_SESSION["custfile_delete_token_sess"] = base64_encode(random_bytes(12));
+         $mNotice .= custfile_delete_confirm($_SESSION["custfile_delete_token_sess"]);
          $mMode = "showedit";
       }
        

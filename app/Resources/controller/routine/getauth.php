@@ -22,5 +22,9 @@ global $mAuthorized,$mAuthorized_username;
    }
 
    if ($mAuthorized == "false") {
-      killsession();
+      if (session_status()==\PHP_SESSION_ACTIVE) {
+         $_SESSION['authorized']="";
+         $_SESSION["username"]="";
+         $_SESSION["custfile_delete_token_sess"]="";
+      }
    }
