@@ -176,8 +176,11 @@ EOT;
             if (!empty($newUsername)) {
                $pdoconfig['username'] = $newUsername;
             }
-            $newPassword = readline("Enter the password ({hidden}): ");
-            if (!empty($newPassword)) {
+            exec("which stty",$output,$sttyStatus);
+            if (empty($sttyStatus)) {
+               echo "Enter the password ({hidden}): ";
+               $newPassword = preg_replace('/\r?\n$/', '', `stty -echo; head -n1 ; stty echo`);
+               echo PHP_EOL;
                $pdoconfig['password'] = $newPassword;
             }
             try {
