@@ -18,16 +18,6 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
--- Table structure for table `cc_schema`
---
-CREATE TABLE `cc_schema` (
-  `version` varchar(20) COLLATE utf8_bin NOT NULL,
-  `installed_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`version`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-INSERT INTO cc_schema SET version='1.99';
-
---
 -- Table structure for table `customer`
 --
 /*!40101 SET @saved_cs_client     = @@character_set_client */;

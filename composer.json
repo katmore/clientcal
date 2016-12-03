@@ -9,7 +9,8 @@
         "php" : ">=7.0.1",
         "dshafik/php7-mysql-shim": "^0.1.0",
         "ext-imagick" : "*",
-        "ext-soap" : "*"
+        "ext-soap" : "*",
+      "ifsnop/mysqldump-php": "2.*"
    },
     "autoload": {
         "psr-4": { 
