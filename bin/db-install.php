@@ -21,7 +21,7 @@ return(function() {
    const FALLBACK_SCHEMA_JSON = __DIR__ . "/../app/data/mysql/schema.json";
    
    private static function _showHelp() {
-      echo HELP_LABEL."\n";
+      echo self::HELP_LABEL."\n";
       $fallbackDbname = self::FALLBACK_DBNAME;
       $fallbackHost = self::FALLBACK_HOST;
       $fallbackUsername = self::FALLBACK_USERNAME;
@@ -61,6 +61,7 @@ EOT;
     * @static
     */
    private static function _showUsage() {
+      echo "Usage: ".PHP_EOL;
       echo SELF::ME." ".self::USAGE.\PHP_EOL;
    }
    
@@ -104,12 +105,14 @@ EOT;
    //CLIENTCAL_ROOT
    public function __construct() {
       
-      if (!empty(getopt("",["help",])['help'])) {
+      if (isset(getopt("",["help",])['help'])) {
+         self::_showIntro();
          self::_showUsage();
+         self::_showHelp();
          return;
       }
       
-      $quiet=!empty(getopt("",["quiet",])['quiet']);
+      $quiet=isset(getopt("",["quiet",])['quiet']);
       
       $quiet || self::_showIntro();
       
@@ -162,7 +165,7 @@ EOT;
             return $this->_exitStatus = 1;
          } else {
             self::_showErrLine([self::ME.": (NOTICE) Connection failed: ".$e->getMessage()]);
-            echo PHP_EOL."Correct connection parameters below or use Ctrl^C to cancel.".PHP_EOL.PHP_EOL;
+            echo PHP_EOL."Provide new connection parameters in the following prompts...".PHP_EOL;
             $newHost = readline("Enter the host ($host): ");
             if (!empty($newHost)) {
                $host = $newHost;
