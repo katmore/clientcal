@@ -1,5 +1,6 @@
 {
    "name": "katmore/clientcal",
+   "description" : "Scheduling, job, crew, and customer management web application for construction companies",
    "homepage":"https://github.com/katmore/clientcal",
     "license": [
        "MIT",
