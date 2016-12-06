@@ -12,6 +12,12 @@
         "ext-soap" : "*",
       "ifsnop/mysqldump-php": "2.*"
    },
+    "authors": [
+        {
+            "name": "Paul D. Bird II",
+            "email": "dougbird@katmore.com"
+        }       
+    ],   
     "autoload": {
         "psr-4": { 
             "clientcal\\": "src"

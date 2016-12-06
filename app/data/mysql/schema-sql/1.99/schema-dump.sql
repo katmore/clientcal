@@ -1,7 +1,7 @@
 /*
  * ClientCal Schema v1.99
  * 
- * @author Doug Bird
+ * @author Paul D. Bird II
  * 
  * @version 1.99
  */
