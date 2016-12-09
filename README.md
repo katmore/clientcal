@@ -23,7 +23,7 @@ php bin/db-install.php
 
 The `--help` switch will provide details on more advanced usage (such as quiet and non-interactive modes).
 ```bash
-php bin/add-endpoint.php --help
+php bin/db-install.php --help
 ```
 
 ##Legal
