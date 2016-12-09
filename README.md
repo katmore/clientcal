@@ -16,7 +16,7 @@ composer update
 
 Install the latest database structure or apply updates by using the the command line [db-install.php](bin/db-install.php) installer script. It applies the database structure as defined by [app/data/mysql/schema.json](app/data/mysql/schema.json) which refers to the SQL dump files contained in the [schema-sql](app/data/mysql/schema-sql) directory. 
 
-The db installer can be invoked without any arguments; it will prompt for all the required parameters (such as the remote URL, local repo path, webhook secret, etc.).
+The db installer can be invoked without any arguments; it will prompt for all the required parameters (such as the host, dbname, user, pass, etc.).
 ```bash
 php bin/db-install.php
 ```
