@@ -14,7 +14,7 @@ cd clientcal
 composer update
 ```
 
-Install the latest database structure or apply updates by using the the command line [db-install.php](bin/db-install.php) installer script. It applies the database structure as defined by [app/data/mysql/schema.json](app/data/mysql/schema.json) which refers to the SQL dump files contained in the [schema-sql](app/data/mysql/schema-sql) directory. 
+Use the the command line **database installer script** ([bin/db-install.php](bin/db-install.php)) to install the latest database structure or apply any updates to an existing database.
 
 The db installer can be invoked without any arguments; it will prompt for all the required parameters (such as the host, dbname, user, pass, etc.).
 ```bash
@@ -25,6 +25,8 @@ The `--help` switch will provide details on more advanced usage (such as quiet a
 ```bash
 php bin/db-install.php --help
 ```
+
+The db installer reads the [app/data/mysql/schema.json](app/data/mysql/schema.json) file which specifies the location of SQL dump files and the latest database structure version for the project. The latest SQL update and structure dumps for ClientCal are contained in the [app/data/mysql/schema-sql](app/data/mysql/schema-sql) directory.
 
 ##Legal
 ClientCal is distributed under the terms of the MIT license or the GPLv3 license.
