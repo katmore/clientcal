@@ -5,10 +5,9 @@ npm-debug.log
 composer.lock
 /vendor/
 /web/components/
-/include/settings.inc.php
-/include/settings.balive.inc.php
 /custfilequeue/
 /custfiles/
+/app/data/mysql/backup/
 /app/config/clientcal/app.php
 /app/config/clientcal/customer.php
 /app/config/clientcal/mysql.php
