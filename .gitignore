@@ -3,11 +3,13 @@
 !/.bowerrc
 npm-debug.log
 composer.lock
+*.sql
+!/app/data/mysql/schema-sql/*/schema-dump.sql
+!/app/data/mysql/schema-sql/*/schema-updates.sql
 /vendor/
 /web/components/
 /custfilequeue/
 /custfiles/
-/app/data/mysql/backup/
 /app/config/clientcal/app.php
 /app/config/clientcal/customer.php
 /app/config/clientcal/mysql.php
