@@ -20,6 +20,14 @@ return(function() {
    
    const FALLBACK_SCHEMA_JSON = __DIR__ . "/../app/data/mysql/schema.json";
    
+   const FALLBACK_APP_DIR=__DIR__.'/../app';
+   private static function _getAppDir() :string {
+      if (!empty(getopt("",["app-dir::",])['app-dir'])) {
+         return getopt("",["app-dir::",])['app-dir'];
+      }
+      return self::FALLBACK_APP_DIR;
+   }
+   
    /**
     * @return void
     * @static
@@ -114,7 +122,7 @@ EOT;
    public function getExitStatus() :int { return $this->_exitStatus; }
    
    /**
-    * @return \PDO | int provides PDO object or exit status code 
+    * @return \PDO | int provides PDO object or exit status code
     */
    private function _getPdo() {
       $option=getopt("",[
@@ -123,15 +131,15 @@ EOT;
          "password::",
          "dsn::",
       ]);
-      
-      
-      
+   
+   
+   
       $pdoconfig = [
          'username'=>self::FALLBACK_USERNAME,
          'password'=>null,
          'dsn'=>null,
       ];
-      
+   
       $myCnf=null;
       if (isset($option['my-cnf'])) {
          if (!empty($option['my-cnf'])) {
@@ -152,7 +160,7 @@ EOT;
                return $this->_exitStatus = 1;
             }
          }
-
+   
          if ($this->_verbose) {
             self::_showLine(["using MySQL config file: $myCnfFile"]);
          }
@@ -172,20 +180,20 @@ EOT;
          }
          unset($k);
          unset($v);
-         
+          
          if (!count($usedSetting)) {
             self::_showErrLine([self::ME.": (ERROR) bad MySQL config file; at least one of the following settings must exist in the [client] section: ".implode(", ",$myCnfSetting)]);
             return $this->_exitStatus = 1;
          }
-         
+          
          $this->_quiet || self::_showLine(['using MySQL config file settings for: '.implode(', ',$usedSetting)]);
-         
+          
          if (!empty(getopt("",['dbname'])['dbname'])) {
             $dbname=getopt("",['dbname'])['dbname'];
          } else {
             $dbname=self::FALLBACK_DBNAME;
          }
-         
+          
          if (!empty($myCnfSetting['host'])) {
             $host = $myCnfSetting['host'];
          } else {
@@ -195,10 +203,10 @@ EOT;
                $host=self::FALLBACK_HOST;
             }
          }
-         
+          
          if (!empty($myCnfValue['user'])) $pdoconfig['username']=$myCnfValue['user'];
          if (!empty($myCnfValue['password'])) $pdoconfig['password']=$myCnfValue['password'];
-         
+          
          unset($myCnfValue);
          unset($myCnfSetting);
          unset($usedSetting);
@@ -211,7 +219,7 @@ EOT;
          unset($v);
          /*
           'host'=>'localhost',
-          'dbname'=>'clientcal',
+          'dbname'=>'shrturl',
           */
          if (empty($pdoconfig['dsn'])) {
             if (!empty(getopt("",['host'])['host'])) {
@@ -227,21 +235,33 @@ EOT;
          $dbname=self::FALLBACK_DBNAME;
       }
       $pdoconfig['dsn'] = "mysql:host=$host;dbname=$dbname";
-      
+   
       try {
          $this->_quiet || self::_showLine(["Starting PDO connection..."]);
-         $pdo = new PDO(
+         $pdo = new class (
                $pdoconfig['dsn'],
                $pdoconfig['username'],
                $pdoconfig['password'],
                [PDO::ATTR_ERRMODE=>PDO::ERRMODE_EXCEPTION]
-               );
+               ) extends \PDO {
+                  public $dsn;
+                  public $username;
+                  public $password;
+                  public $options;
+                  public function __construct($dsn,$username,$password,$options) {
+                     $this->dsn = $dsn;
+                     $this->username = $username;
+                     $this->password = $password;
+                     $this->options = $options;
+                     parent::__construct($dsn,$username,$password,$options);
+                  }
+         };
       } catch (PDOException $e) {
          if ($this->_nonInteractive || $myCnf) {
             $err=self::ME.": (ERROR) Connection failed: ".$e->getMessage();
-      
+   
             if($myCnf) $err.=" using MySQL config file: $myCnf";
-      
+   
             self::_showErrLine([$err]);
             return $this->_exitStatus = 1;
          } else {
@@ -268,12 +288,24 @@ EOT;
                $pdoconfig['password'] = $newPassword;
             }
             try {
-               $pdo = new PDO(
+               $pdo = new class (
                      $pdoconfig['dsn'],
                      $pdoconfig['username'],
                      $pdoconfig['password'],
                      [PDO::ATTR_ERRMODE=>PDO::ERRMODE_EXCEPTION]
-                     );
+                     ) extends \PDO {
+                        public $dsn;
+                        public $username;
+                        public $password;
+                        public $options;
+                        public function __construct($dsn,$username,$password,$options) {
+                           $this->dsn = $dsn;
+                           $this->username = $username;
+                           $this->password = $password;
+                           $this->options = $options;
+                           parent::__construct($dsn,$username,$password,$options);
+                        }
+               };
             } catch (PDOException $e) {
                self::_showErrLine([self::ME.": (ERROR) Connection failed: ".$e->getMessage()]);
                return $this->_exitStatus = 1;
@@ -299,6 +331,14 @@ EOT;
     */
    private $_nonInteractive;
    
+   const CREATE_SCHEMA_VERSION_SQL = "CREATE TABLE `schema_version` (
+         `ns` varchar(100) COLLATE utf8_bin NOT NULL,
+         `version` varchar(20) COLLATE utf8_bin NOT NULL,
+         `installed_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+         PRIMARY KEY (`ns`,`version`),
+         KEY (`ns`,`installed_time`)
+         ) ENGINE=InnoDB DEFAULT CHARSET=utf8;";
+   
    //CLIENTCAL_ROOT
    public function __construct() {
       
@@ -316,6 +356,8 @@ EOT;
       $this->_nonInteractive = isset(getopt("",["non-interactive",])['non-interactive']);
       
       $this->_quiet || self::_showIntro();
+      
+      require self::_getAppDir() . "/bin-common.php";
       
       if (!($pdo = self::_getPdo()) instanceof PDO) return $pdo;
       
@@ -341,6 +383,7 @@ EOT;
          public $version;
          public $table;
          public $sql_dir;
+         public $ns;
          public function __construct(array $cfg) {
              foreach($this as $prop=>&$v) {
                 if (!empty($cfg[str_replace("_","-",$prop)])) $v=$cfg[str_replace("_","-",$prop)];
@@ -386,24 +429,45 @@ EOT;
       $version = null;
       $stmt = $pdo->query("SHOW TABLES LIKE '{$schemaCfg->table}'");
       if (!$stmt->rowCount()) {
-         $pdo->query("CREATE TABLE `{$schemaCfg->table}` (
-           `version` varchar(20) COLLATE utf8_bin NOT NULL,
-           `installed_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-           PRIMARY KEY (`version`),
-           KEY `installed_time` (`installed_time`)
-         ) ENGINE=InnoDB DEFAULT CHARSET=utf8;");
+         $pdo->query(str_replace("schema_version",$schemaCfg->table,self::CREATE_SCHEMA_VERSION_SQL));
          $stmt = $pdo->query("SHOW TABLES LIKE 'customer'");
          if ($stmt->rowCount()) $version = "1.98";
       } else {
-         $stmt = $pdo->query("
+         $stmt = $pdo->query("SHOW COLUMNS IN `{$schemaCfg->table}`");
+         $hasNS = false;
+         while($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
+            if ($row['Field']=='ns') {
+               $hasNS = true;
+               break 1;
+            }
+         }
+         if (!$hasNS) {
+            $renameTable = $schemaCfg->table."_backup_".date("YmdHis");
+            $pdo->query("RENAME TABLE `{$schemaCfg->table}` TO `$renameTable`");
+            $pdo->query(str_replace("schema_version",$schemaCfg->table,self::CREATE_SCHEMA_VERSION_SQL));
+            $pdo->query("
+            INSERT INTO
+               `{$schemaCfg->table}`
+            (`ns`,`version`,`installed_time`)
+            SELECT
+               ('{$schemaCfg->ns}',`version`,`installed_time`)
+            FROM
+               `$renameTable`
+            ");
+         }
+         $stmt = $pdo->prepare("
          SELECT
-            version
+            `version`
          FROM
-            {$schemaCfg->table}
+            `{$schemaCfg->table}`
+         WHERE
+            `ns`=:ns
          ORDER BY
-            installed_time ASC
+            `installed_time`
+         ASC
          LIMIT 1
          ");
+         $stmt->execute([':ns'=>$schemaCfg->ns]);
          if ($stmt->rowCount()) {
             $version = $stmt->fetch(PDO::FETCH_ASSOC)['version'];
          } else {
@@ -411,6 +475,39 @@ EOT;
             if ($stmt->rowCount()) $version = "1.98";
          }
       }
+      
+      $stmt = $pdo->query("SHOW TABLES");
+      if ($stmt->rowCount()>1) {
+         $backupFile = "{$pdo->query('select database()')->fetchColumn()}-".date("Ymd")."T".date("HiO").".sql";
+         self::_showErrLine([self::ME.": (WARNING) found existing database tables"]);
+         if ($this->_nonInteractive) {
+            $createBackup = true;
+         } else {
+            $createBackup = null;
+            for($i=0;$i<5;$i++) {
+               $confirm = readline("Create backup [y/n]: ");
+               if (substr($confirm,0,1)=='y') {
+                  $createBackup = true;
+                  break 1;
+               } elseif (substr($confirm,0,1)=='n') {
+                  $createBackup = false;
+                  break 1;
+               }
+            }
+            if ($createBackup===null) {
+               self::_showErrLine([self::ME.": (ERROR) Invalid backup confirmation $i times."]);
+               return $this->_exitStatus = 1;
+            }
+         }
+         if ($createBackup) {
+            self::_showErrLine([self::ME.": (NOTICE) existing database will be exported to: $backupFile"]);
+            $this->_quiet || self::_showLine(["started export at ".date("c")."..."]);
+            $dump = new Mysqldump($pdo->dsn, $pdo->username, $pdo->password,[],$pdo->options);
+            $dump->start($backupFile);
+            $this->_quiet || self::_showLine(["(export complete)"]);
+         }
+      }
+      
       if (!$version) {
          $dumpSql = "{$schemaCfg->sql_dir}/{$schemaCfg->version}/schema-dump.sql";
          $this->_verbose && self::_showLine(["restoring database using schema v{$schemaCfg->version} using: $dumpSql"]);
@@ -419,8 +516,15 @@ EOT;
             return $this->_exitStatus = 1;
          }
          $pdo->exec(file_get_contents($dumpSql));
-         $pdo->prepare("INSERT INTO `{$schemaCfg->table}` SET version=:version")->execute([':version'=>$version]);
          $version=$schemaCfg->version;
+         $pdo->prepare("
+         INSERT INTO
+            `{$schemaCfg->table}`
+         SET
+            ns=:ns,
+            version=:version
+         ")->execute([':version'=>$version,':ns'=>$schemaCfg->ns]);
+         
          unset($dumpSql);
       } else {
          for($newVersion = floatval($version)+0.01;$newVersion<($schemaCfg->version+0.01);$newVersion+=0.01) {
@@ -432,6 +536,14 @@ EOT;
             }
             $pdo->exec(file_get_contents($updateSql));
             $version=$newVersion;
+            $pdo->prepare("
+            INSERT INTO
+               `{$schemaCfg->table}`
+            SET
+               ns=:ns,
+               version=:version
+            ")->execute([':version'=>$version,':ns'=>$schemaCfg->ns]);
+            sleep(1);
          }
          unset($newVersion);
          unset($updateSql);
