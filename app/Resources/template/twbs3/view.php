@@ -116,31 +116,60 @@
    </ul>
    <button data-tmpl="sentry-dayview" class="btn mcal-entry-item mcal-entry-item-dayview" >
       <div>
-         <p class="mcal-entry-item-dayview-heading"><span data-role="badge-wrap"></span>&nbsp;<span data-sentry-dateformat="h:ssa"></span>&nbsp;<span data-role="type-label"></span></p>
-         <p data-role="label-display"></p>
-         <p><i class="fa fa-user-circle" aria-hidden="true"></i>&nbsp;<span data-field="customer_full_name"></span></p>
-         <p data-role="customer-phone-display" ><i class="fa fa-phone-square" aria-hidden="true"></i>&nbsp;<span data-field="customer_phone"></span></p>
-         <p data-role="directions-display"><i class="fa fa-map" aria-hidden="true"></i>&nbsp;<span data-field="directions" class="mcal-entry-directions"></span></p>
-         <p data-role="streetaddr-display"><i class="fa fa-home" aria-hidden="true"></i>&nbsp;<span data-field="streetaddr"></span></p>
-         <p><i class="fa fa-building" aria-hidden="true"></i>&nbsp;<span data-role="citystatezip"></span></p>
+         <div class="mcal-entry-big-icon-wrap" data-sentrytype-item data-sentry-heading>
+            <p class="mcal-entry-item-dayview-heading"><span data-role="badge-wrap" class="mcal-entry-big-icon"></span><span data-sentry-dateformat="h:ssa"></span>&nbsp;<span data-role="type-label"></span></p>
+            <p data-role="label-display"></p>
+            
+         </div>
+         <div class="mcal-entry-wrap" >
+            <hr>
+         </div>
+         <div class="mcal-entry-big-icon-wrap" data-sentry-site>
+            <i class="fa fa-home" aria-hidden="true">&nbsp;</i>
+            <p data-role="streetaddr-display"><span data-field="streetaddr"></span></p>
+            <p data-role="citystatezip"></p>   
+         </div>
+         <div class="mcal-entry-wrap" >
+            <hr>
+         </div>
+         
+         <div class="mcal-entry-big-icon-wrap" data-role="directions-display" >
+            <i class="fa fa-map" aria-hidden="true">&nbsp;</i><span data-field="directions" class="mcal-entry-directions"></span>
+         </div>
+         <div class="mcal-entry-wrap" data-role="directions-display" >
+            <hr>
+         </div>
+         <div class="mcal-entry-big-icon-wrap" >
+            <p><i class="fa fa-user-circle" aria-hidden="true">&nbsp;</i><span data-field="customer_full_name"></span></p>
+            <p data-role="customer-phone-display" ><span data-field="customer_phone"></span></p>
+         </div>
       </div>
    </button>    
    <div data-tmpl="badge-wrap">
-      <i class="fa fa-usd" aria-hidden="true" data-for-estimate></i>
+      <i class="fa fa-usd" aria-hidden="true" data-for-estimate>&nbsp;</i>
       <img class="badge-img" src="asset/img/wrench.png" data-for-repair>
       <img class="badge-img" src="asset/img/paintbrush.png" data-for-finish>
       <img class="badge-img" src="asset/img/sandbelt.png" data-for-sand_only>
       <img class="badge-img" src="asset/img/wreckingball.png" data-for-tear_out>
       <img class="badge-img" src="asset/img/diagfloor.png" data-for-install>
-      <img class="badge-img" src="asset/img/recycle.png" data-for-refinish>
+      <i class="fa fa-recycle" aria-hidden="true" data-for-refinish>&nbsp;</i>
    </div>
 </div><!--/mcal-tmpl-->
 
+ <!-- Flat-js -->
+ <script src="components/flat-js/dist/js/flat.min.js"></script>
+ 
  <!-- Moment -->
  <script src="components/moment/min/moment.min.js"></script>
  
  <!-- jQuery -->
  <script src="components/jquery/dist/jquery.min.js"></script>
+ 
+ <!-- Flat/api -->
+ <script src="components/flat-js/dist/js/api/api.min.js"></script>
+ 
+ <!-- Flat/loadingOverlay -->
+ <script src="components/flat-js/dist/js/loadingOverlay/loadingOverlay.min.js"></script>
  
  <!-- Bootstrap 3 -->
  <script src="components/bootstrap/dist/js/bootstrap.min.js"></script>
@@ -176,13 +205,13 @@
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title" ><span data-role="badge-wrap"></span>&nbsp;<span data-role="type-label"></span>&nbsp;&#45;&nbsp;<span data-field="label"></span></h4>
+        <h4 class="modal-title" ><span data-role="badge-wrap"></span><span data-field="label"></span>&nbsp;&nbsp;&#45;&nbsp;<span data-role="type-label"></span></h4>
       </div>
 
       <div class="modal-body">
          <div>
         <a role="button" class="btn btn-primary" href="javascript:return false;" target="_blank" id="cc-sentry-modal-maps-link"><i class="fa fa-car" aria-hidden="true" ></i>&nbsp;View in Maps</a>
-        <a style="display: none;" role="button" class="btn btn-primary" href="javascript:return false;" target="_blank" id="cc-sentry-modal-tel-link"><i class="fa fa-phone" aria-hidden="true" ></i>&nbsp;Call&nbsp;<span data-field="customer_phone"></span></a>
+        <a role="button" class="btn btn-primary" href="javascript:return false;" target="_blank" id="cc-sentry-modal-tel-link"><i class="fa fa-phone" aria-hidden="true" ></i>&nbsp;Call&nbsp;<span data-field="customer_phone"></span></a>
          </div>
         <div class="form-group">
           <label for="cc-sentry-time-input">Time</label>
@@ -233,6 +262,22 @@
     </div><!-- /.modal-content -->
   </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
+
+<!-- Modal for view/edit details of existing schedule item -->
+<div class="modal" tabindex="-1" role="dialog" id="cc-sentry-site-modal" >
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" ><span data-role="badge-wrap"></span>&nbsp;<span data-role="type-label"></span>&nbsp;&#45;&nbsp;<span data-field="label"></span></h4>
+      </div>
+
+      <div class="modal-body">
+      asdfasdf
+      </div>
+    </div>
+  </div>
+</div>
 
 <!-- hacky phone call feature detection -->
 <div style="position: absolute; left:-9999px;top:-9999px;" id="cc-has-phone-test">1-800-555-1234</div>

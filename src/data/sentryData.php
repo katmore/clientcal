@@ -104,7 +104,7 @@ class sentryData {
             $this->customer_phone = $customer_config['default_customerareacode'].$this->customer_phone;
          }
          if (strlen($this->customer_phone)==10) {
-            $this->customer_phone = vsprintf("%s%s%s-%s%s%s-%s%s%s%s", str_split($this->customer_phone));
+            $this->customer_phone = vsprintf("(%s%s%s) %s%s%s-%s%s%s%s", str_split($this->customer_phone));
          }
       }
       

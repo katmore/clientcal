@@ -5,24 +5,22 @@ html {
 	margin-bottom: 0;
 }
 
-.mcal-entry-item.sentrytype-estimate {
+.sentrytype-estimate {
    background-color: #00FFFF;
    color: black;
 }
 
-.mcal-entry-item.sentrytype-install {
+.sentrytype-install {
    background-color: #FFFF00;
    color: black;
 }
 
 .mcal-entry-item-dayview {
-	min-height: 6em;
 	width: 100%;
 	text-align: left;
-	
+	margin-bottom: 5px;
 }
 .mcal-entry-item-dayview div {
-	min-height: 6em;
 	height:100%;
 	vertical-align: top;
 	width:100%;
@@ -33,27 +31,27 @@ html {
 	display: block;
 	white-space:normal;
 }
-.mcal-entry-item.sentrytype-refinish {
+.sentrytype-refinish {
    background-color: #F0000F;
    color: white;
 }
 
-.mcal-entry-item.sentrytype-finish {
+.sentrytype-finish {
    background-color: #FF00FF;
    color: white;
 }
 
-.mcal-entry-item.sentrytype-repair {
+.sentrytype-repair {
    background-color: #1eff00;
    color: black;
 }
 
-.mcal-entry-item.sentrytype-tear_out {
+.sentrytype-tear_out {
    background-color: #ffb400;
    color: black;
 }
 
-.mcal-entry-item.sentrytype-sand_only {
+.sentrytype-sand_only {
    background-color: #FFFFFF;
    color: black;
 }
@@ -70,19 +68,72 @@ li.mcal-day-selected  {
 }
 .mcal-entry-item-dayview .mcal-entry-directions {
 	font-style: italic;
+	display: block;
+	float: left;
+	width: 400px;
+	white-space: pre;
+	word-wrap: break-word;
+	overflow-x: hidden;
+	text-overflow: ellipsis;
 }
 .mcal-entry-item-dayview-heading {
 	font-weight: bold;
 }
+.mcal-entry-big-icon-wrap {
+	float: left;
+	min-height:40px;
+	padding-top: 5px;
+	padding-bottom: 5px;
+	padding-left:5px;
+	padding-right:5px;
+}
+.mcal-entry-wrap {
+   float: left;
+   padding-top: 0;
+   padding-bottom: 0;
+   padding-left:0;
+   padding-right:0;
+}
+.mcal-entry-big-icon-wrap .fa  {
+	display:block;
+	float:left;
+	font-size:2.75em;
+	min-height: 35px;
+	width: 45px;
+	text-align: center;
+}
 
+.mcal-entry-big-icon-wrap .badge-img {
+   display:block;
+   float:left;
+   font-size:2.75em;
+   min-height: 35px;
+   width: 40px;
+   margin-right: 5px;
+}
+.mcal-entry-item.mcal-entry-item-dayview {
+	padding-top: 0;
+}
+.mcal-entry-wrap hr {
+	 display: block;
+    height: 1px;
+    border: 0;
+    border-top: 1px solid black;
+    margin: 0;
+    padding: 0; 
+}
 
+.modal-title img.badge-img {
+	height: 30px;
+	max-height: 30px;
+}
 
-
-
-
-
-
-
+.modal-title .fa {
+   height: 30px;
+   max-height: 30px;
+   font-size: 1.5em;
+   text-align: center;
+}
 
 
 

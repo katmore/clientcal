@@ -132,7 +132,7 @@
                   sUI.attr('data-sentry-sort',moment(cSentry.time,moment.ISO_8601).format('X'));
                   
                   sUI.data('sentry',cSentry);
-                  sUI.addClass('sentrytype-'+cSentry.type);
+                  sUI.find("[data-sentrytype-item]").addClass('sentrytype-'+cSentry.type);
                   var badgeUI = badgeTmpl.find('[data-for-'+cSentry.type+']').clone();
                   sUI.find('[data-role="badge-wrap"]').append(badgeUI);
                   
@@ -158,11 +158,19 @@
                   
                   var citystatezip=[];
                   if (cSentry.city) citystatezip.push(cSentry.city);
-                  if (cSentry.state) citystatezip.push(cSentry.state);
-                  if (cSentry.zip) citystatezip.push(cSentry.zip);
+                  if (cSentry.state) {
+                     citystatezip.push(cSentry.state);
+                  } else {
+                     if (cSentry.zip) {
+                        citystatezip.push(cSentry.zip);
+                     }
+                  }
                   
                   if (citystatezip.length) {
                      sUI.find('[data-role="citystatezip"]').text(citystatezip.join(' '));
+                     if (cSentry.zip && cSentry.state) {
+                        sUI.find('[data-role="citystatezip"]').text(sUI.find('[data-role="citystatezip"]').text()+', '+cSentry.zip);
+                     }
                   } else {
                      sUI.find('[data-role="citystatezip"]').hide();
                   }
@@ -171,11 +179,18 @@
                   sUI.find('[data-sentry-dateformat]').each(function() {
                      $(this).text(moment(cSentry.time,moment.ISO_8601).format($(this).data('sentryDateformat')));
                   });
+                  
+                  var modalSite = $('#cc-sentry-site-modal');
+                  sUI.find('[data-sentry-site]').on('click',function(e) {
+                     e.preventDefault();
+                     modalSite.modal('show');
+                  });
+                  
                   var modalEntry = $('#cc-sentry-modal');
-                  sUI.on('click',function(e) {
+                  sUI.find('[data-sentry-heading]').on('click',function(e) {
                      e.preventDefault();
                      
-                     var eSentry = $(this).data('sentry');
+                     var eSentry = $(this).parents('[data-tmpl="sentry-dayview"]').data('sentry');
                      
                      
                      modalEntry.find('[data-field]').each(function() {
@@ -333,6 +348,9 @@
                      
                      modalEntry.modal('show');
                   });
+                  
+                  
+                  
                   modalDay.find('[data-role="sentrylist"]').append(sUI);
                   sortDayModal(sUI);
                }
@@ -348,10 +366,27 @@
       }); 
    };
    
+   //param.reqMoment.format('YM')
    //#cc-sched-wrap .mcal
-   responsiveCal().generate('month');
    
-   populateMonth({monthWrapTarget: '#cc-sched-wrap .mcal'});
+   
+   
+   var createInitialMoment = function() {
+      var initMoment = moment(), initMonth = flat.urlQuery_val('month'), initYear = flat.urlQuery_val('year');
+      if (initMonth) {
+         initMoment.set('month',initMonth-1);
+      }
+      if (initYear) {
+         initMoment.set('year',initYear);
+      }
+      return initMoment;
+   };
+   
+   (function() {
+      var initMoment = createInitialMoment();
+      responsiveCal({reqMoment:initMoment}).generate('month');
+      populateMonth({reqMoment: initMoment,monthWrapTarget: '#cc-sched-wrap .mcal'});
+   })();
    
    
    

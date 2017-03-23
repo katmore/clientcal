@@ -18,7 +18,7 @@
   "dependencies": {
     "font-awesome": "^4.6.3",
     "bootstrap": "^3.3.7",
-    "flat-js": "katmore/flat-js",
+    "flat-js": "1.0.0-alpha",
     "loadingoverlay": "katmore/loadingoverlay",
     "moment": "^2.16.0",
     "shareTechMono": "https://google-fonts.azurewebsites.net/googleFonts/sharetechmono?family=Share+Tech+Mono"
