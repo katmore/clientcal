@@ -580,6 +580,7 @@ unset($configName);
       }
    }
    if ($mMode == "linknewcustomer") {
+      global $mAddcustomerErr;
       globalizecustomerpostvars();
       if (!testcustsomervars($mAddcustomerErr)) {
          $mNotice .= "<li>problems with this customer entry<br />";
