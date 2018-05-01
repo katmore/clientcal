@@ -1,3 +1,4 @@
+#!/usr/bin/env php
 <?php
 use clientcal\config;
 use Ifsnop\Mysqldump\Mysqldump;

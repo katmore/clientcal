@@ -1,3 +1,4 @@
+#!/usr/bin/env php
 <?php
 return(function() {
    if (0!==($exitStatus=($installer = new class() {
