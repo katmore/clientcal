@@ -102,12 +102,7 @@ namespace clientcal;
       
             $passwd = mysqli_real_escape_string($my,$passwd);
       
-            $sMajorVersion = substr(mysqli_get_server_info($my),0,1);
-      if ($sMajorVersion < 4) { //no abstraction :|
-         $sql = "INSERT INTO user SET username='$username',password=PASSWORD('$passwd')";
-      } else {
-         $sql = "INSERT INTO user SET username='$username',password=OLD_PASSWORD('$passwd')";
-      }
+            $sql = "INSERT INTO user SET username='$username',password=PASSWORD('$passwd')";
       if (!($result = @mysql_query($sql,$my)))
          throw new error(-4,"while get: " . mysql_error());
       return 0;
