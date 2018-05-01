@@ -124,11 +124,7 @@ namespace clientcal;
       
       $sMajorVersion = substr(mysqli_get_server_info($my),0,1);
       
-      if ($sMajorVersion < 4) { //no abstraction :|
-         $sql = "SELECT user_key,username FROM user WHERE username='$username' AND password=PASSWORD('$passwd')";
-      } else {
-         $sql = "SELECT user_key,username FROM user WHERE username='$username' AND password=OLD_PASSWORD('$passwd')";
-      }
+      $sql = "SELECT user_key,username FROM user WHERE username='$username' AND password=PASSWORD('$passwd')";
       
       if (!($result = mysql_query($sql,$my)))
          throw new error(-4,"while get: " . mysql_error($my));
