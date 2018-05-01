@@ -7,7 +7,7 @@
        "GPL-3.0+"
     ],   
    "require": {
-        "php" : ">=7.0.1",
+        "php" : ">=7.2.1",
         "dshafik/php7-mysql-shim": "^0.1.0",
         "ext-imagick" : "*",
         "ext-soap" : "*",
