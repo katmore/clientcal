@@ -22,7 +22,7 @@ namespace clientcal;
       DESC
       ";
       if (!($result = @mysql_query($sql,$My)))
-         throw new Error(-4,"while insert: " . mysql_error());
+         throw new error(-4,"while insert: " . mysql_error());
       while ($row = mysql_fetch_assoc($result)) {
          $pKey[$pCount] = $row["id"];
          $pName[$pCount] = $row["name"];

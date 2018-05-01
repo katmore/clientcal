@@ -588,7 +588,7 @@ unset($configName);
       }
    }
    if ($mMode == "linknewcustomer") {
-      $mRet = AddCustomer($mMySched,$customer_table,formatcustomername(),$mCust_streetaddr,$mCust_city,$mCust_state,$mCust_zip,$mCust_customertype,$mCustomer_key);
+      $mRet = AddCustomer($mMySched,$customer_table,resolvecustomername(),$mCust_streetaddr,$mCust_city,$mCust_state,$mCust_zip,$mCust_customertype,$mCustomer_key);
       if ($mRet == 0) {
          $mNotice .= "<li>successfully added customer:$mCustomer_key<br />";
       } else {

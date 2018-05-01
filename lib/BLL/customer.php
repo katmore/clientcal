@@ -673,17 +673,17 @@ search results<br>";
       </div>";
       return $ret;
    }
-//    function formatcustomername() {
-//       global $mCust_nametype,$mCust_lastname,$mCust_firstname,$mCust_name;
-//       $sName = "";
-//       if ($mCust_nametype == "individual") {
-//          $sName = "$mCust_lastname, $mCust_firstname";
-//       }
-//       if ($mCust_nametype == "company") {
-//          $sName = $mCust_name;
-//       }
-//       return $sName;
-//    }
+   function resolvecustomername() {
+       global $mCust_nametype,$mCust_lastname,$mCust_firstname,$mCust_name;
+       $sName = "";
+       if ($mCust_nametype == "individual") {
+          $sName = "$mCust_lastname, $mCust_firstname";
+       }
+       if ($mCust_nametype == "company") {
+          $sName = $mCust_name;
+       }
+       return $sName;
+   }
    function updatecustomerprocess() {
       foreach(enumcustomerconfig() as $k=>$v) $$k=$v;
       global $mNotice;
@@ -981,7 +981,7 @@ search results<br>";
          $mCust_fxphone = $_POST["fxphone"];
       }
    }
-   function processcustomerphonevars($pCount,$pType,$pNumber) {
+   function processcustomerphonevars(&$pCount,&$pType,&$pNumber) {
       global $mCust_hmphone,$mCust_wkphone,$mCust_mbphone,$mCust_fxphone;
       $pCount = 0;
       $pType = array();$pNumber = array();
