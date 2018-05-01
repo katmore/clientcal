@@ -6,6 +6,7 @@ return (function() {
    $config['copyrightnotice'] = "&copy;2011 Doug Bird"; // copyright notice
    $config['usenotice'] = "use of this site subject to terms and conditions"; // terms of use notice
    $config['loginnotice'] = "Sign In";
+   $config['components_url_prefix'] = "/components";
    
    return $config;
 })();
