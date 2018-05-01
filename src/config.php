@@ -74,7 +74,7 @@ class config implements \ArrayAccess {
           if (is_dir($path) && is_readable($path)) {
              self::_loadDir($path,"$f/");
           } else {
-             if (is_file($path) && is_readable($path) && (pathinfo($f,PATHINFO_EXTENSION )=='php')) {
+             if (is_file($path) && is_readable($path) && (pathinfo($f,PATHINFO_EXTENSION )=='php') && (substr(pathinfo($f,PATHINFO_FILENAME ),strlen('-sample')*-1)!=='-sample')) {
                 $config = require $path;
                 if (!is_array($config)) {
                    throw new invalidConfig("the config file for the specified configName did not return an array", $configName, $configFile);
