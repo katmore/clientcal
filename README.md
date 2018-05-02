@@ -60,27 +60,22 @@ Usage:
 php bin/clientcal-user.php <ACTION:add|change|remove> <USERNAME> [<PASSWORD>]
 ```
 
-To create a new user, use the **add** action:
+To create a new user, use the **add** `<ACTION>`:
 ```sh
 php bin/clientcal-user.php add my_user
 ```
 
-The `<PASSWORD>` argument can be provided to avoid being prompted:
-```sh
-php bin/clientcal-user.php add my_user my_pass
-```
-
-To change an existing user's password, use the **change** action:
+To change an existing user's password, use the **change** `<ACTION>`:
 ```sh
 php bin/clientcal-user.php change my_user
 ```
 
-To remove an existing user, use the **remove** action:
+To remove an existing user, use the **remove** `<ACTION>`:
 ```sh
 php bin/clientcal-user.php remove my_user
 ```
 
-The `--help` and `--usage` switch will provide details regarding usage.
+The `--help` and `--usage` switches provide more details regarding usage:
 ```sh
 php bin/clientcal-user.php --help
 php bin/clientcal-user.php --usage
