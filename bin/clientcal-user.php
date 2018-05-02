@@ -27,10 +27,10 @@ return(function() {
       }
        
       public static function showHelp() {
-         echo self::HELP_LABEL."\n";
+         echo self::HELP_LABEL.PHP_EOL;
          $fallbackAppDir = self::DEFAULT_APP_DIR;
          $me = self::ME;
-         echo <<<"EOT"
+         $help=<<<"HELP"
 Options:
 --help
    Output a help message and exit.
@@ -55,8 +55,8 @@ Arguments:
 
 <PASSWORD>
    Specifies the user's password; avoid being prompted for password.
-EOT;
-         echo \PHP_EOL;
+HELP;
+         echo str_replace("\n",\PHP_EOL,$help).\PHP_EOL;
       }
        
       /**

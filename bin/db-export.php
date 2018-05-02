@@ -35,12 +35,9 @@ return(function() {
       }
        
       public static function showHelp() {
-         echo self::HELP_LABEL."\n";
-         $fallbackDbname = self::FALLBACK_DBNAME;
-         $fallbackHost = self::FALLBACK_HOST;
-         $fallbackUsername = self::FALLBACK_USERNAME;
+         echo self::HELP_LABEL.PHP_EOL;
          $me = self::ME;
-         echo <<<"EOT"
+         $help=<<<"HELP"
 Output Control:
 --help
    Enable "help mode": outputs this message then exits.
@@ -70,7 +67,8 @@ Export Configuration:
 App Configuration:
 --app-dir=<path to project app directory> (optional)
    The directory where this script will look for the "bin-common.php" file and "data/mysql" sub-directory.
-EOT;
+HELP;
+         echo str_replace("\n",\PHP_EOL,$help).\PHP_EOL;
       }
        
       /**

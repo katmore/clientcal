@@ -39,11 +39,11 @@ return(function() {
    }
    
    public static function showHelp() {
-      echo self::HELP_LABEL."\n";
+      echo self::HELP_LABEL.PHP_EOL;
       $fallbackDbname = self::FALLBACK_DBNAME;
       $fallbackHost = self::FALLBACK_HOST;
       $fallbackUsername = self::FALLBACK_USERNAME;
-      echo <<<"EOT"
+      $help=<<<"EOT"
 Output Control:
 --help
    Enable "help mode": outputs this message then exits.
@@ -83,6 +83,7 @@ Database Options:
    PDO Data Source Name string
    See: http://php.net/manual/en/pdo.construct.php
 EOT;
+      echo str_replace("\n",\PHP_EOL,$help).\PHP_EOL;
    }
    
    /**
