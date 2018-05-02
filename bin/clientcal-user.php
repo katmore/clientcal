@@ -47,15 +47,16 @@ Options:
    
 Arguments:
 <ACTION>
-   Specify the user management action to perform.
+   Specifies the user management action to perform.
    Possible values: add, change, remove.
       add: Creates a new user; prompts for password unless the <PASSWORD> argument is specified.
       change: Changes an existing user's password; prompts for password unless the <PASSWORD> argument is specified.
       remove: Removes an existing user.
 
 <PASSWORD>
-   Specify the user's password; avoid being prompted for password.
+   Specifies the user's password; avoid being prompted for password.
 EOT;
+         echo \PHP_EOL;
       }
        
       /**
@@ -137,7 +138,10 @@ EOT;
          $modeSwitch = getopt("hu?",["help","usage",]);
          if (isset($modeSwitch['help']) || isset($modeSwitch['h']) || isset($modeSwitch['?']) || ($action_arg==='help')) {
             static::showIntro();
+            echo \PHP_EOL;
             static::showHelp();
+            echo \PHP_EOL;
+            static::showUsage();
             return;
          }
          if (isset($modeSwitch['usage']) || isset($modeSwitch['u']) || ($action_arg==='usage')) {
