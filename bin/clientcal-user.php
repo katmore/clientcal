@@ -9,7 +9,7 @@ return(function() {
        
       const HELP_LABEL = "ClientCal Scheduler Project: https://github.com/katmore/clientcal";
        
-      const USAGE = '[--help][--usage] | [--app-dir=<PATH>] <ACTION:add|change> <USERNAME> [<PASSWORD>]';
+      const USAGE = '[--help][--usage] | [--app-dir=<PATH>] <ACTION:add|change|remove> <USERNAME> [<PASSWORD>]';
        
       const COPYRIGHT = '(c) 2006-2018 Paul D. Bird II. All Rights Reserved.';
        
@@ -31,24 +31,30 @@ return(function() {
          $fallbackAppDir = self::DEFAULT_APP_DIR;
          $me = self::ME;
          echo <<<"EOT"
-Mode Switches:
+Options:
 --help
    Output a help message and exit.
 
 --usage
    Output a brief usage message and exit.
 
-Output Control Switches:
 --quiet
    Provide only essential output to STDOUT.
 
---non-interactive
-   No input prompts will be issued for config values; the default values will be used automatically.
-
-Path Options:
 --app-dir=<PATH>
    The directory where this script will look for the "bin-common.php" file.
    Local system default: $fallbackAppDir
+   
+Arguments:
+<ACTION>
+   Specify the user management action to perform.
+   Possible values: add, change, remove.
+      add: Creates a new user; prompts for password unless the <PASSWORD> argument is specified.
+      change: Changes an existing user's password; prompts for password unless the <PASSWORD> argument is specified.
+      remove: Removes an existing user.
+
+<PASSWORD>
+   Specify the user's password; avoid being prompted for password.
 EOT;
       }
        
@@ -184,7 +190,6 @@ EOT;
             return;
          }
          require $binCommonPath;
-         
          
          /*
           * password prompt and sanity check
