@@ -60,7 +60,7 @@ The `--usage` switch will provide a brief message regarding usage options and ar
 php bin/clientcal-user.php --usage
 ```
 
-To create a new user with the username "my_user" (you will be prompted for a password):
+To create a new user, use the **add** action: (you will be prompted for a password):
 ```sh
 php bin/clientcal-user.php add my_user
 ```
