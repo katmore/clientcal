@@ -60,7 +60,7 @@ The `--usage` switch will provide a brief message regarding usage.
 php bin/config-update.php --help
 ```
 
-For example, to create a new user with the username "my_user" (you will be prompted for a password):
+To create a new user with the username "my_user" (you will be prompted for a password):
 ```sh
 php bin/config-update.php add my_user
 ```
@@ -70,7 +70,7 @@ The <PASSWORD> argument can be provided to avoid being prompted:
 php bin/config-update.php add my_user my_pass
 ```
 
-To change an existing user's password, use the **change** action (the <PASSWORD> argument is optional):
+To change an existing user's password, use the **change** action:
 ```sh
 php bin/config-update.php change my_user
 ```
