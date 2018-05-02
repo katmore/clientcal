@@ -55,12 +55,12 @@ php bin/config-update.php --help
 
 Use the command line **user manager script** ([bin/clientcal-user.php](bin/clientcal-user.php)) to create and modify users.
 
-The `--usage` switch will provide a brief message regarding usage options and arguments.
-```sh
-php bin/clientcal-user.php --usage
+Usage:
+```
+php bin/clientcal-user.php <ACTION:add|change|remove> <USERNAME> [<PASSWORD>]
 ```
 
-To create a new user, use the **add** action: (you will be prompted for a password):
+To create a new user, use the **add** action:
 ```sh
 php bin/clientcal-user.php add my_user
 ```
@@ -80,9 +80,10 @@ To remove an existing user, use the **remove** action:
 php bin/clientcal-user.php remove my_user
 ```
 
-The `--help` switch will provide a detailed message regarding usage.
+The `--help` and `--usage` switch will provide details regarding usage.
 ```sh
 php bin/clientcal-user.php --help
+php bin/clientcal-user.php --usage
 ```
 
 ## Legal
