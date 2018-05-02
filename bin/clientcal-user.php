@@ -9,7 +9,7 @@ return(function() {
        
       const HELP_LABEL = "ClientCal Scheduler Project: https://github.com/katmore/clientcal";
        
-      const USAGE = '[--help][--usage] | [--app-dir=<PATH>] <ACTION:add|change|remove> <USERNAME> [<PASSWORD>]';
+      const USAGE = '[--help][--usage] | [--app-dir=<PATH>] <ACTION:add|change|remove|list> <USERNAME> [<PASSWORD>]';
        
       const COPYRIGHT = '(c) 2006-2018 Paul D. Bird II. All Rights Reserved.';
        
@@ -52,6 +52,7 @@ Arguments:
       add: Creates a new user; prompts for password unless the <PASSWORD> argument is specified.
       change: Changes an existing user's password; prompts for password unless the <PASSWORD> argument is specified.
       remove: Removes an existing user.
+      list: Provide list of existing users.
 
 <PASSWORD>
    Specifies the user's password; avoid being prompted for password.
@@ -72,11 +73,16 @@ HELP;
        * @param string[]
        * @static
        */
-      private static function showErrLine(array $strLines) {
-         $prefix = self::ME . ": ";
-         $stderr = fopen('php://stderr', 'w');
-         foreach ($strLines as $line) fwrite($stderr, $prefix.$line.\PHP_EOL);
-         fclose($stderr);
+      private static function showErrLine(array $strLines,bool $showPrefix=true) {
+         $prefix = "";
+         if ($showPrefix) $prefix = self::ME . ": ";
+         if (PHP_SAPI=='cli') {
+            $stderr = fopen('php://stderr', 'w');
+            foreach ($strLines as $line) fwrite($stderr, $prefix.$line.\PHP_EOL);
+            fclose($stderr);
+            return;
+         }
+         foreach ($strLines as $line) echo $prefix.$line.\PHP_EOL;
       }
       /**
        * @return void
@@ -188,12 +194,14 @@ HELP;
          /*
           * username sanity check
           */
-         if (empty($arg[2])) {
-            $this->exitStatus = 2;
-            static::showErrLine(["missing <USERNAME>"]);
-            return;
+         if (in_array($action_arg,['add','change','remove'])) {
+            if (empty($arg[2])) {
+               $this->exitStatus = 2;
+               static::showErrLine(["missing <USERNAME>"]);
+               return;
+            }
+            $username = $arg[2];
          }
-         $username = $arg[2];
          
          /*
           * password prompt and sanity check
@@ -239,6 +247,19 @@ HELP;
          $mysqlConfig = config::LoadAssoc("mysql");
          
          $pdo = new \PDO($mysqlConfig['dsn'],$mysqlConfig['username'],$mysqlConfig['password'],$mysqlConfig['options']);
+         
+         if ($action_arg=='list') {
+            $pdo->prepare("SELECT username FROM user");
+            $stmt->execute();
+            if (!$stmt->rowCount()) {
+               static::showErrLine(["no clientcal login users found"]);
+               return;
+            }
+            while($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
+               static::showLine([$row['username']]);
+            }
+            return;
+         }
          
          if ($action_arg=='add') {
             $stmt = $pdo->prepare("INSERT INTO user SET username=:username, password=PASSWORD(:password)");
