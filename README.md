@@ -51,33 +51,33 @@ The `--help` switch will provide details on more advanced usage (such as quiet a
 php bin/config-update.php --help
 ```
 
-### Step 4: Create initial login user
+### Step 4: Create a login user
 
-An external means of executing SQL commands must be used (such as mysql console) in order to manage ClientCal users.
+Use the command line **user manager script** ([bin/clientcal-user.php](bin/clientcal-user.php)) to create and modify users.
 
+The `--usage` switch will provide a brief message regarding usage.
 ```sh
-mysql clientcal
+php bin/config-update.php --help
 ```
 
-ClientCal authentication logic searches for matches in the `clientcal.user` table, which has username and password columns. The password column value cannot be plain text, it must be the return value of the mysql function PASSWORD(), as in the following SQL example:
-```sql
-INSERT INTO 
-   user
-SET
-   username='my_username',
-   password=PASSWORD('mySecretPassword')
-;
+For example, to create a new user with the username "my_user" (you will be prompted for a password):
+```sh
+php bin/config-update.php add my_user
 ```
 
-A password can also be changed for an existing user, as in the following SQL example:
+The <PASSWORD> argument can be provided to avoid being prompted:
+```sh
+php bin/config-update.php add my_user my_pass
 ```
-UPDATE
-   user
-SET
-   password=PASSWORD('myNewSecretPassword')
-WHERE
-   username='my_username'
-;
+
+To change an existing user's password, use the **change** action (the <PASSWORD> argument is optional):
+```sh
+php bin/config-update.php change my_user
+```
+
+To remove an existing user, use the **remove** action:
+```sh
+php bin/config-update.php remove my_user
 ```
 
 ## Legal
