@@ -60,17 +60,17 @@ Usage:
 php bin/clientcal-user.php <ACTION:add|change|remove> <USERNAME> [<PASSWORD>]
 ```
 
-To create a new user, use the **add** `<ACTION>`:
+The **add** `<ACTION>` creates a new user:
 ```sh
 php bin/clientcal-user.php add my_user
 ```
 
-To change an existing user's password, use the **change** `<ACTION>`:
+The **change** `<ACTION>` modifies an existing user's password:
 ```sh
 php bin/clientcal-user.php change my_user
 ```
 
-To remove an existing user, use the **remove** `<ACTION>`:
+The **remove** `<ACTION>` removes an existing user:
 ```sh
 php bin/clientcal-user.php remove my_user
 ```
