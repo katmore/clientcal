@@ -65,7 +65,7 @@ To create a new user with the username "my_user" (you will be prompted for a pas
 php bin/config-update.php add my_user
 ```
 
-The <PASSWORD> argument can be provided to avoid being prompted:
+The `<PASSWORD>` argument can be provided to avoid being prompted:
 ```sh
 php bin/config-update.php add my_user my_pass
 ```
