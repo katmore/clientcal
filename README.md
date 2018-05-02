@@ -57,32 +57,32 @@ Use the command line **user manager script** ([bin/clientcal-user.php](bin/clien
 
 The `--usage` switch will provide a brief message regarding usage options and arguments.
 ```sh
-php bin/config-update.php --usage
+php bin/clientcal-user.php --usage
 ```
 
 To create a new user with the username "my_user" (you will be prompted for a password):
 ```sh
-php bin/config-update.php add my_user
+php bin/clientcal-user.php add my_user
 ```
 
 The `<PASSWORD>` argument can be provided to avoid being prompted:
 ```sh
-php bin/config-update.php add my_user my_pass
+php bin/clientcal-user.php add my_user my_pass
 ```
 
 To change an existing user's password, use the **change** action:
 ```sh
-php bin/config-update.php change my_user
+php bin/clientcal-user.php change my_user
 ```
 
 To remove an existing user, use the **remove** action:
 ```sh
-php bin/config-update.php remove my_user
+php bin/clientcal-user.php remove my_user
 ```
 
 The `--help` switch will provide a detailed message regarding usage.
 ```sh
-php bin/config-update.php --help
+php bin/clientcal-user.php --help
 ```
 
 ## Legal
