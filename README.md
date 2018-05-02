@@ -75,7 +75,7 @@ The **remove** `<ACTION>` removes an existing user:
 php bin/clientcal-user.php remove my_user
 ```
 
-The `--help` and `--usage` switches provide more details regarding usage:
+The `--help` and `--usage` switches will provide details on more advanced usage (such as quiet and avoiding password prompts):
 ```sh
 php bin/clientcal-user.php --help
 php bin/clientcal-user.php --usage
