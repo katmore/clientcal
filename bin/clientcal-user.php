@@ -194,7 +194,7 @@ EOT;
          /*
           * password prompt and sanity check
           */
-         if (!in_array($action_arg,['add','change'])) {
+         if (in_array($action_arg,['add','change'])) {
             if (!empty($arg[3])) {
                $password = $arg[3];
             } else {
