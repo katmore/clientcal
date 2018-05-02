@@ -127,6 +127,25 @@ HELP;
       
       public function __construct() {
          
+         /*
+          * bin-common.php sanity check and inclusion
+          */
+         if (!empty(getopt("",["app-dir::",])['app-dir'])) {
+            $binCommonPath = getopt("",["app-dir::",])['app-dir'] . "/bin-common.php";
+            $appDirOriginLabel = '--app-dir';
+            $appPathErrorStatus = 2;
+         } else {
+            $binCommonPath = self::DEFAULT_APP_DIR . "/bin-common.php";
+            $appDirOriginLabel = 'DEFAULT_APP_DIR';
+            $appPathErrorStatus = 1;
+         }
+         if (!is_file($binCommonPath) || !is_readable($binCommonPath)) {
+            $this->exitStatus = $appPathErrorStatus;
+            static::showErrLine(["$appDirOriginLabel did not contain a readable 'bin-common.php' file at '$binCommonPath'"]);
+            return;
+         }
+         require $binCommonPath;
+         
          $arg = [];
          
          if (isset($_SERVER) && isset($_SERVER['argv']) && is_array($_SERVER['argv'])) $arg = $_SERVER['argv'];
@@ -177,25 +196,6 @@ HELP;
          $username = $arg[2];
          
          /*
-          * bin-common.php sanity check and inclusion
-          */
-         if (!empty(getopt("",["app-dir::",])['app-dir'])) {
-            $binCommonPath = getopt("",["app-dir::",])['app-dir'] . "/bin-common.php";
-            $appDirOriginLabel = '--app-dir';
-            $appPathErrorStatus = 2;
-         } else {
-            $binCommonPath = self::DEFAULT_APP_DIR . "/bin-common.php";
-            $appDirOriginLabel = 'DEFAULT_APP_DIR';
-            $appPathErrorStatus = 3;
-         }
-         if (!is_file($binCommonPath) || !is_readable($binCommonPath)) {
-            $this->exitStatus = $appPathErrorStatus;
-            static::showErrLine(["$appDirOriginLabel did not contain a readable 'bin-common.php' file at '$binCommonPath'"]);
-            return;
-         }
-         require $binCommonPath;
-         
-         /*
           * password prompt and sanity check
           */
          if (in_array($action_arg,['add','change'])) {
@@ -225,12 +225,12 @@ HELP;
                   return;
                }
             }
-         }
-         
-         if (strlen($password) < self::PASSWORD_MIN_LEN) {
-            $this->exitStatus = 4;
-            static::showErrLine(["password must be at least ".self::PASSWORD_MIN_LEN. " characters long"]);
-            return;
+            
+            if (strlen($password) < self::PASSWORD_MIN_LEN) {
+               $this->exitStatus = 4;
+               static::showErrLine(["password must be at least ".self::PASSWORD_MIN_LEN. " characters long"]);
+               return;
+            }
          }
          
          /*
