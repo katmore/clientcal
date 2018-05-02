@@ -5,13 +5,13 @@ use clientcal\config;
 return(function() {
    if (0!==($exitStatus=($installer = new class() {
 
-      const ME_LABEL = 'ClientCal Database Installer';
+      const ME_LABEL = 'ClientCal User Manager';
        
       const HELP_LABEL = "ClientCal Scheduler Project: https://github.com/katmore/clientcal";
        
       const USAGE = '[--help][--usage] | [--app-dir=<PATH>] <ACTION:add|change> <USERNAME> [<PASSWORD>]';
        
-      const COPYRIGHT = '(c) 2006-2017 Paul D. Bird II. All Rights Reserved.';
+      const COPYRIGHT = '(c) 2006-2018 Paul D. Bird II. All Rights Reserved.';
        
       const ME = 'clientcal-user.php';
       
@@ -150,7 +150,7 @@ EOT;
             return;
          }
          
-         if (!in_array($action_arg,['add','change'])) {
+         if (!in_array($action_arg,['add','change','remove'])) {
             $this->exitStatus = 2;
             static::showErrLine(["unknown <ACTION> '$action_arg'"]);
             return;
@@ -185,35 +185,37 @@ EOT;
          }
          require $binCommonPath;
          
+         
          /*
           * password prompt and sanity check
           */
-         if (!empty($arg[3])) {
-            $password = $arg[3];
-         } else {
-            //$password = readline("Please provide password for '$username': ");
-            echo "Please provide password for '$username': ";
-            static::hide_term();
-            $password = rtrim(fgets(STDIN), PHP_EOL);
-            static::restore_term();
-            echo PHP_EOL;
-            if (empty($password)) {
-               $this->exitStatus = 4;
-               static::showErrLine(["password cannot be empty"]);
-               return;
+         if (!in_array($action_arg,['add','change'])) {
+            if (!empty($arg[3])) {
+               $password = $arg[3];
+            } else {
+               //$password = readline("Please provide password for '$username': ");
+               echo "Please provide password for '$username': ";
+               static::hide_term();
+               $password = rtrim(fgets(STDIN), PHP_EOL);
+               static::restore_term();
+               echo PHP_EOL;
+               if (empty($password)) {
+                  $this->exitStatus = 4;
+                  static::showErrLine(["password cannot be empty"]);
+                  return;
+               }
+               echo "Confirm password: ";
+               static::hide_term();
+               $password2 = rtrim(fgets(STDIN), PHP_EOL);
+               static::restore_term();
+               echo PHP_EOL;
+               
+               if ($password!==$password2) {
+                  $this->exitStatus = 4;
+                  static::showErrLine(["passwords did not match"]);
+                  return;
+               }
             }
-            echo "Confirm password: ";
-            static::hide_term();
-            $password2 = rtrim(fgets(STDIN), PHP_EOL);
-            static::restore_term();
-            echo PHP_EOL;
-            
-            if ($password!==$password2) {
-               $this->exitStatus = 4;
-               static::showErrLine(["passwords did not match"]);
-               return;
-            }
-            
          }
          
          if (strlen($password) < self::PASSWORD_MIN_LEN) {
@@ -257,6 +259,20 @@ EOT;
                return;
             }
             static::showLine(["updated password for user '$username'"]);
+            return;
+         }
+         
+         if ($action_arg=='remove') {
+            $stmt = $pdo->prepare("DELETE FROM user WHERE username=:username");
+            $stmt->execute([
+               ':username'=>$username,
+            ]);
+            if (!$stmt->rowCount()) {
+               $this->exitStatus = 5;
+               static::showErrLine(["failed to remove user"]);
+               return;
+            }
+            static::showLine(["removed user '$username'"]);
             return;
          }
          //
