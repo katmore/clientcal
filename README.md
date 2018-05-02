@@ -7,29 +7,81 @@ Scheduling, job, crew, and customer management web application for construction 
 ClientCal is a PHP/MySQL based project initially released in 2006 to facilitate the management of customer info, job scheduling, job site info, and work crew scheduling for small to medium sized construction operations (SMBs). As a traditional HTML form based application it has proved to be very stable over the years. I have released this project in preparation for improvements to the UI (to make it mobile friendly) and implementing a RESTful API backend.
 
 ## Installation
-The simplest way to prepare ClientCal for deployment is to copy this project somewhere and run Composer:
-```bash
+Completing the installation of ClientCal involves 4 steps (after you have installed it somewhere).
+
+```sh
 git clone https://github.com/katmore/clientcal.git 
 cd clientcal
+```
+
+### Step 1: Composer update
+Use composer update to install the necessary dependencies.
+```sh
 composer update
 ```
+
+### Step 2: Initialize Database
 
 Use the the command line **database installer script** ([bin/db-install.php](bin/db-install.php)) to install the latest database structure or apply any updates to an existing database.
 
 The db installer can be invoked without any arguments; it will prompt for all the required parameters (such as the host, dbname, user, pass, etc.).
-```bash
+```sh
 php bin/db-install.php
 ```
 
 The `--help` switch will provide details on more advanced usage (such as quiet and non-interactive modes).
-```bash
+```sh
 php bin/db-install.php --help
 ```
 
 The db installer reads the [app/data/mysql/schema.json](app/data/mysql/schema.json) file which specifies the location of SQL dump files and the latest database structure version for the project. The latest SQL update and structure dumps for ClientCal are contained in the [app/data/mysql/schema-sql](app/data/mysql/schema-sql) directory.
 
-##Legal
+### Step 3: Update configuration
+
+Use the command line **config update script** ([bin/config-update.php](bin/config-update.php)) to customize and properly configure the local clientcal installation.
+
+The config update script can be invoked without any arguments; it will prompt for all the necessary configuration values.
+
+```sh
+php bin/config-update.php
+```
+
+The `--help` switch will provide details on more advanced usage (such as quiet and non-interactive modes).
+```sh
+php bin/config-update.php --help
+```
+
+### Step 4: Create initial login user
+
+An external means of executing SQL commands must be used (such as mysql console) in order to manage ClientCal users.
+
+```sh
+mysql clientcal
+```
+
+ClientCal authentication logic searches for matches in the `clientcal.user` table, which has username and password columns. The password column value cannot be plain text, it must be the return value of the mysql function PASSWORD(), as in the following SQL example:
+```sql
+INSERT INTO 
+   user
+SET
+   username='my_username',
+   password=PASSWORD('mySecretPassword')
+;
+```
+
+A password can also be changed for an existing user, as in the following SQL example:
+```
+UPDATE
+   user
+SET
+   password=PASSWORD('myNewSecretPassword')
+WHERE
+   username='my_username'
+;
+```
+
+## Legal
 ClientCal is distributed under the terms of the MIT license or the GPLv3 license.
 
-Copyright (c) 2006-2017, Paul Douglas Bird II.
+Copyright (c) 2006-2018, Paul Douglas Bird II.
 All rights reserved.
