@@ -53,7 +53,7 @@ php bin/config-update.php --help
 
 ### Step 4: Create a login user
 
-Use the command line **user manager script** ([bin/clientcal-user.php](bin/clientcal-user.php)) to create and modify users.
+The command line **user manager script** ([bin/clientcal-user.php](bin/clientcal-user.php)) can be used to manage ClientCal login users.
 
 Usage:
 ```
