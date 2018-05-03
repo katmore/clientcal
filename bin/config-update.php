@@ -468,11 +468,6 @@ HELP;
          
          $target_md5 = md5(json_encode($configVal_Target[$f_filename]));
          
-         echo "$f_filename\n";
-         echo "existing_md5: $existing_md5\n";
-         echo "source_md5: $source_md5\n";
-         echo "target_md5: $target_md5\n";
-         
          
          if ($target_md5 === $existing_md5) {
             $this->showLine(["skipping config file '{$configPath_Target[$f_filename]}' (no changes made)"],self::SHOW_LINE_DISPLAY_ON_QUIET);
@@ -552,7 +547,6 @@ HEADING;
             }
          }
          $this->showLine([""]);
-         die(__FILE__);
          
       }
       unset($f);
