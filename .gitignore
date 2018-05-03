@@ -4,8 +4,8 @@
 npm-debug.log
 composer.lock
 *.sql
-!/app/data/mysql/schema-sql/*/schema-dump.sql
-!/app/data/mysql/schema-sql/*/schema-updates.sql
+!/app/data/schema-sql/*/schema-dump.sql
+!/app/data/schema-sql/*/schema-updates.sql
 /vendor/
 /web/components/
 /custfilequeue/
