@@ -546,12 +546,10 @@ EOT;
       } else {
          $initialVersion = $currentVersion = $version;
          $this->_quiet || self::_showLine(["current schema: v$version"]);
-         var_dump($schemaCfg->versionHistory);
-         echo "\n";
+         
          
          foreach($schemaCfg->versionHistory as $schema_v=>$schema_subdir) {
             if ($schema_v<=$currentVersion) continue;
-            echo "schema_v: $schema_v\n";
             $this->_quiet || self::_showLine(["migrating to schema v$schema_v"]);
             $dbVersionJson = "{$schemaCfg->sql_dir}/$schema_subdir/db-version.json";
             if (false === ($dbVersion = file_get_contents($dbVersionJson))) {
@@ -562,9 +560,7 @@ EOT;
                self::_showErrLine([self::ME.": (ERROR) file contains invalid JSON '$dbVersionJson'"]);
                return $this->_exitStatus = 1;
             }
-            echo "dbVersionJson...\n";
-            var_dump($dbVersion);
-            echo "\n";
+            
             if (!isset($dbVersion->{"sql-command"})) {
                self::_showErrLine([self::ME.": (ERROR) db-version.json file'$dbVersionJson' is missing expected 'sql-command' field"]);
                return $this->_exitStatus = 1;
@@ -576,7 +572,7 @@ EOT;
             foreach($dbVersion->{"sql-command"} as $schema_v_sql) {
                
                $sql_path = "{$schemaCfg->sql_dir}/$schema_subdir/$schema_v_sql";
-               echo "sql_path: $sql_path\n";
+               
                if (false === ($sql = file_get_contents($sql_path))) {
                   self::_showErrLine([self::ME.": (ERROR) failed to read file '$sql_path'"]);
                   return $this->_exitStatus = 1;
