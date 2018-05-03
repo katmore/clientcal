@@ -540,6 +540,7 @@ EOT;
          
          unset($dumpSql);
       } else {
+         $this->_quiet || self::_showLine(["current schema version: v$version"]);
          var_dump($schemaCfg->versionHistory);
          echo "\n";
          die(__FILE__);
