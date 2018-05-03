@@ -1,5 +1,6 @@
 #!/usr/bin/env php
 <?php
+use clientcal\config;
 return(function() {
    if (0!==($exitStatus=($installer = new class() {
 
@@ -127,6 +128,9 @@ EOT;
     * @return \PDO | int provides PDO object or exit status code
     */
    private function _getPdo() {
+      
+      $supplied_option = false;
+      
       $option=getopt("",[
          "my-cnf::",
          "username::",
@@ -144,6 +148,7 @@ EOT;
    
       $myCnf=null;
       if (isset($option['my-cnf'])) {
+         $supplied_option = true;
          if (!empty($option['my-cnf'])) {
             if (!is_file($option['my-cnf']) || !is_readable($option['my-cnf'])) {
                self::_showErrLine([self::ME.": (ERROR) MySQL config path did not resolve to a readable file: {$option['my-cnf']}"]);
@@ -214,7 +219,10 @@ EOT;
          unset($usedSetting);
       } else {
          foreach($pdoconfig as $k=>&$v) {
-            if (!empty($option[$k])) $v=$option[$k];
+            if (!empty($option[$k])) {
+               $v=$option[$k];
+               $supplied_option = true;
+            }
          }
          unset($k);
          unset($v);
@@ -225,6 +233,7 @@ EOT;
          if (empty($pdoconfig['dsn'])) {
             if (!empty(getopt("",['host'])['host'])) {
                $host=getopt("",['host'])['host'];
+               $supplied_option = true;
             } else {
                $host=self::FALLBACK_HOST;
             }
@@ -232,9 +241,24 @@ EOT;
       }
       if (!empty(getopt("",['dbname'])['dbname'])) {
          $dbname=getopt("",['dbname'])['dbname'];
+         $supplied_option = true;
       } else {
          $dbname=self::FALLBACK_DBNAME;
       }
+      
+      if (!$supplied_option) {
+         $this->_quiet || self::_showLine(["Starting PDO connection (using existing clientcal configuration)..."]);
+         $mysqlConfig = config::LoadAssoc("mysql");
+         try {
+            $pdo = new \PDO($mysqlConfig['dsn'],$mysqlConfig['username'],$mysqlConfig['password'],$mysqlConfig['options']);
+         } catch (PDOException $e) {
+            self::_showErrLine(self::ME.": (ERROR) Connection failed: ".$e->getMessage() . " using existing clientcal configuration (app/config/mysql.php)");
+            return $this->_exitStatus = 1;
+         }
+         $this->_quiet || self::_showLine(["(PDO connection success)"]);
+         return $pdo;
+      }
+      
       $pdoconfig['dsn'] = "mysql:host=$host;dbname=$dbname";
    
       try {
