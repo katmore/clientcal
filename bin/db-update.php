@@ -539,26 +539,29 @@ EOT;
          
          unset($dumpSql);
       } else {
-         for($newVersion = floatval($version)+0.01;$newVersion<($schemaCfg->latestVersion+0.01);$newVersion+=0.01) {
-            $updateSql = "{$schemaCfg->sql_dir}/$newVersion/schema-updates.sql";
-            $this->_verbose && self::_showLine(["updating from v$version to v$newVersion using: $updateSql"]);
-            if (!is_readable($updateSql) || !is_file($updateSql)) {
-               self::_showErrLine([self::ME.": (ERROR) update sql did not resolve to readable file: $updateSql"]);
-               return $this->_exitStatus = 1;
-            }
-            $pdo->exec(file_get_contents($updateSql));
-            $version=$newVersion;
-            $pdo->prepare("
-            INSERT INTO
-               `{$schemaCfg->table}`
-            SET
-               ns=:ns,
-               version=:version
-            ")->execute([':version'=>$version,':ns'=>$schemaCfg->name]);
-            sleep(1);
-         }
-         unset($newVersion);
-         unset($updateSql);
+         var_dump($schemaCfg->versionHistory);
+         echo "\n";
+         die(__FILE__);
+//          for($newVersion = floatval($version)+0.01;$newVersion<($schemaCfg->latestVersion+0.01);$newVersion+=0.01) {
+//             $updateSql = "{$schemaCfg->sql_dir}/$newVersion/schema-updates.sql";
+//             $this->_verbose && self::_showLine(["updating from v$version to v$newVersion using: $updateSql"]);
+//             if (!is_readable($updateSql) || !is_file($updateSql)) {
+//                self::_showErrLine([self::ME.": (ERROR) update sql did not resolve to readable file: $updateSql"]);
+//                return $this->_exitStatus = 1;
+//             }
+//             $pdo->exec(file_get_contents($updateSql));
+//             $version=$newVersion;
+//             $pdo->prepare("
+//             INSERT INTO
+//                `{$schemaCfg->table}`
+//             SET
+//                ns=:ns,
+//                version=:version
+//             ")->execute([':version'=>$version,':ns'=>$schemaCfg->name]);
+//             sleep(1);
+//          }
+//          unset($newVersion);
+//          unset($updateSql);
       }
       
       if ($version!=$schemaCfg->latestVersion) {
