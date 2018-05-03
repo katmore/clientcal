@@ -20,7 +20,7 @@ return(function() {
    
    const FALLBACK_USERNAME = "root";
    
-   const FALLBACK_SCHEMA_JSON = __DIR__ . "/../app/data/schema-sql/schema.json";
+   const FALLBACK_SCHEMA_JSON = __DIR__ . "/../app/data/schema-sql/db-schema.json";
    
    const FALLBACK_APP_DIR=__DIR__.'/../app';
    private static function _getAppDir() :string {
@@ -429,7 +429,7 @@ EOT;
       unset($v);
       
       if ($badCfg) {
-         self::_showErrLine([self::ME.": (ERROR) bad schema.json:"]);
+         self::_showErrLine([self::ME.": (ERROR) bad db-schema.json:"]);
          self::_showErrLine($badCfg);
          return $this->_exitStatus = 1;
       }
