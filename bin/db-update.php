@@ -446,7 +446,7 @@ EOT;
       if (!$stmt->rowCount()) {
          $pdo->query(str_replace("schema_version",$schemaCfg->table,self::CREATE_SCHEMA_VERSION_SQL));
          $stmt = $pdo->query("SHOW TABLES LIKE 'customer'");
-         if ($stmt->rowCount()) $version = "1.98";
+         if ($stmt->rowCount()) $initialVersion = $version = "1.98";
       } else {
          $stmt = $pdo->query("SHOW COLUMNS IN `{$schemaCfg->table}`");
          $hasNS = false;
@@ -487,7 +487,7 @@ EOT;
             $version = $stmt->fetch(PDO::FETCH_ASSOC)['version'];
          } else {
             $stmt = $pdo->query("SHOW TABLES LIKE 'customer'");
-            if ($stmt->rowCount()) $version = "1.98";
+            if ($stmt->rowCount()) $initialVersion = $version = "1.98";
          }
       }
       
@@ -525,6 +525,7 @@ EOT;
       }
       
       if (!$version) {
+         $initialVersion = '0';
          $dumpSql = "{$schemaCfg->sql_dir}/{$schemaCfg->latestVersion}/schema-dump.sql";
          $this->_verbose && self::_showLine(["restoring database using schema v{$schemaCfg->latestVersion} using: $dumpSql"]);
          if (!is_readable($dumpSql) || !is_file($dumpSql)) {
@@ -557,18 +558,51 @@ EOT;
                self::_showErrLine([self::ME.": (ERROR) failed to read file '$dbVersionJson'"]);
                return $this->_exitStatus = 1;
             }
-            if (null === ($dbVersion = json_decode($dbVersion,true))) {
+            if (null === ($dbVersion = json_decode($dbVersion))) {
                self::_showErrLine([self::ME.": (ERROR) file contains invalid JSON '$dbVersionJson'"]);
                return $this->_exitStatus = 1;
             }
             echo "dbVersionJson...\n";
             var_dump($dbVersion);
             echo "\n";
+            if (!isset($dbVersion->{"sql-command"})) {
+               self::_showErrLine([self::ME.": (ERROR) db-version.json file'$dbVersionJson' is missing expected 'sql-command' field"]);
+               return $this->_exitStatus = 1;
+            }
+            if (!is_array($dbVersion->{"sql-command"})) {
+               self::_showErrLine([self::ME.": (ERROR) db-version.json file'$dbVersionJson' 'sql-command' field is not an array as expected"]);
+               return $this->_exitStatus = 1;
+            }
+            foreach($dbVersion->{"sql-command"} as $schema_v_sql) {
+               
+               $sql_path = "{$schemaCfg->sql_dir}/$schema_subdir/$schema_v_sql";
+               echo "sql_path: $sql_path\n";
+               if (false === ($sql = file_get_contents($sql_path))) {
+                  self::_showErrLine([self::ME.": (ERROR) failed to read file '$sql_path'"]);
+                  return $this->_exitStatus = 1;
+               }
+               $this->_quiet || self::_showLine(["starting '$schema_v_sql' of schema: v$schema_v"]);
+               $pdo->exec(file_get_contents($sql));
+               $version=$schemaCfg->latestVersion;
+               $pdo->prepare("
+               INSERT INTO
+                  `{$schemaCfg->table}`
+               SET
+                  ns=:ns,
+                  version=:version
+               ")->execute([':version'=>$schema_v,':ns'=>$schemaCfg->name]);
+               
+               $version = $currentVersion = $schema_v;
+               
+               $this->_quiet || self::_showLine(["finished '$schema_v_sql' of schema: v$schema_v"]);
+            }
+            unset($schema_v_sql);
+            
+            $this->_quiet || self::_showLine(["completed migration to schema: v$schema_v"]);
          }
          unset($schema_v);
          unset($schema_subdir);
          
-         die(__FILE__."\n");
          
 //          for($newVersion = floatval($version)+0.01;$newVersion<($schemaCfg->latestVersion+0.01);$newVersion+=0.01) {
 //             $updateSql = "{$schemaCfg->sql_dir}/$newVersion/schema-updates.sql";
