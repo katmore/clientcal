@@ -84,6 +84,10 @@ php bin/db-update.php
 
 ## Utilities
 The ClientCal project includes command-line utility scripts to facilitate installation and ongoing operation.
+ * [user manager utility](#user-manager-utility)
+ * [database export utility](#database-export-utility)
+ * [database update utility](database-update-utility)
+ * [configuration update utility](#configuration-update-utility)
 
 ### user manager utility
  * Location: [bin/clientcal-user.php](bin/clientcal-user.php)
