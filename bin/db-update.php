@@ -418,6 +418,9 @@ EOT;
              unset($prop);
              unset($v);
              $this->sql_dir = $schemaDir;
+             if (is_array($this->versionHistory)) {
+                ksort ( $this->versionHistory );
+             }
          }
       };
       
@@ -544,6 +547,7 @@ EOT;
          var_dump($schemaCfg->versionHistory);
          echo "\n";
          die(__FILE__);
+         
 //          for($newVersion = floatval($version)+0.01;$newVersion<($schemaCfg->latestVersion+0.01);$newVersion+=0.01) {
 //             $updateSql = "{$schemaCfg->sql_dir}/$newVersion/schema-updates.sql";
 //             $this->_verbose && self::_showLine(["updating from v$version to v$newVersion using: $updateSql"]);
