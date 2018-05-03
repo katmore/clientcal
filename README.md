@@ -51,9 +51,9 @@ php bin/config-update.php
 ```
 
 ### Installation - Step 5
-**Create a login user**
+**Create a web user**
 
-At least one login user must exist to operate ClientCal; use the command-line [**user manager utility**](#user-manager-utility) to create one.
+Use the command-line [**user manager utility**](#user-manager-utility) to create at least one web user that can login to the ClientCal web application.
 
 ```sh
 php bin/clientcal-user.php add my_user
@@ -99,7 +99,7 @@ The ClientCal project includes command-line utility scripts to facilitate instal
 ### user manager utility
  * Location: [bin/clientcal-user.php](bin/clientcal-user.php)
 
-The **user manager utility** manages ClientCal login users. Users can be created, removed, and modified.
+The **user manager utility** manages ClientCal web users. Web users can be created, removed, and modified.
 
 The `--help` and `--usage` switches provides details regarding advanced usage (such as quiet mode and avoiding prompts):
 ```sh
