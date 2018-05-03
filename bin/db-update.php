@@ -1,6 +1,7 @@
 #!/usr/bin/env php
 <?php
 use clientcal\config;
+use Ifsnop\Mysqldump\Mysqldump;
 return(function() {
    if (0!==($exitStatus=($installer = new class() {
 
