@@ -29,7 +29,6 @@ mysql> GRANT ALL ON clientcal.* TO 'clientcal'@'localhost' IDENTIFIED BY ...
 ```
 
 ### Step 3: Initialize Database
-
 Use the the command-line **database update utility** to install the latest database structure.
 
 ```sh
@@ -37,7 +36,6 @@ php bin/db-update.php
 ```
 
 ### Step 4: Initialize configuration
-
 Use the command-line **config update utility** to customize and properly configure the local clientcal installation.
 
 ```sh
@@ -45,9 +43,8 @@ php bin/config-update.php
 ```
 
 ### Step 5: Create a login user
-The command-line **user manager utility** can be used to create an initial login user. 
+At least one login user must exist to operate ClientCal; use the command-line **user manager utility** to create one.
 
-At least one login user must be created to operate ClientCal:
 ```sh
 php bin/clientcal-user.php add my_user
 ```
