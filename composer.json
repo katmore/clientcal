@@ -21,7 +21,7 @@
     ],   
     "autoload": {
         "psr-4": { 
-            "clientcal\\": "src"
+            "clientcal\\": "src/legacy"
          },
         "files": [
             "lib/DAL/customer.php",
