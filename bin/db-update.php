@@ -543,10 +543,19 @@ EOT;
          
          unset($dumpSql);
       } else {
+         $initialVersion = $currentVersion = $version;
          $this->_quiet || self::_showLine(["current schema version: v$version"]);
          var_dump($schemaCfg->versionHistory);
          echo "\n";
-         die(__FILE__);
+         
+         foreach($schemaCfg->versionHistory as $schema_v=>$schema_subdir) {
+            if ($schema_v<=$currentVersion) continue;
+            echo "schema_v: $schema_v\n";
+         }
+         unset($schema_v);
+         unset($schema_subdir);
+         
+         die(__FILE__."\n");
          
 //          for($newVersion = floatval($version)+0.01;$newVersion<($schemaCfg->latestVersion+0.01);$newVersion+=0.01) {
 //             $updateSql = "{$schemaCfg->sql_dir}/$newVersion/schema-updates.sql";
