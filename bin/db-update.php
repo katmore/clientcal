@@ -545,14 +545,14 @@ EOT;
          unset($dumpSql);
       } else {
          $initialVersion = $currentVersion = $version;
-         $this->_quiet || self::_showLine(["current schema version: v$version"]);
+         $this->_quiet || self::_showLine(["current schema: v$version"]);
          var_dump($schemaCfg->versionHistory);
          echo "\n";
          
          foreach($schemaCfg->versionHistory as $schema_v=>$schema_subdir) {
             if ($schema_v<=$currentVersion) continue;
             echo "schema_v: $schema_v\n";
-            $this->_quiet || self::_showLine(["migrating to schema: v$schema_v"]);
+            $this->_quiet || self::_showLine(["migrating to schema v$schema_v"]);
             $dbVersionJson = "{$schemaCfg->sql_dir}/$schema_subdir/db-version.json";
             if (false === ($dbVersion = file_get_contents($dbVersionJson))) {
                self::_showErrLine([self::ME.": (ERROR) failed to read file '$dbVersionJson'"]);
@@ -581,8 +581,13 @@ EOT;
                   self::_showErrLine([self::ME.": (ERROR) failed to read file '$sql_path'"]);
                   return $this->_exitStatus = 1;
                }
-               $this->_quiet || self::_showLine(["starting '$schema_v_sql' of schema: v$schema_v"]);
-               $pdo->exec(file_get_contents($sql));
+               $this->_quiet || self::_showLine(["starting '$schema_v_sql' (of schema v$schema_v)"]);
+               try {
+                  $pdo->exec($sql);
+               } catch (PDOException $e) {
+                  self::_showErrLine([self::ME.": (ERROR) '$schema_v_sql' (of schema v$schema_v) failed: ".$e->getMessage()]);
+                  return $this->_exitStatus = 1;
+               }
                $version=$schemaCfg->latestVersion;
                $pdo->prepare("
                INSERT INTO
@@ -594,11 +599,11 @@ EOT;
                
                $version = $currentVersion = $schema_v;
                
-               $this->_quiet || self::_showLine(["finished '$schema_v_sql' of schema: v$schema_v"]);
+               $this->_quiet || self::_showLine(["finished '$schema_v_sql' (of schema v$schema_v)"]);
             }
             unset($schema_v_sql);
             
-            $this->_quiet || self::_showLine(["completed migration to schema: v$schema_v"]);
+            $this->_quiet || self::_showLine(["completed migration to schema v$schema_v"]);
          }
          unset($schema_v);
          unset($schema_subdir);
