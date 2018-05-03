@@ -14,13 +14,17 @@ git clone https://github.com/katmore/clientcal.git
 cd clientcal
 ```
 
-### Step 1: Composer update
+### Installation - Step 1
+**Composer update**
+
 Use `composer update` to install the necessary dependencies.
 ```sh
 composer update
 ```
 
-### Step 2: MySQL Preparation
+### Installation - Step 2
+**MySQL Preparation**
+
 A MySQL (or MariaDB) database must be provisioned along with a MySQL user with corresponding permissions by external means, such as with the mysql console.
 
 ```txt
@@ -28,28 +32,34 @@ mysql> CREATE DATABASE clientcal;
 mysql> GRANT ALL ON clientcal.* TO 'clientcal'@'localhost' IDENTIFIED BY ...
 ```
 
-### Step 3: Initialize Database
+### Installation - Step 3
+**Initialize Database**
+
 Use the the command-line [**database update utility**](#database-update-utility) to install the latest database structure.
 
 ```sh
 php bin/db-update.php
 ```
 
-### Step 4: Initialize configuration
+### Installation - Step 4
+**Initialize configuration**
+
 Use the command-line [**config update utility**](#configuration-update-utility) to customize and properly configure the local clientcal installation.
 
 ```sh
 php bin/config-update.php
 ```
 
-### Step 5: Create a login user
+### Installation - Step 5
+**Create a login user**
+
 At least one login user must exist to operate ClientCal; use the command-line [**user manager utility**](#user-manager-utility) to create one.
 
 ```sh
 php bin/clientcal-user.php add my_user
 ```
 
-## Updates
+## Update Workflow
 Active deployments of ClientCal can be safely upgraded in-place using a 3 step workflow.
 
 The ClientCal source itself can be updated using the same means as when it was copied to a local system initially.
@@ -59,20 +69,20 @@ cd clientcal
 git update
 ```
 
-### Step 1
+### Update Workflow - Step 1
 Use `composer update` to upgrade and install any new dependencies.
 ```sh
 composer update
 ```
 
-### Step 2
+### Update Workflow - Step 2
 Use the [**config update utility**](#configuration-update-utility) command-line script to safely upgrade the existing ClientCal configuration.
 
 ```sh
 php bin/config-update.php
 ```
 
-### Step 3
+### Update Workflow - Step 3
 Use the [**database update utility**](#database-update-utility) command-line script to safely apply database schema updates (database migrations).
 
 ```sh
