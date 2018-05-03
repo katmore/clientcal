@@ -19,7 +19,7 @@ return(function() {
    
    const FALLBACK_USERNAME = "root";
    
-   const FALLBACK_SCHEMA_JSON = __DIR__ . "/../app/data/mysql/schema.json";
+   const FALLBACK_SCHEMA_JSON = __DIR__ . "/../app/data/schema-sql/schema.json";
    
    const FALLBACK_APP_DIR=__DIR__.'/../app';
    private static function _getAppDir() :string {
@@ -380,17 +380,20 @@ EOT;
       
       $this->_verbose && self::_showLine(["schema-dir: $schemaDir"]);
       
-      $schemaCfg = new class(json_decode(file_get_contents($schemaJson),true)) {
-         public $version;
-         public $table;
+      $schemaCfg = new class(json_decode(file_get_contents($schemaJson),true),$schemaDir) {
+         public $latestVersion;
+         public $name;
+         public $versionHistory;
+         public $type;
+         public $table = 'schema_version';
          public $sql_dir;
-         public $ns;
-         public function __construct(array $cfg) {
+         public function __construct(array $cfg,$schemaDir) {
              foreach($this as $prop=>&$v) {
                 if (!empty($cfg[str_replace("_","-",$prop)])) $v=$cfg[str_replace("_","-",$prop)];
              }
              unset($prop);
              unset($v);
+             $this->sql_dir = $schemaDir;
          }
       };
       
@@ -407,23 +410,7 @@ EOT;
          return $this->_exitStatus = 1;
       }
       
-      if (!is_dir($schemaCfg->sql_dir) && (substr($schemaCfg->sql_dir,0,1)!='/')) {
-         $schemaCfg->sql_dir = $schemaDir."/".$schemaCfg->sql_dir;
-      }
-      
-      $schemaCfg->sql_dir = str_replace("/",DIRECTORY_SEPARATOR,$schemaCfg->sql_dir);
-      if (!realpath($schemaCfg->sql_dir)) {
-         self::_showErrLine([self::ME.": (ERROR) bad schema.json: The value of 'sql-dir' did not resolve to a readable system path: {$schemaCfg->sql_dir}"]);
-         return $this->_exitStatus = 1;
-      }
-      $schemaCfg->sql_dir = realpath($schemaCfg->sql_dir);
-      
-      if (!is_dir($schemaCfg->sql_dir)) {
-         self::_showErrLine([self::ME.": (ERROR) bad schema.json: The value of 'sql-dir' must resolve to a system directory: {$schemaCfg->sql_dir}"]);
-         return $this->_exitStatus = 1;
-      }
-      
-      $this->_quiet || self::_showLine(["latest schema version: v{$schemaCfg->version}"]);
+      $this->_quiet || self::_showLine(["latest schema version: v{$schemaCfg->latestVersion}"]);
       
       $this->_verbose && self::_showLine(["schema-table: {$pdo->query('select database()')->fetchColumn()}.{$schemaCfg->table}"]);
       
@@ -451,7 +438,7 @@ EOT;
                `{$schemaCfg->table}`
             (`ns`,`version`,`installed_time`)
             SELECT
-               ('{$schemaCfg->ns}',`version`,`installed_time`)
+               ('{$schemaCfg->name}',`version`,`installed_time`)
             FROM
                `$renameTable`
             ");
@@ -468,7 +455,7 @@ EOT;
          ASC
          LIMIT 1
          ");
-         $stmt->execute([':ns'=>$schemaCfg->ns]);
+         $stmt->execute([':ns'=>$schemaCfg->name]);
          if ($stmt->rowCount()) {
             $version = $stmt->fetch(PDO::FETCH_ASSOC)['version'];
          } else {
@@ -510,25 +497,25 @@ EOT;
       }
       
       if (!$version) {
-         $dumpSql = "{$schemaCfg->sql_dir}/{$schemaCfg->version}/schema-dump.sql";
-         $this->_verbose && self::_showLine(["restoring database using schema v{$schemaCfg->version} using: $dumpSql"]);
+         $dumpSql = "{$schemaCfg->sql_dir}/{$schemaCfg->latestVersion}/schema-dump.sql";
+         $this->_verbose && self::_showLine(["restoring database using schema v{$schemaCfg->latestVersion} using: $dumpSql"]);
          if (!is_readable($dumpSql) || !is_file($dumpSql)) {
             self::_showErrLine([self::ME.": (ERROR) schema dump did not resolve to readable file: $dumpSql"]);
             return $this->_exitStatus = 1;
          }
          $pdo->exec(file_get_contents($dumpSql));
-         $version=$schemaCfg->version;
+         $version=$schemaCfg->latestVersion;
          $pdo->prepare("
          INSERT INTO
             `{$schemaCfg->table}`
          SET
             ns=:ns,
             version=:version
-         ")->execute([':version'=>$version,':ns'=>$schemaCfg->ns]);
+         ")->execute([':version'=>$version,':ns'=>$schemaCfg->name]);
          
          unset($dumpSql);
       } else {
-         for($newVersion = floatval($version)+0.01;$newVersion<($schemaCfg->version+0.01);$newVersion+=0.01) {
+         for($newVersion = floatval($version)+0.01;$newVersion<($schemaCfg->latestVersion+0.01);$newVersion+=0.01) {
             $updateSql = "{$schemaCfg->sql_dir}/$newVersion/schema-updates.sql";
             $this->_verbose && self::_showLine(["updating from v$version to v$newVersion using: $updateSql"]);
             if (!is_readable($updateSql) || !is_file($updateSql)) {
@@ -543,15 +530,15 @@ EOT;
             SET
                ns=:ns,
                version=:version
-            ")->execute([':version'=>$version,':ns'=>$schemaCfg->ns]);
+            ")->execute([':version'=>$version,':ns'=>$schemaCfg->name]);
             sleep(1);
          }
          unset($newVersion);
          unset($updateSql);
       }
       
-      if ($version!=$schemaCfg->version) {
-         self::_showErrLine([self::ME.": (ERROR) unable to update to latest schema v{$schemaCfg->version}"]);
+      if ($version!=$schemaCfg->latestVersion) {
+         self::_showErrLine([self::ME.": (ERROR) unable to update to latest schema v{$schemaCfg->latestVersion}"]);
          return $this->_exitStatus = 1;
       }
       

@@ -1,6 +1,0 @@
-{
-   "ns" : "katmore/clientcal",
-   "version" : "1.99",
-   "table" : "schema_version",
-   "sql-dir" : "schema-sql"
-}

@@ -1,0 +1,8 @@
+{
+   "name" : "katmore/clientcal",
+   "type": "mysql",
+   "latestVersion" : "1.99",
+   "versionHistory": {
+      "1.99": "1.99"
+   }
+}

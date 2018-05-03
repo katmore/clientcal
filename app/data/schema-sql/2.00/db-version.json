@@ -1,0 +1,4 @@
+{
+  "version": "2.00",
+  "sql-command": ["schema-updates.sql"]
+}
