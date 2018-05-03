@@ -106,6 +106,9 @@ namespace clientcal;
          throw new error(-4,"while get: " . mysql_error());
       return 0;
    }
+   /*
+    * from https://gist.github.com/andrewfenn/dc1c6c360e2119f0f4476c206e66b012
+    */
    function mysql_old_password_hash($password) {
       if ($password == '') {
          return '';
@@ -128,6 +131,9 @@ namespace clientcal;
       $bit = (1 << 31) -1;
       return sprintf("%08lx%08lx", $nr & $bit, $nr2 & $bit);
    }
+   /*
+    * from https://stackoverflow.com/questions/17766978/mysql-password-function-to-php
+    */
    function mysql_password_hash($password) {
       return '*'.strtoupper(hash('sha1',pack('H*',hash('sha1', $password))));
    }
