@@ -342,20 +342,23 @@ HELP;
             return;
          }
          
-         if ($action_arg == 'set-email') {
-            $stmt = $pdo->prepare("UPDATE user SET email=:email WHERE username=:username");
-            $stmt->execute([
-               ':username'=>$username,
-               ':email'=>$email,
-            ]);
-            if (!$stmt->rowCount()) {
-               $this->exitStatus = 5;
-               static::showErrLine(["failed to update user email"]);
-               return;
-            }
-            static::showLine(["updated email for user '$username'"]);
-            return;
-         }
+         $this->exitStatus = 1;
+         static::showErrLine(["internal error, missing <ACTION> handler"]);
+         
+//          if ($action_arg == 'set-email') {
+//             $stmt = $pdo->prepare("UPDATE user SET email=:email WHERE username=:username");
+//             $stmt->execute([
+//                ':username'=>$username,
+//                ':email'=>$email,
+//             ]);
+//             if (!$stmt->rowCount()) {
+//                $this->exitStatus = 5;
+//                static::showErrLine(["failed to update user email"]);
+//                return;
+//             }
+//             static::showLine(["updated email for user '$username'"]);
+//             return;
+//          }
          //
          //
          //
