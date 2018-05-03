@@ -3,7 +3,7 @@
  * 
  * @author Paul D. Bird II
  * 
- * @version 1.99
+ * @version 2.00
  */
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
@@ -165,7 +165,8 @@ CREATE TABLE `supervisor` (
 CREATE TABLE `user` (
   `user_key` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `username` tinytext NOT NULL,
-  `password` tinytext,
+  `email` varchar(100) DEFAULT NULL,
+  `password` tinytext DEFAULT NULL,
   `level` int(10) unsigned DEFAULT NULL,
   PRIMARY KEY (`user_key`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;

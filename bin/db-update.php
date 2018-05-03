@@ -11,7 +11,7 @@ return(function() {
    
    const USAGE = '[--help [ [--non-interactive] [--quiet | --verbose] [--my-cnf | [--username=<db username> [--password=<db password>]] [ [--host=<mysql host> [--dbname=<mysql dbname>]] | [--dsn=<PDO Data Source Name>]]]]]';
    
-   const COPYRIGHT = '(c) 2006-2017 Paul D. Bird II. All Rights Reserved.';
+   const COPYRIGHT = '(c) 2006-2018 Paul D. Bird II. All Rights Reserved.';
    
    const ME = 'db-install.php';
    
