@@ -251,7 +251,25 @@ EOT;
          $this->_quiet || self::_showLine(["Starting PDO connection (using existing clientcal configuration)..."]);
          $mysqlConfig = config::LoadAssoc("mysql");
          try {
-            $pdo = new \PDO($mysqlConfig['dsn'],$mysqlConfig['username'],$mysqlConfig['password'],$mysqlConfig['options']);
+            //$pdo = new \PDO($mysqlConfig['dsn'],$mysqlConfig['username'],$mysqlConfig['password'],$mysqlConfig['options']);
+            $pdo = new class (
+            $mysqlConfig['dsn'],
+            $mysqlConfig['username'],
+            $mysqlConfig['password'],
+            $mysqlConfig['options']
+            ) extends \PDO {
+               public $dsn;
+               public $username;
+               public $password;
+               public $options;
+               public function __construct($dsn,$username,$password,$options) {
+                  $this->dsn = $dsn;
+                  $this->username = $username;
+                  $this->password = $password;
+                  $this->options = $options;
+                  parent::__construct($dsn,$username,$password,$options);
+               }
+            };
          } catch (PDOException $e) {
             self::_showErrLine([self::ME.": (ERROR) Connection failed: ".$e->getMessage() . " using existing clientcal configuration (app/config/mysql.php)"]);
             return $this->_exitStatus = 1;
