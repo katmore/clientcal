@@ -150,7 +150,7 @@ namespace clientcal;
       
       $sMajorVersion = substr(mysqli_get_server_info($my),0,1);
       
-      $sql = "SELECT user_key,username FROM user WHERE username='$username'";
+      $sql = "SELECT user_key,username,password FROM user WHERE username='$username'";
       
       if (!($result = mysql_query($sql,$my)))
          throw new error(-4,"while get: " . mysql_error($my));
