@@ -252,7 +252,7 @@ EOT;
          try {
             $pdo = new \PDO($mysqlConfig['dsn'],$mysqlConfig['username'],$mysqlConfig['password'],$mysqlConfig['options']);
          } catch (PDOException $e) {
-            self::_showErrLine(self::ME.": (ERROR) Connection failed: ".$e->getMessage() . " using existing clientcal configuration (app/config/mysql.php)");
+            self::_showErrLine([self::ME.": (ERROR) Connection failed: ".$e->getMessage() . " using existing clientcal configuration (app/config/mysql.php)"]);
             return $this->_exitStatus = 1;
          }
          $this->_quiet || self::_showLine(["(PDO connection success)"]);
@@ -553,7 +553,17 @@ EOT;
             echo "schema_v: $schema_v\n";
             $this->_quiet || self::_showLine(["migrating to schema: v$schema_v"]);
             $dbVersionJson = "{$schemaCfg->sql_dir}/$schema_subdir/db-version.json";
-            echo "dbVersionJson: $dbVersionJson\n";
+            if (false === ($dbVersion = file_get_contents($dbVersionJson))) {
+               self::_showErrLine([self::ME.": (ERROR) failed to read file '$dbVersionJson'"]);
+               return $this->_exitStatus = 1;
+            }
+            if (null === ($dbVersion = json_decode($dbVersion,true))) {
+               self::_showErrLine([self::ME.": (ERROR) file contains invalid JSON '$dbVersionJson'"]);
+               return $this->_exitStatus = 1;
+            }
+            echo "dbVersionJson...\n";
+            var_dump($dbVersion);
+            echo "\n";
          }
          unset($schema_v);
          unset($schema_subdir);
