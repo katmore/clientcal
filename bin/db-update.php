@@ -551,6 +551,9 @@ EOT;
          foreach($schemaCfg->versionHistory as $schema_v=>$schema_subdir) {
             if ($schema_v<=$currentVersion) continue;
             echo "schema_v: $schema_v\n";
+            $this->_quiet || self::_showLine(["migrating to schema: v$schema_v"]);
+            $dbVersionJson = "{$schemaCfg->sql_dir}/$schema_subdir/db-version.json";
+            echo "dbVersionJson: $dbVersionJson\n";
          }
          unset($schema_v);
          unset($schema_subdir);
