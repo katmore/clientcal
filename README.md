@@ -30,63 +30,26 @@ mysql> GRANT ALL ON clientcal.* TO 'clientcal'@'localhost' IDENTIFIED BY ...
 
 ### Step 3: Initialize Database
 
-Use the the command line **database update utility** ([bin/db-update.php](bin/db-update.php)) to install the latest database structure or apply any updates to an existing database.
+Use the the command-line **database update utility** to install the latest database structure.
 
-The db installer can be invoked without any arguments; it will prompt for all the required parameters (such as the host, dbname, user, pass, etc.).
 ```sh
 php bin/db-update.php
 ```
 
-The `--help` switch will provide details on more advanced usage (such as quiet and non-interactive modes).
-```sh
-php bin/db-update.php --help
-```
-
-The db installer reads the [app/data/mysql/schema.json](app/data/mysql/schema.json) file which specifies the location of SQL dump files and the latest database structure version for the project. The latest SQL update and structure dumps for ClientCal are contained in the [app/data/mysql/schema-sql](app/data/mysql/schema-sql) directory.
-
-
 ### Step 4: Initialize configuration
 
-Use the command line **config update utility** ([bin/config-update.php](bin/config-update.php)) to customize and properly configure the local clientcal installation.
-
-The config update utility can be invoked without any arguments; it will prompt for all the necessary configuration values.
+Use the command-line **config update utility** to customize and properly configure the local clientcal installation.
 
 ```sh
 php bin/config-update.php
 ```
 
-The `--help` switch will provide details on more advanced usage (such as quiet and non-interactive modes).
-```sh
-php bin/config-update.php --help
-```
-
 ### Step 5: Create a login user
-The command line **user manager utility** ([bin/clientcal-user.php](bin/clientcal-user.php)) can be used to manage ClientCal login users. At least one login user must be created to operate ClientCal.
+The command-line **user manager utility** can be used to create an initial login user. 
 
-Usage:
-```
-php bin/clientcal-user.php <ACTION:add|set-password|remove> <USERNAME> [<PASSWORD>]
-```
-
-The **add** `<ACTION>` creates a new user:
+At least one login user must be created to operate ClientCal:
 ```sh
 php bin/clientcal-user.php add my_user
-```
-
-The **set-password** `<ACTION>` modifies an existing user's password:
-```sh
-php bin/clientcal-user.php change my_user
-```
-
-The **remove** `<ACTION>` removes an existing user:
-```sh
-php bin/clientcal-user.php remove my_user
-```
-
-The `--help` and `--usage` switches will provide details on more advanced usage (such as quiet mode and avoiding password prompts):
-```sh
-php bin/clientcal-user.php --help
-php bin/clientcal-user.php --usage
 ```
 
 ## Updates
@@ -106,17 +69,82 @@ composer update
 ```
 
 ### Step 2
-Use the **config update utility** ([bin/config-update.php](bin/config-update.php)) command-line script to safely upgrade the existing ClientCal configuration.
+Use the **config update utility** command-line script to safely upgrade the existing ClientCal configuration.
 
 ```sh
 php bin/config-update.php
 ```
 
 ### Step 3
-Use the **database update utility** ([bin/db-update.php](bin/db-update.php)) command-line script to safely apply database schema updates (database migrations).
+Use the **database update utility** command-line script to safely apply database schema updates (database migrations).
 
 ```sh
 php bin/db-update.php
+```
+
+## Utilities
+The ClientCal project includes command-line utility scripts to facilitate installation and ongoing operation.
+
+### user manager utility
+ * Location: [bin/clientcal-user.php](bin/clientcal-user.php)
+
+The **user manager utility** manages ClientCal login users. Users can be created, removed, and modified.
+
+The `--help` and `--usage` switches provides details regarding advanced usage (such as quiet mode and avoiding prompts):
+```sh
+php bin/clientcal-user.php --help
+php bin/clientcal-user.php --usage
+```
+
+The **add** `<ACTION>` creates a new user:
+```sh
+php bin/clientcal-user.php add my_user
+```
+
+The **set-password** `<ACTION>` modifies an existing user's password:
+```sh
+php bin/clientcal-user.php set-password my_user
+```
+
+The **remove** `<ACTION>` removes an existing user:
+```sh
+php bin/clientcal-user.php remove my_user
+```
+
+### database export utility
+ * Location: [bin/db-export.php](bin/db-export.php)
+ 
+The **database export utility** facilitates the creation of database backups of the ClientCal database using the local installation configuration.
+
+The `--help` and `--usage` switches provides details regarding advanced usage (such as quiet mode or specifying the output file basename and full path):
+```sh
+php bin/clientcal-user.php --help
+php bin/clientcal-user.php --usage
+```
+
+### database update utility
+ * Location: [bin/config-update.php](bin/config-update.php)
+
+The **database update utility** can be invoked without any arguments; it will prompt for all the required parameters (such as the host, dbname, user, pass, etc.). It reads the [app/data/db-schema.json](app/data/db-schema.json) file which specifies the latest database structure version and relative locations of the corresponding SQL resources. The latest SQL update and structure dumps for ClientCal are contained in the [app/data/schema-sql](app/data/schema-sql) directory. When a database is empty (i.e. contains no tables), the database is created from scratch using the SQL dump file of the latest database revision. For existing databases, migrations are perfomed using SQL update files as specified by a database revsions corresponding `db-version.json` file. The current applied schema version is stored in the table `schema_version` of the same database.
+
+The `--help` and `--usage` switches provide details regarding advanced usage (such as quiet mode and avoiding prompts).
+```sh
+php bin/db-update.php --help
+php bin/db-update.php --usage
+```
+
+### configuration update utility
+ * Location: [bin/db-update.php](bin/db-update.php)
+
+```sh
+php bin/config-update.php
+```
+The **configuration update utility** creates and updates configuration file values in the ClientCal config path (/app/config/clientcal) by reading values from `*-sample.php` files. The utility provides a prompt to input each configuration value; along with a default value. The utility resolves the "default value" by using the existing configuration value; if no configuration value yet exists, the "default value" is obtained from the `-sample.php` file. If the utility is started with the `--non-interactive` option, the default values are automatically used. 
+
+The `--help` and `--usage` switches provide details regarding advanced usage (such as quiet mode and avoiding prompts).
+```sh
+php bin/config-update.php --help
+php bin/config-update.php --usage
 ```
 
 ## Legal
