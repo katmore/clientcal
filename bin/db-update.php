@@ -490,8 +490,9 @@ EOT;
       
       $stmt = $pdo->query("SHOW TABLES");
       if ($stmt->rowCount()>1) {
-         $backupFile = "{$pdo->query('select database()')->fetchColumn()}-".date("Ymd")."T".date("HiO").".sql";
-         self::_showErrLine([self::ME.": (WARNING) found existing database tables"]);
+         $databaseName = $pdo->query('select database()')->fetchColumn();
+         $backupFile = "$databaseName-".date("Ymd")."T".date("HiO").".sql";
+         self::_showErrLine([self::ME.": (WARNING) found existing tables in '$databaseName' database"]);
          if ($this->_nonInteractive) {
             $createBackup = true;
          } else {
