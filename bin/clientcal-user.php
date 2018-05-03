@@ -9,7 +9,7 @@ return(function() {
        
       const HELP_LABEL = "ClientCal Scheduler Project: https://github.com/katmore/clientcal";
        
-      const USAGE = '[--help][--usage] | [--app-dir=<PATH>] <ACTION:add|change|remove|list> <USERNAME> [<PASSWORD>]';
+      const USAGE = '[--help][--usage] | [--app-dir=<PATH>] <ACTION:add|set-password|set-email|reset-password|remove|list> [<USERNAME> [<PASSWORD>|<EMAIL>]]';
        
       const COPYRIGHT = '(c) 2006-2018 Paul D. Bird II. All Rights Reserved.';
        
@@ -47,15 +47,20 @@ Options:
    
 Arguments:
 <ACTION>
-   Specifies the user management action to perform.
-   Possible values: add, change, remove.
+   Specify the user management action to perform.
+   Possible values: add, password, remove.
       add: Creates a new user; prompts for password unless the <PASSWORD> argument is specified.
-      change: Changes an existing user's password; prompts for password unless the <PASSWORD> argument is specified.
       remove: Removes an existing user.
+      reset-password: Sends a user password-reset email.
+      set-password: Updates an existing user's password; prompts for password unless the <PASSWORD> argument is specified.
+      set-email: Updates an existing user's email address.
       list: Provide list of existing users.
 
 <PASSWORD>
-   Specifies the user's password; avoid being prompted for password.
+   Specify the user's password for an applicable <ACTION>; avoid being prompted for password.
+
+<EMAIL>
+   Specify a user's email address for an applicable <ACTION>; avoid being prompted for email.
 HELP;
          echo str_replace("\n",\PHP_EOL,$help).\PHP_EOL;
       }
@@ -185,7 +190,14 @@ HELP;
             return;
          }
          
-         if (!in_array($action_arg,['add','change','remove'])) {
+         /*
+          * map for backwards compatibility
+          */
+         if ($action_arg == 'change') {
+            $action_arg = 'set-password';
+         }
+         
+         if (!in_array($action_arg,['add','set-password','remove','reset-password','set-email','list'])) {
             $this->exitStatus = 2;
             static::showErrLine(["unknown <ACTION> '$action_arg'"]);
             return;
@@ -194,24 +206,29 @@ HELP;
          /*
           * username sanity check
           */
-         if (in_array($action_arg,['add','change','remove'])) {
+         if (in_array($action_arg,['add','set-password','remove','reset-password','set-email'])) {
             if (empty($arg[2])) {
                $this->exitStatus = 2;
                static::showErrLine(["missing <USERNAME>"]);
                return;
             }
             $username = $arg[2];
+            if (!ctype_alnum(str_replace(['-','_','.'],"",$username))) {
+               $this->exitStatus = 2;
+               static::showErrLine(["<USERNAME> contains invalid characters"]);
+               return;
+            }
          }
          
          /*
           * password prompt and sanity check
           */
-         if (in_array($action_arg,['add','change'])) {
+         if (in_array($action_arg,['add','set-password'])) {
             if (!empty($arg[3])) {
                $password = $arg[3];
             } else {
                //$password = readline("Please provide password for '$username': ");
-               echo "Please provide password for '$username': ";
+               echo "Password for '$username': ";
                static::hide_term();
                $password = rtrim(fgets(STDIN), PHP_EOL);
                static::restore_term();
@@ -241,6 +258,24 @@ HELP;
             }
          }
          
+         if ($action_arg == 'set-email') {
+            if (!empty($arg[3])) {
+               $email = $arg[3];
+            } else {
+               $email = readline("Email address for '$username': ");
+               if (empty($email)) {
+                  $this->exitStatus = 4;
+                  static::showErrLine(["email cannot be empty"]);
+                  return;
+               }
+               if (false===filter_var($email,\FILTER_VALIDATE_EMAIL)) {
+                  $this->exitStatus = 4;
+                  static::showErrLine(["invalid email address"]);
+                  return;
+               }
+            }
+         }
+         
          /*
           * get mysql configuration
           */
@@ -262,10 +297,11 @@ HELP;
          }
          
          if ($action_arg=='add') {
-            $stmt = $pdo->prepare("INSERT INTO user SET username=:username, password=PASSWORD(:password)");
+            $password_hash = password_hash($password, \PASSWORD_DEFAULT);
+            $stmt = $pdo->prepare("INSERT INTO user SET username=:username, password=:password");
             $stmt->execute([
                ':username'=>$username,
-               ':password'=>$password,
+               ':password'=>$password_hash,
             ]);
             if (!$stmt->rowCount()) {
                $this->exitStatus = 5;
@@ -277,7 +313,7 @@ HELP;
             return;
          }
          
-         if ($action_arg=='change') {
+         if ($action_arg=='set-password') {
             $stmt = $pdo->prepare("UPDATE user SET password=PASSWORD(:password) WHERE username=:username");
             $stmt->execute([
                ':username'=>$username,
@@ -303,6 +339,21 @@ HELP;
                return;
             }
             static::showLine(["removed user '$username'"]);
+            return;
+         }
+         
+         if ($action_arg == 'set-email') {
+            $stmt = $pdo->prepare("UPDATE user SET email=:email WHERE username=:username");
+            $stmt->execute([
+               ':username'=>$username,
+               ':email'=>$email,
+            ]);
+            if (!$stmt->rowCount()) {
+               $this->exitStatus = 5;
+               static::showErrLine(["failed to update user email"]);
+               return;
+            }
+            static::showLine(["updated email for user '$username'"]);
             return;
          }
          //

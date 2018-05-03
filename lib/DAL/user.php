@@ -94,18 +94,42 @@ namespace clientcal;
       
       if (!($my = mysqli_connect($myconfig['dbhost'],$myconfig['username'],$myconfig['password'])))
          throw new error(-4,"while connect: " . mysql_error($my));
-         if (!mysqli_select_db($my,$myconfig['dbname']))
-            throw new error(-4,"while db: " . mysql_error($my));
+      if (!mysqli_select_db($my,$myconfig['dbname']))
+         throw new error(-4,"while db: " . mysql_error($my));
+   
+      $username = mysqli_real_escape_string($my,$username);
       
-             
-            $username = mysqli_real_escape_string($my,$username);
-      
-            $passwd = mysqli_real_escape_string($my,$passwd);
-      
-            $sql = "INSERT INTO user SET username='$username',password=PASSWORD('$passwd')";
+      $passwd = mysqli_real_escape_string($my,password_hash($passwd, \PASSWORD_DEFAULT));
+
+      $sql = "INSERT INTO user SET username='$username',password='$passwd'";
       if (!($result = @mysql_query($sql,$my)))
          throw new error(-4,"while get: " . mysql_error());
       return 0;
+   }
+   function mysql_old_password_hash($password) {
+      if ($password == '') {
+         return '';
+      }
+      $nr = 1345345333;
+      $add = 7;
+      $nr2 = 0x12345671;
+      foreach(str_split($password) as $c) {
+         if ($c == ' ' or $c == "\t") {
+            continue;
+         }
+         $tmp = ord($c);
+         $nr ^= ((($nr & 63) + $add) * $tmp) + (($nr << 8) & 0xFFFFFFFF);
+         $nr2 += (($nr2 << 8) & 0xFFFFFFFF) ^ $nr;
+         $add += $tmp;
+      }
+      if ($nr2 > \PHP_INT_MAX) {
+         $nr2 += \PHP_INT_MAX + 1;
+      }
+      $bit = (1 << 31) -1;
+      return sprintf("%08lx%08lx", $nr & $bit, $nr2 & $bit);
+   }
+   function mysql_password_hash($password) {
+      return '*'.strtoupper(hash('sha1',pack('H*',hash('sha1', $password))));
    }
    function verifyuserinfo($username,$passwd,&$pUsername) {
       $pUsername = "";
@@ -120,22 +144,59 @@ namespace clientcal;
          
       $username = mysqli_real_escape_string($my,$username);
       
+      $passwd_plain = $passwd;
+      
       $passwd = mysqli_real_escape_string($my,$passwd);
       
       $sMajorVersion = substr(mysqli_get_server_info($my),0,1);
       
-      $sql = "SELECT user_key,username FROM user WHERE username='$username' AND password=PASSWORD('$passwd')";
+      $sql = "SELECT user_key,username FROM user WHERE username='$username'";
       
       if (!($result = mysql_query($sql,$my)))
          throw new error(-4,"while get: " . mysql_error($my));
-         
+      
       if (mysql_num_rows($result) == 0) {
-         return FALSE;
-      } else {
-         $row = mysql_fetch_assoc($result);
-         $pUsername = $row["username"];
-         return TRUE;
+         return false;
       }
+      $row = mysql_fetch_assoc($result);
+      
+      $valid = false;
+      $need_migrate = false;
+      $password_hash = $row['password'];
+      $password_hash_char1 = substr($password_hash,0,1);
+      
+      if ((strlen($row["password"])==16) && ctype_xdigit($row['password'])) {
+         if (mysql_old_password_hash($passwd_plain)===$row["password"]) {
+            $valid = true;
+            $need_migrate = true;
+         }
+      } else {
+         if ( ($password_hash_char1==='*') && ctype_xdigit(substr($row['password'],1))) {
+            if (mysql_password_hash($passwd_plain)===$row["password"]) {
+               $valid = true;
+               $need_migrate = true;
+            }
+         } else {
+            if ($password_hash_char1==='$') {
+               if (password_verify ( $passwd_plain , $row["password"] )) {
+                  $valid = true;
+               }
+            }
+         }
+      }
+      
+      if (!$valid) return false;
+      
+      if ($need_migrate) {
+         $passwd = mysqli_real_escape_string($my,password_hash($passwd_plain, \PASSWORD_DEFAULT));
+         $sql = "UPDATE user SET password='$passwd' WHERE username='$username'";
+         if (!($result = mysql_query($sql,$my)))
+            throw new error(-4,"while update: " . mysql_error($my));
+      }
+      
+      $pUsername = $row["username"];
+      
+      return true;
    }
    function userhaspriv($pHasPriv,$userkey,$privapi) {
       $myconfig=(new config("mysql"))->getAssoc();
