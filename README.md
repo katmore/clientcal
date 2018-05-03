@@ -29,21 +29,21 @@ mysql> GRANT ALL ON clientcal.* TO 'clientcal'@'localhost' IDENTIFIED BY ...
 ```
 
 ### Step 3: Initialize Database
-Use the the command-line **database update utility** to install the latest database structure.
+Use the the command-line [**database update utility**](#database-update-utility) to install the latest database structure.
 
 ```sh
 php bin/db-update.php
 ```
 
 ### Step 4: Initialize configuration
-Use the command-line **config update utility** to customize and properly configure the local clientcal installation.
+Use the command-line [**config update utility**](#configuration-update-utility) to customize and properly configure the local clientcal installation.
 
 ```sh
 php bin/config-update.php
 ```
 
 ### Step 5: Create a login user
-At least one login user must exist to operate ClientCal; use the command-line **user manager utility** to create one.
+At least one login user must exist to operate ClientCal; use the command-line [**user manager utility**](#user-manager-utility) to create one.
 
 ```sh
 php bin/clientcal-user.php add my_user
@@ -66,14 +66,14 @@ composer update
 ```
 
 ### Step 2
-Use the **config update utility** command-line script to safely upgrade the existing ClientCal configuration.
+Use the [**config update utility**](#configuration-update-utility) command-line script to safely upgrade the existing ClientCal configuration.
 
 ```sh
 php bin/config-update.php
 ```
 
 ### Step 3
-Use the **database update utility** command-line script to safely apply database schema updates (database migrations).
+Use the [**database update utility**](#database-update-utility) command-line script to safely apply database schema updates (database migrations).
 
 ```sh
 php bin/db-update.php
