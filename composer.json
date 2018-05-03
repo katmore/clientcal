@@ -24,21 +24,21 @@
             "clientcal\\": "src/legacy"
          },
         "files": [
-            "lib/DAL/customer.php",
-            "lib/DAL/geoloc.php",
-            "lib/DAL/pop3.php",
-            "lib/DAL/sentry.php",
-            "lib/DAL/site.php",
-            "lib/DAL/supervisor.php",
-            "lib/DAL/user.php",
-            "lib/DAL/version.php",
-            "lib/BLL/balive.php",
-            "lib/BLL/customer.php",
-            "lib/BLL/menu.php",
-            "lib/BLL/sentry.php",
-            "lib/BLL/site.php",
-            "lib/view.php",
-            "lib/mysql.php"
+            "lib/legacy/DAL/customer.php",
+            "lib/legacy/DAL/geoloc.php",
+            "lib/legacy/DAL/pop3.php",
+            "lib/legacy/DAL/sentry.php",
+            "lib/legacy/DAL/site.php",
+            "lib/legacy/DAL/supervisor.php",
+            "lib/legacy/DAL/user.php",
+            "lib/legacy/DAL/version.php",
+            "lib/legacy/BLL/balive.php",
+            "lib/legacy/BLL/customer.php",
+            "lib/legacy/BLL/menu.php",
+            "lib/legacy/BLL/sentry.php",
+            "lib/legacy/BLL/site.php",
+            "lib/legacy/view.php",
+            "lib/legacy/mysql.php"
          ]
     }   
 }
