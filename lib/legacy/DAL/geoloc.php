@@ -4,7 +4,7 @@ namespace clientcal;
 
 use SoapClient;
 use stdClass;
-
+use Exception;
 /*
  *
  * geocode.php of bingmaps
