@@ -13,7 +13,7 @@ return(function() {
        
       const COPYRIGHT = '(c) 2006-2018 Paul D. Bird II. All Rights Reserved.';
        
-      const ME = 'clientcal-user.php';
+      const ME = 'web-user.php';
       
       const DEFAULT_APP_DIR=__DIR__.'/../app';
       
