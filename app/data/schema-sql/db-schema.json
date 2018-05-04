@@ -1,6 +1,7 @@
 {
    "name" : "katmore/clientcal",
    "type": "mysql",
+   "latestDump": "2.00/scehma-dump.sql",
    "latestVersion" : "2.00",
    "versionHistory": {
       "2.00": "2.00",

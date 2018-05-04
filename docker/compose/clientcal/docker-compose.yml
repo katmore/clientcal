@@ -1,0 +1,41 @@
+version: '3.5'
+services:
+  mysql:
+    build:
+      context: ./../../../
+      dockerfile: ./docker/image/mariadb/Dockerfile
+    restart: "no"
+    container_name: clientcal-mysql
+    volumes:
+       - ./config:/var/lib/clientcal-config
+       - ./../../../app/data/schema-sql:/var/lib/schema-sql
+       - ./container/mysql/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
+       - ./container/mysql/data/var-lib-mysql:/var/lib/mysql
+    environment:
+      MYSQL_RANDOM_ROOT_PASSWORD: 1
+  nginx:
+    image: nginx:alpine
+    restart: "no"
+    container_name: clientcal-nginx
+    links:
+       - php-fpm
+    ports:
+      - "7080:8080"
+    volumes:
+      - ./container/nginx/clientcal.conf:/etc/nginx/conf.d/clientcal.conf
+      - ./../../../web:/var/www/clientcal/web
+  php-fpm:
+    build:
+      context: ./../../../
+      dockerfile: ./docker/image/php/Dockerfile
+    restart: "no"
+    container_name: clientcal-php-fpm
+    volumes:
+      - ./../../../app:/var/www/clientcal/app
+      - ./../../../bin:/var/www/clientcal/bin
+      - ./../../../lib:/var/www/clientcal/lib
+      - ./../../../src:/var/www/clientcal/src
+      - ./../../../web:/var/www/clientcal/web
+      - ./config:/var/www/clientcal/app/config/clientcal
+    links:
+      - mysql
