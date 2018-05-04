@@ -13,7 +13,7 @@ return(function() {
        
       const COPYRIGHT = '(c) 2006-2018 Paul D. Bird II. All Rights Reserved.';
        
-      const ME = 'clientcal-user.php';
+      const ME = 'web-user.php';
       
       const DEFAULT_APP_DIR=__DIR__.'/../app';
       
@@ -284,7 +284,7 @@ HELP;
          $pdo = new \PDO($mysqlConfig['dsn'],$mysqlConfig['username'],$mysqlConfig['password'],$mysqlConfig['options']);
          
          if ($action_arg=='list') {
-            $pdo->prepare("SELECT username FROM user");
+            $stmt = $pdo->prepare("SELECT username FROM user");
             $stmt->execute();
             if (!$stmt->rowCount()) {
                static::showErrLine(["no clientcal login users found"]);

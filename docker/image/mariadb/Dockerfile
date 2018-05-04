@@ -15,14 +15,18 @@
 FROM mariadb:10.2
 
 LABEL \
-   com.github.katmore.clientcal.docker.image.mariadb.version="0.0.1" \
+   com.github.katmore.clientcal.docker.image.mariadb.version="0.0.2" \
    com.github.katmore.clientcal.docker.image.mariadb.mariadb-server.version="10.2" \
-   com.github.katmore.clientcal.docker.image.mariadb.debian.version="8.10" \
    maintainer="D. Bird <doug@katmore.com>" \
    description="mariadb with sane permissions for the /var/lib/mysql volume"
 
-# path for the clientcal config dir
+#
+# path to the clientcal-config dir
+#
 ENV CLIENTCAL_CONFIG_DIR=/var/lib/clientcal-config
+#
+# path to the schema-sql dir
+#
 ENV SCHEMASQL_DIR=/var/lib/schema-sql
 
 RUN \
@@ -46,9 +50,16 @@ RUN \
    # prepare clientcal-config dir
    #
    mkdir -p $SCHEMASQL_DIR &&\
-   chown -R $DB_USER:$DB_GROUP $SCHEMASQL_DIR
+   chown -R $DB_USER:$DB_GROUP $SCHEMASQL_DIR &&\
+   #
+   # symlink /home/mysql/.my.cnf for root linux user 
+   #    - the 'root' linux user should have same creds as 'mysql' linux user 
+   #
+   ln -s /home/mysql/.my.cnf /root/.my.cnf
 
-# clientcal-config, and schema-sql dirs
+#
+# volumes for the clientcal-config and schema-sql dirs
+#
 VOLUME ["$CLIENTCAL_CONFIG_DIR","$SCHEMASQL_DIR"]
 
 
