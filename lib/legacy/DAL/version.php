@@ -14,20 +14,10 @@ function UniqueModuleList() {
    return $sList;
 }
 
-function VersionNo() {
-   $sMajor = "1";
-   $sMinor = "99";
-   return "$sMajor.$sMinor";
-}
-
 function ProductName() {
    return "ClientCal";
 }
 
-function VersionNotes() {
-   return "";
-}
-
 function CopyrightNotice() {
-   return "&copy;2006-2011 P.D.Bird II";
+   return "&copy;2006-".date('Y')." P.D.Bird II. All Rights Reserved.";
 }

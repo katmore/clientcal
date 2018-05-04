@@ -159,10 +159,8 @@ namespace clientcal;
          $sStamp = time();
          $ret .= "<br />requested by $mLoggedUsername at " . date("g:ia",$sStamp) . " on " . date("F j, Y",$sStamp) . ".&nbsp;";
       }
-      //$ret .= " is $copyrightnotice";
-      //$ret .= " " . VersionNo();
       $ret .= "<span style='font-size:0.75em;'>";
-      $ret .=  ProductName() . " v" . VersionNo() . " " . CopyrightNotice() ;
+      $ret .=  ProductName() . " " . CopyrightNotice() ;
       $ret .= "</span>";
       if ($mAuthorized == "true")
       if (isset($balive_interval)) {
@@ -202,7 +200,7 @@ namespace clientcal;
          $ret .= " <a href=\"./?logout\">[Log Out]</a>";
          $ret .= " ($mLoggedUsername) ";
       }
-      $ret .=  ProductName() . " v" . VersionNo() . " " . CopyrightNotice() ;
+      $ret .=  ProductName() . " " . CopyrightNotice() ;
 
       $ret .= "</span>";
       $ret .= "
