@@ -14,3 +14,5 @@ composer.lock
 /app/config/clientcal/customer.php
 /app/config/clientcal/mysql.php
 /app/config/clientcal/geoloc.php
+/web/phpinfo-*
+!**.gitkeep
