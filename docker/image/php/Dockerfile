@@ -91,7 +91,7 @@ RUN \
    mkdir -p $APP_ROOT &&\
    chown -R $APP_USER:$APP_GROUP $APP_USER_HOME &&\
    chown -R $APP_USER:$APP_GROUP $APP_ROOT &&\
-   ln -s /var/www/clientcal/bin/clientcal-user.php /usr/bin/clientcal-user.php &&\
+   ln -s /var/www/clientcal/bin/web-user.php /usr/bin/web-user.php &&\
    ln -s /var/www/clientcal/bin/config-update.php /usr/bin/config-update.php &&\
    ln -s /var/www/clientcal/bin/db-export.php /usr/bin/db-export.php &&\
    ln -s /var/www/clientcal/bin/db-update.php /usr/bin/db-update.php
