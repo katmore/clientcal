@@ -272,16 +272,16 @@ HELP;
                $email = $arg[3];
             } else {
                $email = readline("Email address for '$username': ");
-               if (empty($email)) {
-                  $this->exitStatus = 4;
-                  static::showErrLine(["email cannot be empty"]);
-                  return;
-               }
-               if (false===filter_var($email,\FILTER_VALIDATE_EMAIL)) {
-                  $this->exitStatus = 4;
-                  static::showErrLine(["invalid email address"]);
-                  return;
-               }
+            }
+            if (empty($email)) {
+               $this->exitStatus = 4;
+               static::showErrLine(["email cannot be empty"]);
+               return;
+            }
+            if (false===filter_var($email,\FILTER_VALIDATE_EMAIL)) {
+               $this->exitStatus = 4;
+               static::showErrLine(["invalid email address"]);
+               return;
             }
          }
          
@@ -308,10 +308,18 @@ HELP;
          if ($action_arg=='add') {
             $password_hash = password_hash($password, \PASSWORD_DEFAULT);
             $stmt = $pdo->prepare("INSERT INTO user SET username=:username, password=:password");
-            $stmt->execute([
-               ':username'=>$username,
-               ':password'=>$password_hash,
-            ]);
+            try {
+               $stmt->execute([
+                  ':username'=>$username,
+                  ':password'=>$password_hash,
+               ]);
+            } catch(\PDOException $e) {
+               if ($e->getCode()==23000) {
+                  static::showErrLine(["user '$username' already exists"]);
+                  return $this->exitStatus = 6;
+               }
+               throw $e;
+            }
             if (!$stmt->rowCount()) {
                $this->exitStatus = 5;
                static::showErrLine(["failed to create user"]);
@@ -351,26 +359,28 @@ HELP;
             return;
          }
          
+         
+         
+         if ($action_arg == 'set-email') {
+            $stmt = $pdo->prepare("UPDATE user SET email=:email WHERE username=:username");
+            $stmt->execute([
+               ':username'=>$username,
+               ':email'=>$email,
+            ]);
+            if (!$stmt->rowCount()) {
+               static::showLine(["email for user '$username' did not change"]);
+               return;
+            }
+            static::showLine(["updated email for user '$username'"]);
+            return;
+         }
+         //
+         //
+         //
+         
+         
          $this->exitStatus = 1;
          static::showErrLine(["internal error, missing <ACTION> handler"]);
-         
-//          if ($action_arg == 'set-email') {
-//             $stmt = $pdo->prepare("UPDATE user SET email=:email WHERE username=:username");
-//             $stmt->execute([
-//                ':username'=>$username,
-//                ':email'=>$email,
-//             ]);
-//             if (!$stmt->rowCount()) {
-//                $this->exitStatus = 5;
-//                static::showErrLine(["failed to update user email"]);
-//                return;
-//             }
-//             static::showLine(["updated email for user '$username'"]);
-//             return;
-//          }
-         //
-         //
-         //
       }
        
 
