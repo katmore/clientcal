@@ -1,5 +1,5 @@
-# php image for ClientCal
-# @author D. Bird <doug@katmore.com>
+# php image for ClientCal using apline linux
+# @version 0.0.4
 #
 # Entrypoint: /var/local/docker-entrypoint.sh
 #
@@ -30,19 +30,22 @@
 #
 # This image is derived from the official 'alpine' docker image. 
 # @see https://hub.docker.com/_/alpine/
+#
+# Maintainer: D. Bird <doug@katmore.com>
+#
 FROM alpine:3.7
 
 LABEL \
-   com.github.katmore.clientcal.docker.image.php-fpm.version="0.0.3" \
+   com.github.katmore.clientcal.docker.image.php-fpm.version="0.0.4" \
    maintainer="D. Bird <doug@katmore.com>" \
-   description="php-fpm and all php modules required by 'clientcal' on alpine linux"
+   description="php image for ClientCal using apline linux"
 
-ENV APP_USER=clientcal
-ENV APP_GROUP=clientcal
-ENV APP_USER_HOME=/var/www
-ENV APP_ROOT=$APP_USER_HOME/clientcal
-ENV DOCUMENT_ROOT=$APP_ROOT/web
-ENV ENV="/root/.ashrc"
+ENV \
+   APP_USER=clientcal \
+   APP_GROUP=clientcal \
+   APP_USER_HOME=/var/www \
+   APP_ROOT=$APP_USER_HOME/clientcal \
+   DOCUMENT_ROOT=$APP_ROOT/web 
 
 ADD https://php.codecasts.rocks/php-alpine.rsa.pub /etc/apk/keys/php-alpine.rsa.pub
 

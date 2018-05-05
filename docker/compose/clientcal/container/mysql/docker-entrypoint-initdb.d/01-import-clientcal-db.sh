@@ -1,29 +1,70 @@
 #!/bin/bash
+# Imports the latest ClientCal SQL dump according to 'schema-sql/db-schema.json'.
+#
+# @author D. Bird <doug@katmore.com>
+#
 
+# script localization
 ME_NAME='01-import-clientcal-db.sh'
 
-[ -n "$SCHEMASQL_DIR" ] || { 
-   >&2 echo "$ME_NAME: missing SCHEMASQL_DIR env variable"
-   exit 1 
-}
+# mysql console command
+MYSQL_CMD=${mysql[@]}
+[ -n "$MYSQL_CMD" ] || MYSQL_CMD=mysql
 
-[ -d "$SCHEMASQL_DIR" ] || {
-   >&2 echo "$ME_NAME: invalid SCHEMASQL_DIR '$SCHEMASQL_DIR' is not a directory"
+# path to schema-sql dir
+[ -n "$SCHEMASQL_DIR" ] || SCHEMASQL_DIR=/var/lib/schema-sql
+
+# clientcal database name
+[ -n "$CLIENTCAL_DATABASE" ] || CLIENTCAL_DATABASE='clientcal'
+
+# path to db-schema.json
+DB_SCHEMA_PATH=$SCHEMASQL_DIR/db-schema.json
+
+# enforce sanity of mysql console command
+echo 'SELECT version() as version;' | $MYSQL_CMD > /dev/null || {
+   >&2 echo "$ME_NAME: mysql command '$MYSQL_CMD' failed with exit status $?"
    exit 1
 }
 
-[ -z "$CLIENTCAL_DATABASE" ] && CLIENTCAL_DATABASE='clientcal'
-
-LATEST_SCHEMA_VERSION="2.00"
-
-SCHEMA_DUMP_SQL="$SCHEMASQL_DIR/$LATEST_SCHEMA_VERSION/schema-dump.sql"
-
-[ -f "$SCHEMA_DUMP_SQL" ] || {
-   >&2 echo "$ME_NAME: invalid SCHEMA_DUMP_SQL '$SCHEMA_DUMP_SQL' is not a file"
+# enforce sanity of jq command
+hash jq || {
+   >&2 echo "$ME_NAME: 'jq' command is missing or inaccessible"
    exit 1
 }
 
-mysql $CLIENTCAL_DATABASE < $SCHEMA_DUMP_SQL || {
-   >&2 echo "$ME_NAME: failed to import SCHEMA_DUMP_SQL '$SCHEMA_DUMP_SQL'"
+# enforce sanity of db-schema.json file
+[ -f "$DB_SCHEMA_PATH" ] || {
+   >&2 echo "$ME_NAME: db-schema.json file '$DB_SCHEMA_PATH' not found"
    exit 1
 }
+
+# get 'latestDump' value from /var/lib/schema-sql/db-schema.json
+LATEST_DUMP=$(dirname $DB_SCHEMA_PATH)/$(jq -e -r ".latestDump" $DB_SCHEMA_PATH) || {
+   CMD_STATUS=$?
+   if [ "$CMD_STATUS" = "1" ]; then
+      >&2 echo "$ME_NAME: invalid db-schema.json file '$DB_SCHEMA_PATH', missing 'latestDump' value"
+   else
+      >&2 echo "$ME_NAME: failed to get the latest SQL dump file; 'jq' failed with exit status $?"
+   fi
+   exit 1
+}
+
+# enforce sanity of latest SQL dump file
+[ -f "$LATEST_DUMP" ] || {
+   >&2 echo "$ME_NAME: latest SQL dump file '$LATEST_DUMP' not found"
+   exit 1
+}
+
+# import latest SQL dump file with mysql console
+$MYSQL_CMD $CLIENTCAL_DATABASE < $LATEST_DUMP || {
+   >&2 echo "$ME_NAME: failed to import LATEST_DUMP '$LATEST_DUMP', 'mysql' failed with exit status $?"
+   exit 1
+}
+echo "($ME_NAME) imported latest SQL dump file: $LATEST_DUMP"
+
+
+
+
+
+
+

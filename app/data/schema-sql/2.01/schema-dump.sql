@@ -1,9 +1,9 @@
 /*
- * ClientCal Schema v1.99
+ * ClientCal Schema v2.01
  * 
- * @author Paul D. Bird II
+ * @author D. Bird <doug@katmore.com>
  * 
- * @version 2.00
+ * @version 2.01
  */
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
@@ -164,15 +164,30 @@ CREATE TABLE `supervisor` (
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `user` (
   `user_key` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-  `username` tinytext NOT NULL,
+  `username` varchar(30) NOT NULL,
   `email` varchar(100) DEFAULT NULL,
   `password` tinytext DEFAULT NULL,
   `level` int(10) unsigned DEFAULT NULL,
-  PRIMARY KEY (`user_key`)
+  PRIMARY KEY (`user_key`),
+  UNIQUE KEY `username` (`username`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
-/*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
+--
+-- Table structure for table `schema_version`
+--
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `schema_version` (
+  `ns` varchar(100) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
+  `version` varchar(20) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
+  `installed_time` timestamp NOT NULL DEFAULT current_timestamp(),
+  PRIMARY KEY (`ns`,`version`),
+  KEY `ns` (`ns`,`installed_time`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+/*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
 /*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
@@ -181,4 +196,7 @@ CREATE TABLE `user` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
-
+--
+-- insert schema_version
+--
+INSERT INTO schema_version SET ns='katmore/clientcal', version='2.01';

@@ -30,7 +30,7 @@ return(function() {
       }
       return self::FALLBACK_APP_DIR;
    }
-   
+     
    /**
     * @return void
     * @static
@@ -498,15 +498,23 @@ EOT;
             `ns`=:ns
          ORDER BY
             `installed_time`
-         ASC
+         DESC
          LIMIT 1
          ");
+         
          $stmt->execute([':ns'=>$schemaCfg->name]);
          if ($stmt->rowCount()) {
             $version = $stmt->fetch(PDO::FETCH_ASSOC)['version'];
          } else {
             $stmt = $pdo->query("SHOW TABLES LIKE 'customer'");
             if ($stmt->rowCount()) $initialVersion = $version = "1.98";
+         }
+      }
+      
+      if (!empty($version)) {
+         if ($schemaCfg->latestVersion <= $version) {
+            self::_showLine(["already at latest schema version: v$version"]);
+            return;
          }
       }
       
@@ -543,15 +551,50 @@ EOT;
          }
       }
       
+      //
+      // mysql::multi_query must be used
+      //
+      mysqli_report(\MYSQLI_REPORT_ERROR | \MYSQLI_REPORT_STRICT);
+      $mysqlConfig = config::LoadAssoc("mysql");
+      $this->_quiet || self::_showLine(["Starting mysqli connection (using existing clientcal configuration)..."]);
+      try {
+         $mysqli = new mysqli($mysqlConfig['dbhost'],$mysqlConfig['username'],$mysqlConfig['password']);
+         $mysqli->select_db($mysqlConfig['dbname']);
+      } catch (\mysqli_sql_exception $e) {
+         self::_showErrLine([self::ME.": (ERROR) Connection failed: ".$e->getMessage() . " using existing clientcal configuration (app/config/mysql.php)"]);
+         return $this->_exitStatus = 1;
+      }
+      $this->_quiet || self::_showLine(["(mysqli connection success)"]);
+      
       if (!$version) {
          $initialVersion = '0';
          $dumpSql = "{$schemaCfg->sql_dir}/{$schemaCfg->latestVersion}/schema-dump.sql";
          $this->_verbose && self::_showLine(["restoring database using schema v{$schemaCfg->latestVersion} using: $dumpSql"]);
-         if (!is_readable($dumpSql) || !is_file($dumpSql)) {
-            self::_showErrLine([self::ME.": (ERROR) schema dump did not resolve to readable file: $dumpSql"]);
+         
+         if ( false === ($sql = file_get_contents($dumpSql))) {
+            self::_showErrLine([self::ME.": (ERROR) failed to read dump file '$dumpSql'"]);
             return $this->_exitStatus = 1;
          }
-         $pdo->exec(file_get_contents($dumpSql));
+         
+         if (empty($sql)) {
+            self::_showErrLine([self::ME.": (ERROR) invalid dump file '$dumpSql': empty file contents"]);
+            return $this->_exitStatus = 1;
+         }
+         
+         try {
+            $sidx=1;
+            $mysqli->multi_query($sql);
+            $sidx++;
+            while ($mysqli->next_result()) {
+               $sidx++;
+            } // run all queries
+         } catch (\mysqli_sql_exception $e) {
+            //the schema v$schema_v file '$schema_v_sql' SQL statement #$sidx resulted in a mysql error:
+            //$dumpSql
+            self::_showErrLine([self::ME.": (ERROR) the \"$dumpSql\" file's SQL statement #$sidx resulted in a mysql error: ".$e->getMessage()]);
+            return $this->_exitStatus = 1;
+         }
+         
          $version=$schemaCfg->latestVersion;
          $pdo->prepare("
          INSERT INTO
@@ -596,13 +639,29 @@ EOT;
                   self::_showErrLine([self::ME.": (ERROR) failed to read file '$sql_path'"]);
                   return $this->_exitStatus = 1;
                }
-               $this->_quiet || self::_showLine(["starting '$schema_v_sql' (of schema v$schema_v)"]);
-               try {
-                  $pdo->exec($sql);
-               } catch (PDOException $e) {
-                  self::_showErrLine([self::ME.": (ERROR) '$schema_v_sql' (of schema v$schema_v) failed: ".$e->getMessage()]);
+               if (empty($sql)) {
+                  self::_showErrLine([self::ME.": (ERROR) invalid sql file '$sql_path': empty file contents"]);
                   return $this->_exitStatus = 1;
                }
+               $this->_quiet || self::_showLine(["starting '$schema_v_sql' (of schema v$schema_v)"]);
+               
+               try {
+                  $sidx=1;
+                  $mysqli->multi_query($sql);
+                  $sidx++;
+                  while ($mysqli->next_result()) {
+                     $sidx++;
+                  } // run all queries
+               } catch (\mysqli_sql_exception $e) {
+                  self::_showErrLine([self::ME.": (ERROR) the schema v$schema_v \"$schema_v_sql\" file's SQL statement #$sidx resulted in a mysql error: ".$e->getMessage()]);
+                  return $this->_exitStatus = 1;
+               }
+//                try {
+//                   $pdo->exec($sql);
+//                } catch (PDOException $e) {
+//                   self::_showErrLine([self::ME.": (ERROR) '$schema_v_sql' (of schema v$schema_v) failed: ".$e->getMessage()]);
+//                   return $this->_exitStatus = 1;
+//                }
                $version=$schemaCfg->latestVersion;
                $pdo->prepare("
                INSERT INTO
@@ -673,7 +732,6 @@ EOT;
 
 })->getExitStatus())) {
    if (PHP_SAPI=='cli') {
-      $installer->showUsage();
       exit($exitStatus);
    }
    return $exitStatus;
