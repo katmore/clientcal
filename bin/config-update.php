@@ -166,8 +166,12 @@ HELP;
    public function __construct() {
       
       $arg = [];
-      
+      $optind = 0;
+      getopt("",["",],$optind);
       if (isset($_SERVER) && isset($_SERVER['argv']) && is_array($_SERVER['argv'])) $arg = $_SERVER['argv'];
+      $arg0 = $arg[0];
+      for($i=0;$i<$optind;$i++) { array_shift($arg); }
+      array_unshift($arg,$arg0);
       
       $arg1 = null;
       

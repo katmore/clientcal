@@ -141,6 +141,7 @@ HELP;
          /*
           * bin-common.php sanity check and inclusion
           */
+         $optind = 0;
          if (!empty(getopt("",["app-dir::",])['app-dir'])) {
             $binCommonPath = getopt("",["app-dir::",])['app-dir'] . "/bin-common.php";
             $appDirOriginLabel = '--app-dir';
@@ -158,14 +159,18 @@ HELP;
          require $binCommonPath;
          
          $arg = [];
-         
+         $optind = 0;
+         getopt("",["",],$optind);
          if (isset($_SERVER) && isset($_SERVER['argv']) && is_array($_SERVER['argv'])) $arg = $_SERVER['argv'];
+         $arg0 = $arg[0];
+         for($i=0;$i<$optind;$i++) { array_shift($arg); }
+         array_unshift($arg,$arg0);
          
          $action_arg = null;
          
          if (isset($arg[1])) $action_arg = $arg[1];
          
-         $modeSwitch = getopt("hu?",["help","usage",]);
+         $modeSwitch = getopt("huq?",["help","usage","quiet",]);
          if (isset($modeSwitch['help']) || isset($modeSwitch['h']) || isset($modeSwitch['?']) || ($action_arg==='help')) {
             static::showIntro();
             echo \PHP_EOL;
@@ -177,6 +182,10 @@ HELP;
          if (isset($modeSwitch['usage']) || isset($modeSwitch['u']) || ($action_arg==='usage')) {
             static::showUsage();
             return;
+         }
+         
+         if (isset($modeSwitch['quiet']) || isset($modeSwitch['q'])) {
+            $this->quiet = true;
          }
 
          if (!$this->quiet) {
