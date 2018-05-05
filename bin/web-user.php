@@ -346,15 +346,47 @@ HELP;
          }
          
          if ($action_arg=='remove') {
+            $pdo->beginTransaction();
+            register_shutdown_function(function() use(&$pdo) {
+               if (($pdo instanceof \PDO) && $pdo->inTransaction()) {
+                  $pdo->rollBack();
+               }
+            });
+            $stmt = $pdo->prepare("
+            INSERT INTO 
+               user_deleted 
+            (
+               user_key, 
+               username, 
+               email, 
+               password, 
+               level
+            )
+            SELECT 
+               user_key, 
+               username, 
+               email, 
+               password, 
+               level
+            FROM 
+               user 
+            WHERE 
+               username=:username
+            ");
+            $stmt->execute([
+               ':username'=>$username,
+            ]);
             $stmt = $pdo->prepare("DELETE FROM user WHERE username=:username");
             $stmt->execute([
                ':username'=>$username,
             ]);
             if (!$stmt->rowCount()) {
-               $this->exitStatus = 5;
+               $pdo->rollBack();
                static::showErrLine(["failed to remove user"]);
-               return;
+               return $this->exitStatus = 5;;
             }
+            
+            $pdo->commit();
             static::showLine(["removed user '$username'"]);
             return;
          }
