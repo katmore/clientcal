@@ -425,6 +425,7 @@ EOT;
       
       $schemaCfg = new class(json_decode(file_get_contents($schemaJson),true),$schemaDir) {
          public $latestVersion;
+         public $latestDump;
          public $name;
          public $versionHistory;
          public $type;
@@ -568,7 +569,7 @@ EOT;
       
       if (!$version) {
          $initialVersion = '0';
-         $dumpSql = "{$schemaCfg->sql_dir}/{$schemaCfg->latestVersion}/schema-dump.sql";
+         $dumpSql = "{$schemaCfg->sql_dir}/{$schemaCfg->latestDump}/schema-dump.sql";
          $this->_verbose && self::_showLine(["restoring database using schema v{$schemaCfg->latestVersion} using: $dumpSql"]);
          
          if ( false === ($sql = file_get_contents($dumpSql))) {

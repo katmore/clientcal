@@ -1,9 +1,9 @@
 /*
- * ClientCal Schema v2.01
+ * ClientCal Schema v2.02
  * 
  * @author D. Bird <doug@katmore.com>
  * 
- * @version 2.01
+ * @version 2.02
  */
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
@@ -187,6 +187,22 @@ CREATE TABLE `schema_version` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
+--
+-- Table structure for table `user_deleted`
+--
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `user_deleted` (
+  `user_key` bigint(20) unsigned NOT NULL,
+  `username` tinytext NOT NULL,
+  `email` varchar(100) DEFAULT NULL,
+  `password` tinytext DEFAULT NULL,
+  `level` int(10) unsigned DEFAULT NULL,
+  `deleted_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
@@ -199,4 +215,4 @@ CREATE TABLE `schema_version` (
 --
 -- insert schema_version
 --
-INSERT INTO schema_version SET ns='katmore/clientcal', version='2.01';
+INSERT INTO schema_version SET ns='katmore/clientcal', version='2.02';
