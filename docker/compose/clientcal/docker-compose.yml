@@ -19,8 +19,6 @@ services:
     container_name: clientcal-nginx
     links:
        - php-fpm
-    ports:
-      - "7080:8080"
     volumes:
       - ./container/nginx/clientcal.conf:/etc/nginx/conf.d/clientcal.conf
       - ./../../../web:/var/www/clientcal/web
@@ -30,6 +28,9 @@ services:
       dockerfile: ./docker/image/php/Dockerfile
     restart: "no"
     container_name: clientcal-php-fpm
+    environment:
+      START_FPM_DAEMON: 1
+      FPM_PORT: 9000
     volumes:
       - ./../../../app:/var/www/clientcal/app
       - ./../../../bin:/var/www/clientcal/bin

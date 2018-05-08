@@ -14,6 +14,16 @@
 ME_NAME='docker-entrypoint.sh'
 
 ##
+## infinite sleep loop
+##
+if [ "$START_FPM_DAEMON" != "1" ]; then
+   echo "$ME_NAME: set the environment variable 'START_FPM_DAEMON' to '1' to enable php-fpm on startup"
+   echo "$ME_NAME: php-fpm not enabled on startup, sleeping..."
+   while :; do sleep 2073600; done
+   exit 0
+fi
+
+##
 ## runtime start
 ##
 STARTTIME=$(date '+%FT%T')
@@ -42,7 +52,7 @@ SANITY_STATUS=0
 ##   and that 'pid' setting value could be extracted
 ##
 if  [ -f "$FPM_CONF" ]; then
-   FPM_PIDFILE=$(sed -n 's/^pid[ =]*//p' $FPM_CONF)
+   FPM_PIDFILE=$(sed -n 's/^pid[ =]*//p' $FPM_CONF 2> /dev/null)
    if [ -z "$FPM_PIDFILE" ]; then
       >&2 echo "$ME_NAME: could not find value for 'pid' setting in php-fpm config ($FPM_CONF)"
       SANITY_STATUS=1
@@ -63,6 +73,34 @@ $FPM_DAEMON -v > /dev/null || { >&2 echo "$ME_NAME: system missing '$FPM_DAEMON'
 ##
 [ "$SANITY_STATUS" -ne "0" ] && { >&2 echo "$ME_NAME: (FATAL) one or more sanity checks failed"; exit $SANITY_STATUS; }
 
+##
+## resolve FPM LISTEN
+##
+[ -f "$FPM_CONF" ] && CONF_FPM_LISTEN=$(sed -n 's/^listen[ =]*//p' $FPM_CONF 2> /dev/null)
+if [ -n "$FPM_PORT" ]; then
+   FPM_LISTEN=$FPM_PORT
+else
+   [ -n "$CONF_FPM_LISTEN" ] || {
+      >&2 echo "$ME_NAME: (FATAL) cannot determine php-fpm port; both the FPM_PORT environment variable and the php-fpm.conf listen setting are missing"
+      exit 1
+   }
+   FPM_LISTEN=$CONF_FPM_LISTEN
+fi
+if [ "$CONF_FPM_LISTEN" != "$FPM_LISTEN" ]; then
+   [ -f "$FPM_CONF" ] || {
+      >&2 echo "$ME_NAME: (FATAL) php-fpm listen directive differs from FPM_PORT environment variable, but the FPM_CONF environment variable is missing or is an invalid path"
+      exit 1
+   }
+   sed -i -e '/^listen[ =]*/d' $FPM_CONF || {
+      >&2 echo "$ME_NAME: (FATAL) failed to remove existing php-fpm listen setting from '$FPM_CONF'"
+      exit 1
+   }
+   echo "listen = $FPM_LISTEN" >> $FPM_CONF || {
+      >&2 echo "$ME_NAME: (FATAL) failed to append the updated php-fpm listen setting to '$FPM_CONF'"
+      exit 1
+   }
+   echo "$ME_NAME: changed listen setting to '$FPM_LISTEN' "
+fi
 ##
 ## concatenate and resolve path for
 ##   phpinfo-{RANDOM-STRING}.php
@@ -139,21 +177,25 @@ echo "" >> $PHPINFO_PATH
 echo "$ME_NAME: diagnostic info:"
 echo "  php-fpm daemon: $FPM_DAEMON"
 echo "  php-fpm start command: $FPM_START_COMMAND"
+echo "  php-fpm port: $FPM_LISTEN"
 echo "  php modules: "$($FPM_DAEMON -m | sed --expression=':a;N;$!ba;s/\n/ /g')
 echo "  php version: "$($FPM_DAEMON -v | sed 's/[^0-9.]*\([0-9.]*\).*/\1/' | head -1)
 echo "  phpinfo: $PHPINFO_BASENAME"
 echo ""
-echo "$ME_NAME: starting "$(basename "$FPM_DAEMON")"..."
-
-#sleep infinity
 
 ##
 ## start php-fpm
 ##
+echo "$ME_NAME: starting "$(basename "$FPM_DAEMON")"..."
 $FPM_START_COMMAND
-
 CMD_STATUS=$?
 [ "$CMD_STATUS" -ne "0" ] && {>&2 echo "$ME_NAME: '$FPM_DAEMON' terminated with exit status $CMD_STATUS"; exit $CMD_STATUS; }
+exit 0
+
+
+
+
+
 
 
 
