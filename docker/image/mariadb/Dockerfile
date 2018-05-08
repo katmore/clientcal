@@ -1,5 +1,5 @@
 # mariadb image for ClientCal
-# @version 0.0.3
+# @version 0.0.4
 #
 # Volumes:
 # - /var/lib/mysql
@@ -18,7 +18,7 @@
 FROM mariadb:10.2
 
 LABEL \
-   com.github.katmore.clientcal.docker.image.mariadb.version="0.0.3" \
+   com.github.katmore.clientcal.docker.image.mariadb.version="0.0.4" \
    com.github.katmore.clientcal.docker.image.mariadb.mariadb-server.version="10.2" \
    maintainer="D. Bird <doug@katmore.com>" \
    description="mariadb image for ClientCal"
@@ -44,7 +44,7 @@ ENV \
    #
    # clientcal database/user
    #
-   CLIENTCAL_DATABASE=$CLIENTCAL_DATABASE
+   CLIENTCAL_DATABASE=$CLIENTCAL_DATABASE \
    CLIENTCAL_MYSQL_USER=$CLIENTCAL_MYSQL_USER
 
 RUN \
