@@ -33,21 +33,21 @@ mysql> GRANT ALL ON clientcal.* TO 'clientcal'@'localhost' IDENTIFIED BY ...
 ```
 
 ### Installation - Step 3
-**Initialize Database**
-
-Use the the command-line [**database update utility**](#database-update-utility) to install the latest database structure.
-
-```sh
-php bin/db-update.php
-```
-
-### Installation - Step 4
 **Initialize configuration**
 
 Use the command-line [**config update utility**](#configuration-update-utility) to customize and properly configure the local clientcal installation.
 
 ```sh
 php bin/config-update.php
+```
+
+### Installation - Step 4
+**Initialize Database**
+
+Use the the command-line [**database update utility**](#database-update-utility) to install the latest database structure.
+
+```sh
+php bin/db-update.php
 ```
 
 ### Installation - Step 5
