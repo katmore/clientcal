@@ -158,6 +158,56 @@ php bin/config-update.php --help
 php bin/config-update.php --usage
 ```
 
+## Docker-compose application
+A docker-compose application is provided using docker-compose. It facilitates deploying a self-contained ClientCal application without the need to perform the individual "Installation Steps" other than managing web-users with the [user manager utility](#user-manager-utility). See [docker-compose.yml](/docker/compose/clientcal/docker-compose.yml) for full configuration details.
+
+### Docker-compose application - system requirements
+ - docker version 18.03 or newer
+ - docker-compose version 1.19 or newer
+
+### Docker-compose application - basic usage
+```
+cd docker/compose/clientcal
+docker-compose build
+docker-compose up
+```
+
+### Docker-compose application - configuration details
+When docker-compose containers are run (via `docker-compose up` or `docker compose start`), the following occurs:
+ * non-ephemerial MySQL data is mounted on the host system
+ * the database is initialized if starting the first time using the latest schema dump according to [db-schema.json](/app/data/schema-sql/db-schema.json)
+ * php-fpm starts, and is available to nginx
+ * nginx starts, and the ClientCal application is available on the local system
+   * Default Entrypoint URL: http://localhost:8080
+ * PHP errors are logged to the terminal as they occur (as long as the 'php-fpm' container is attached to your terminal, i.e. `docker-compose up`)
+ * nginx errors are logged to the terminal as they occur (as long as the 'nginx' container is attached to your terminal, i.e. `docker-compose up`)
+
+### Docker-compose application - public deployment warning
+The docker-compose configuration included with this project IS NOT suitable for public deployment of ClientCal as provided. It could be made suitable to deploy publicly only if modifications are made to provide provide SSL. 
+
+Examples of the easier ways this could be done are as follows:
+ * modifying the provided nginx configuration (such as with a volume mount) to use SSL
+ * deploying a separate public facing HTTP server with SSL that is configured to be a reverse proxy to the clientcal docker network port 8080
+ * deploying a separate public facing HTTP server with SSL that is configured to use CGI over the clientcal docker network port 9000
+
+## Docker images
+The following images are included to facilitate ClientCal usage with docker.
+
+ * [**php**](#php-docker-image) 
+ * [**mariadb**](#mariadb-docker-image)
+
+### PHP docker image
+ * [php/Dockerfile](/docker/image/php/Dockerfile)
+
+The "php" docker image contains all dependencies for running the ClientCal web application.
+It is suitable for stand-alone use (i.e. `docker run ...`) or in conjunction with docker-compose (such as configured in the "docker environment" included in this project). It uses [alpine linux](https://hub.docker.com/_/alpine/) and the [PHP Repositories for Alpine - by CODECASTS](https://github.com/codecasts/php-alpine) for php related packages.
+
+### MariaDB docker image
+ * [mariadb/Dockerfile](/docker/image/mariadb/Dockerfile)
+ 
+The "mariadb" docker image provides a MariaDB service suitable for use witht he "docker-compose environment" included in this project. It uses the [official mariadb image](https://hub.docker.com/_/mariadb/) with some user permissions tweaks to better facilitate executing seed scripts and saving non-ephemerial data to the host.
+
+
 ## Legal
 ClientCal is distributed under the terms of the MIT license or the GPLv3 license.
 
