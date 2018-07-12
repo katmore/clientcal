@@ -219,9 +219,7 @@ It is suitable for stand-alone use (i.e. `docker run ...`) or in conjunction wit
 The "mariadb" docker image provides a MariaDB service suitable for use with the "docker-compose environment" included in this project. It uses the [official mariadb image](https://hub.docker.com/_/mariadb/) with some user permissions tweaks to better facilitate executing seed scripts and saving non-ephemerial data to the host.
 
 ## Screenshots
- * Month View:
-   
-   ![Month View Screenshot](https://cdn.rawgit.com/katmore/clientcal/d3d380a6/docs/asset/clientcal-screenshot-1.jpg)
+See the [Screenshots](https://katmore.github.io/clientcal/#screenshots) section of the [ClientCal homepage](https://katmore.github.io/clientcal/#screenshots).
 
 ## Legal
 ClientCal is distributed under the terms and conditions of the MIT license (see [LICENSE](/LICENSE)), or the terms and conditions of the GPLv3 license (see [GPLv3](/GPLv3)).
