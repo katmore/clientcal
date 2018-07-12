@@ -4,7 +4,7 @@ Scheduling, job, crew, and customer management web application for construction 
 [ClientCal Project Homepage](https://github.com/katmore/clientcal)
 
 ## Description
-ClientCal is a PHP/MySQL based project initially released in 2006 to facilitate the management of customer info, job scheduling, job site info, and work crew scheduling for small to medium sized construction operations (SMBs). As a traditional HTML form based application it has proved to be very stable over the years. I have released this project in preparation for improvements to the UI (to make it mobile friendly) and implementing a RESTful API backend.
+ClientCal is a PHP+MySQL based project initially released in 2006 to facilitate the management of customer info, job scheduling, job site info, and work crew scheduling for small to medium sized construction operations (SMBs). As a traditional HTML form based application it has proved to be very stable over the years. I have released this project in preparation for improvements to the UI (to make it mobile friendly) and implementing a RESTful API backend.
 
 ## Installation
 Completing the installation of ClientCal involves 5 steps (after you have installed it somewhere).
@@ -183,10 +183,10 @@ When docker-compose containers are run (via `docker-compose up` or `docker compo
 ### Docker-compose application - public deployment warning
 The docker-compose configuration included with this project IS NOT suitable for public deployment of ClientCal as provided. It could be made suitable to deploy publicly only if modifications are made to provide provide SSL. 
 
-Examples of the easier ways this could be done are as follows:
+Examples of how to accomplish a safe public deployment with docker:
  * modifying the provided nginx configuration (such as with a volume mount) to use SSL
  * deploying a separate public facing HTTP server with SSL that is configured to be a reverse proxy to the clientcal docker network port 8080
- * deploying a separate public facing HTTP server with SSL that is configured to use CGI over the clientcal docker network port 9000
+ * deploying a separate public facing HTTP server with SSL that is configured to use Fast-CGI over the clientcal docker network port 9000
 
 ## Docker images
 The following images are included to facilitate ClientCal usage with docker.
@@ -203,7 +203,7 @@ It is suitable for stand-alone use (i.e. `docker run ...`) or in conjunction wit
 ### MariaDB docker image
  * [mariadb/Dockerfile](/docker/image/mariadb/Dockerfile)
  
-The "mariadb" docker image provides a MariaDB service suitable for use witht he "docker-compose environment" included in this project. It uses the [official mariadb image](https://hub.docker.com/_/mariadb/) with some user permissions tweaks to better facilitate executing seed scripts and saving non-ephemerial data to the host.
+The "mariadb" docker image provides a MariaDB service suitable for use with the "docker-compose environment" included in this project. It uses the [official mariadb image](https://hub.docker.com/_/mariadb/) with some user permissions tweaks to better facilitate executing seed scripts and saving non-ephemerial data to the host.
 
 
 ## Legal
