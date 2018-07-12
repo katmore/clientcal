@@ -131,7 +131,6 @@ The **database export utility** facilitates the creation of database backups of 
 See `db-export.php --help` for details regarding advanced usage (such as quiet mode or specifying the output file basename and full path):
 ```sh
 php bin/db-export.php --help
-php bin/db-export.phpp --usage
 ```
 
 ### database update utility
@@ -142,7 +141,6 @@ The **database update utility** can be invoked without any arguments; it will pr
 See `db-update.php --help` for details regarding advanced usage (such as quiet mode and avoiding prompts).
 ```sh
 php bin/db-update.php --help
-php bin/db-update.php --usage
 ```
 
 ### configuration update utility
@@ -156,7 +154,6 @@ The **configuration update utility** creates and updates configuration file valu
 See `config-update.php --help` for details regarding advanced usage (such as quiet mode and avoiding prompts).
 ```sh
 php bin/config-update.php --help
-php bin/config-update.php --usage
 ```
 
 ## Docker-compose application
