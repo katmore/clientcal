@@ -10,6 +10,7 @@ composer.lock
 /web/components/
 /custfilequeue/
 /custfiles/
+/app/config/default-timezone.php
 /app/config/clientcal/app.php
 /app/config/clientcal/customer.php
 /app/config/clientcal/mysql.php
