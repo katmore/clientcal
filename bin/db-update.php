@@ -2,18 +2,18 @@
 <?php
 use clientcal\config;
 use Ifsnop\Mysqldump\Mysqldump;
-return(function() {
-   if (0!==($exitStatus=($installer = new class() {
 
-   const ME_LABEL = 'ClientCal Database Installer';
+if (0!==($exitStatus=($installer = new class() {
+
+   const ME_LABEL = 'ClientCal database update utility';
    
    const HELP_LABEL = "ClientCal Scheduler Project: https://github.com/katmore/clientcal";
    
-   const USAGE = '[--help [ [--non-interactive] [--quiet | --verbose] [--my-cnf | [--username=<db username> [--password=<db password>]] [ [--host=<mysql host> [--dbname=<mysql dbname>]] | [--dsn=<PDO Data Source Name>]]]]]';
+   const USAGE = '[-hu] | [--non-interactive] [--quiet | --verbose] [--my-cnf | [--username=<db username> [--password=<db password>]] [ [--host=<mysql host> [--dbname=<mysql dbname>]] | [--dsn=<PDO Data Source Name>]]]';
    
    const COPYRIGHT = '(c) 2006-2018 Paul D. Bird II. All Rights Reserved.';
    
-   const ME = 'db-install.php';
+   const ME = 'db-update.php';
    
    const FALLBACK_DBNAME = "clientcal";
    
@@ -737,7 +737,6 @@ EOT;
    }
    return $exitStatus;
 }
-})();
 
 
 

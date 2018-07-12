@@ -4,11 +4,11 @@ use clientcal\config;
 
 if (0!==($exitStatus=(new class() {
 
-   const ME_LABEL = 'ClientCal User Manager';
+   const ME_LABEL = 'ClientCal user manager utility';
     
    const HELP_LABEL = "ClientCal Scheduler Project: https://github.com/katmore/clientcal";
     
-   const USAGE = '[--help][--usage] | [--app-dir=<PATH>] <ACTION> [<USERNAME> [<PASSWORD>|<EMAIL>]]';
+   const USAGE = '[-hu] | [--app-dir=<PATH>] <ACTION> [<USERNAME> [<PASSWORD>|<EMAIL>]]';
     
    const COPYRIGHT = '(c) 2006-2018 Paul D. Bird II. All Rights Reserved.';
     

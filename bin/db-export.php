@@ -6,11 +6,11 @@ use Ifsnop\Mysqldump\Mysqldump;
 
 if (0!==($exitStatus=($installer = new class() {
 
-   const ME_LABEL = 'ClientCal Database Dump';
+   const ME_LABEL = 'ClientCal database export utility';
     
    const HELP_LABEL = "ClientCal Scheduler Project: https://github.com/katmore/clientcal";
     
-   const USAGE = '[--help [ [--non-interactive] [--quiet | --verbose]] [[--export-file=<path to write SQL dump> | [--export-name=<export name>]] [--app-dir=<path to project app directory>]]]';
+   const USAGE = '[-hu] | [--non-interactive] [--quiet | --verbose]] [[--export-file=<path to write SQL dump> | [--export-name=<export name>]] [--app-dir=<path to project app directory>]]';
     
    const COPYRIGHT = '(c) 2006-2018 Paul D. Bird II. All Rights Reserved.';
     

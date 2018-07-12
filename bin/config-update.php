@@ -2,7 +2,7 @@
 <?php
 if (0!==($exitStatus=(new class() {
 
-   const ME_LABEL = 'ClientCal Configuration Installer';
+   const ME_LABEL = 'ClientCal configuration update utility';
    
    const HELP_LABEL = "ClientCal Scheduler Project: https://github.com/katmore/clientcal";
    
