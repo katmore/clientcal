@@ -1,14 +1,12 @@
 #!/usr/bin/env php
 <?php
-return(function() {
-  
-   if (0!==($exitStatus=($installer = new class() {
+if (0!==($exitStatus=(new class() {
 
    const ME_LABEL = 'ClientCal Configuration Installer';
    
    const HELP_LABEL = "ClientCal Scheduler Project: https://github.com/katmore/clientcal";
    
-   const USAGE = '[--help] | [--non-interactive][--quiet][--config-source-dir=<PATH>][--config-dir=<PATH>]';
+   const USAGE = '[-hu] | [<...OPTIONS>] [<CONFIG-NAME>]';
    
    const COPYRIGHT = '(c) 2006-2018 Paul D. Bird II. All Rights Reserved.';
    
@@ -18,36 +16,66 @@ return(function() {
    const DEFAULT_CONFIG_SOURCE_DIR=__DIR__.'/../app/config/clientcal';
    
    /**
-    * Display a brief usage message.
-    * 
-    * @return void
-    * @static
-    */
-   public static function showUsage() : void {
-      echo "Usage: ".\PHP_EOL;
-      echo "   ".SELF::ME." ".self::USAGE.\PHP_EOL;
-   }
-   
-   /**
     * Display a help message.
     * 
     * @return void
     * @static 
     */
    public static function showHelp() : void {
-      echo self::HELP_LABEL.\PHP_EOL;
+      
       $configDir = self::DEFAULT_CONFIG_DIR;
       $configSourceDir = self::DEFAULT_CONFIG_SOURCE_DIR;
+      $configNamePossibleValues="";
+      $errorReporting = error_reporting(error_reporting() & ~E_WARNING & ~E_NOTICE);
+      $configFilesSource = glob("$configSourceDir/*.php");
+      !is_array($configFilesSource) && $configFilesSource=[];
+      $configFiles = glob("$configDir/*.php");
+      !is_array($configFiles) && $configFiles=[];
+      error_reporting($errorReporting);
+      $configFiles = array_merge($configFiles,$configFilesSource);
+
+      $configNamePossibleValues = [];
+      foreach(array_diff($configFiles, ['..', '.']) as $f) {
+         if (is_dir($f) || (substr($f,0,1)==".")) continue;
+         $f_filename = pathinfo($f,\PATHINFO_FILENAME);
+         if (substr($f_filename,strlen('-BACKUP')*-1)==='-BACKUP') {
+            continue;
+         }
+         if (substr($f_filename,strlen("-sample")*-1)==="-sample") {
+            $configNamePossibleValues[] = substr($f_filename,0,strlen($f_filename)-strlen("-sample"));
+         } else {
+            $configNamePossibleValues[] = $f_filename;
+         }
+      }
+      unset($f_filename);
+      
+      $configNamePossibleValues = "\n   Possible values: ".implode(", ",$configNamePossibleValues);
+   
+      
+      $configSourceLocalDefault = "";
+      if (is_dir($configSourceDir)) {
+         $configSourceLocalDefault = "\n   Local system default: ".realpath($configSourceDir);
+      }
+      
+      $configRootLocalDefault = "";
+      if (is_dir($configDir)) {
+         $configRootLocalDefault = "\n   Local system default: ".realpath($configDir);
+      }
+      
       $help=<<<"HELP"
+Arguments:
+<CONFIG-NAME>
+   Optionally specify a single config file to update.$configNamePossibleValues
+
 Mode Switches:
---help
+--help, -h
    Output a help message and exit.
 
---usage
+--usage, -u
    Output a brief usage message and exit.
 
-Output Control Switches:
---quiet
+Output Control Options:
+--quiet, -q
    Provide only essential output to STDOUT.
 
 --non-interactive
@@ -55,14 +83,23 @@ Output Control Switches:
 
 Path Options:
 --config-source-dir=<PATH>
-   Path to the source directory to search for config files.
-   Local system default: $configSourceDir
+   Path to the source directory to search for config files.$configSourceLocalDefault
 
 --config-root-dir=<PATH>
-   Path to directory where config files will be written.
-   Local system default: $configDir
+   Path to directory where config files will be written.$configRootLocalDefault
 HELP;
       echo str_replace("\n",\PHP_EOL,$help).\PHP_EOL;
+   }
+   
+   /**
+    * Display a brief usage message.
+    *
+    * @return void
+    * @static
+    */
+   public static function showUsage() : void {
+      echo "Usage: ".\PHP_EOL;
+      echo "   ".SELF::ME." ".self::USAGE.\PHP_EOL;
    }
    
    /**
@@ -165,17 +202,18 @@ HELP;
    
    public function __construct() {
       
-      $arg = [];
+      $fullArg = $arg = [];
       $optind = 0;
       getopt("",["",],$optind);
-      if (isset($_SERVER) && isset($_SERVER['argv']) && is_array($_SERVER['argv'])) $arg = $_SERVER['argv'];
+      if (isset($_SERVER) && isset($_SERVER['argv']) && is_array($_SERVER['argv'])) {
+         $fullArg = $arg = $_SERVER['argv'];
+      }
       $arg0 = $arg[0];
       for($i=0;$i<$optind;$i++) { array_shift($arg); }
       array_unshift($arg,$arg0);
       
       $arg1 = null;
-      
-      if (isset($arg[1])) $arg1 = $arg[1];
+      isset($arg[1]) && $arg1 = $arg[1];
       
       /*
        * apply 'help' or 'usage' modes
@@ -183,6 +221,10 @@ HELP;
       $modeSwitch = getopt("hu?",["help","usage",]);
       if (isset($modeSwitch['help']) || isset($modeSwitch['h']) || isset($modeSwitch['?']) || ($arg1==='help')) {
          static::showIntro();
+         echo self::HELP_LABEL.\PHP_EOL;
+         echo PHP_EOL;
+         static::showUsage();
+         echo PHP_EOL;
          static::showHelp();
          return;
       }
@@ -191,10 +233,10 @@ HELP;
          return;
       }
       
+      $singleConfig = null;
+      
       if ($arg1!==null) {
-         $this->showErrLine(["argument '$arg1' is not recognized"]);
-         $this->exitStatus = 2;
-         return;
+         $singleConfig = $arg1;
       }
       
       /*
@@ -209,6 +251,27 @@ HELP;
        * display intro if quiet switch is inactive
        */
       if (!$this->quiet) { static::showIntro(); echo \PHP_EOL; }
+      
+      if (isset($arg[2])) {
+         $this->showErrLine(["unrecognized 2nd positional argument: ".$arg[2]]);
+         $this->exitStatus = 2;
+         return;
+      }
+      
+      $validOptions = ['--config-dir','--config-source-dir','--quiet','--non-interactive'];
+      foreach($fullArg as $a) {
+         if (substr($a,0,1)=='-') {
+            if (!in_array($a,$validOptions)) {
+               $this->showErrLine(["unrecognized option: $a"]);
+               $this->exitStatus = 2;
+            }
+         }
+      }
+      unset($a);
+      
+      if ($this->exitStatus !== 0) {
+         return;
+      }
          
       /*
        * sanity enforcement for config-dir, config-source-dir options
@@ -231,14 +294,12 @@ HELP;
        * exit if path sanity error
        */
       if ($this->exitStatus !== 0) {
-         $this->showErrLine(["one or more sanity checks failed for config path options"]);
          return;
       }
       
       /*
        * apply config-dir option or use default value
        */
-      $defaultCheck = [];
       if (isset($pathOption['config-dir'])) {
          $configDir = $pathOption['config-dir'];
       } else {
@@ -285,21 +346,30 @@ HELP;
       $configPath_Target = [];
       $configVal_Target = [];
       
+      $foundSingleConfig = false;
+      
       /*
        * intitial config-source-dir scan and config file sanity enforcement
        */
       foreach (glob("$configSourceDir/*.php") as $f) {
          
-         if (is_dir($f)) continue;
+         if (is_dir($f) || (substr($f,0,1)==".")) continue;
          
          $f_filename = pathinfo($f,PATHINFO_FILENAME );
          
-         if (substr($f_filename,strlen('-sample')*-1)==='-sample') {
-            continue;
-         }
-         
          if (substr($f_filename,strlen('-BACKUP')*-1)==='-BACKUP') {
             continue;
+         } else
+         if (substr($f_filename,strlen('-sample')*-1)==='-sample') {
+            $f_filename = substr($f_filename,0,strlen($f_filename)-strlen("-sample"));
+         }
+         
+         if ($singleConfig!==null) {
+            if ($f_filename===$singleConfig) {
+               $foundSingleConfig = true;
+            } else {
+               continue;
+            }
          }
          
          $f_sample_check = "$configSourceDir/$f_filename-sample.php";
@@ -343,16 +413,23 @@ HELP;
        */
       foreach (glob("$configDir/*.php") as $f) {
          
-         if (is_dir($f)) continue;
+         if (is_dir($f) || (substr($f,0,1)==".")) continue;
          
          $f_filename = pathinfo($f,PATHINFO_FILENAME );
          
-         if (substr($f_filename,strlen('-sample')*-1)==='-sample') {
-            continue;
-         }
-         
          if (substr($f_filename,strlen('-BACKUP')*-1)==='-BACKUP') {
             continue;
+         } else
+         if (substr($f_filename,strlen('-sample')*-1)==='-sample') {
+            $f_filename = substr($f_filename,0,strlen($f_filename)-strlen("-sample"));
+         } 
+         
+         if ($singleConfig!==null) {
+            if ($f_filename===$singleConfig) {
+               $foundSingleConfig = true;
+            } else {
+               continue;
+            }
          }
          
          if (!is_readable($f)) {
@@ -385,10 +462,22 @@ HELP;
          return;
       }
       
+      if (($singleConfig!==null) && !$foundSingleConfig) {
+         $this->showErrLine(["unknown <CONFIG-NAME> '$singleConfig'"]);
+         $this->exitStatus = 2;
+         return;
+      }
+      
       /*
        * merge source to target config 
        */
       foreach($configPath_Target as $f_filename=>$f) {
+         
+         if ($singleConfig!==null) {
+            if ($f_filename!==$singleConfig) {
+               continue;
+            }
+         }
          
          $existing_md5 = $source_md5 = null;
          
@@ -473,8 +562,8 @@ HELP;
          $target_md5 = md5(json_encode($configVal_Target[$f_filename]));
          
          
-         if ($target_md5 === $existing_md5) {
-            $this->showLine(["skipping config file '{$configPath_Target[$f_filename]}' (no changes made)"],self::SHOW_LINE_DISPLAY_ON_QUIET);
+         if (($target_md5 === $existing_md5) && file_exists($configPath_Target[$f_filename])) {
+            $this->showLine(["skipping config file '".realpath($configPath_Target[$f_filename])."' (no changes made)"],self::SHOW_LINE_DISPLAY_ON_QUIET);
          } else {
             if (isset($configPath_Existing[$f_filename])) {
                $backup_path = "$configDir/.$f_filename-{$configMd5_Existing[$f_filename]}-BACKUP.php";
@@ -556,32 +645,14 @@ HEADING;
       unset($f);
       unset($f_filename);
       
-      $this->showLine(["successfully updated config"]);
+      $this->showLine(["successfully updated config".($singleConfig!==null?" for '$singleConfig'":"")]);
       
    }
-   
-
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
 
 })->getExitStatus())) {
    if (PHP_SAPI=='cli') exit($exitStatus);
    return $exitStatus;
 }
-})();
 
 
 
