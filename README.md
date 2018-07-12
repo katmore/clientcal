@@ -118,7 +118,7 @@ The **user manager utility** manages ClientCal web users. Web users can be creat
      php bin/web-user.php remove my_user
      ```
 
-See `web-user.php --help` for details regarding advanced usage (such as quiet mode and avoiding prompts):
+See `web-user.php --help` for details regarding advanced usage (such as quiet mode and avoiding interactive prompts):
 ```sh
 php bin/web-user.php --help
 ```
@@ -138,7 +138,7 @@ php bin/db-export.php --help
 
 The **database update utility** can be invoked without any arguments; it will prompt for all the required parameters (such as the host, dbname, user, pass, etc.). It reads the [app/data/db-schema.json](app/data/db-schema.json) file which specifies the latest database structure version and relative locations of the corresponding SQL resources. The latest SQL update and structure dumps for ClientCal are contained in the [app/data/schema-sql](app/data/schema-sql) directory. When a database is empty (i.e. contains no tables), the database is created from scratch using the SQL dump file of the latest database revision. For existing databases, migrations are perfomed using SQL update files as specified by a database revsions corresponding `db-version.json` file. The current applied schema version is stored in the table `schema_version` of the same database.
 
-See `db-update.php --help` for details regarding advanced usage (such as quiet mode and avoiding prompts).
+See `db-update.php --help` for details regarding advanced usage (such as quiet mode and avoiding interactive prompts).
 ```sh
 php bin/db-update.php --help
 ```
@@ -151,7 +151,7 @@ php bin/config-update.php
 ```
 The **configuration update utility** creates and updates configuration file values in the ClientCal config path (/app/config/clientcal) by reading values from `*-sample.php` files. The utility provides a prompt to input each configuration value; along with a default value. The utility resolves the "default value" by using the existing configuration value; if no configuration value yet exists, the "default value" is obtained from the `-sample.php` file. If the utility is started with the `--non-interactive` option, the default values are automatically used. 
 
-See `config-update.php --help` for details regarding advanced usage (such as quiet mode and avoiding prompts).
+See `config-update.php --help` for details regarding advanced usage (such as quiet mode and avoiding interactive prompts).
 ```sh
 php bin/config-update.php --help
 ```
