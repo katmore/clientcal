@@ -56,7 +56,7 @@ php bin/config-update.php
 Use the command-line [**user manager utility**](#user-manager-utility) to create at least one web user that can login to the ClientCal web application.
 
 ```sh
-php bin/clientcal-user.php add my_user
+php bin/web-user.php add my_user
 ```
 
 ## Update Workflow
@@ -97,29 +97,30 @@ The ClientCal project includes command-line utility scripts to facilitate instal
  * [configuration update utility](#configuration-update-utility)
 
 ### user manager utility
- * Location: [bin/clientcal-user.php](bin/clientcal-user.php)
+ * Location: [bin/web-user.php](bin/web-user.php)
 
 The **user manager utility** manages ClientCal web users. Web users can be created, removed, and modified.
+   
+**web-user.php commands:**
+   
+   * **add**: creates a new user
+     ```sh
+     php bin/web-user.php add my_user
+     ```
 
-The `--help` and `--usage` switches provides details regarding advanced usage (such as quiet mode and avoiding prompts):
-```sh
-php bin/clientcal-user.php --help
-php bin/clientcal-user.php --usage
-```
+   * **set-password**: modifies an existing user's password
+     ```sh
+     php bin/web-user.php set-password my_user
+     ```
 
-The **add** `<ACTION>` creates a new user:
-```sh
-php bin/clientcal-user.php add my_user
-```
+   * **remove**: removes an existing user
+     ```sh
+     php bin/web-user.php remove my_user
+     ```
 
-The **set-password** `<ACTION>` modifies an existing user's password:
+See `web-user.php --help` for details regarding advanced usage (such as quiet mode and avoiding prompts):
 ```sh
-php bin/clientcal-user.php set-password my_user
-```
-
-The **remove** `<ACTION>` removes an existing user:
-```sh
-php bin/clientcal-user.php remove my_user
+php bin/web-user.php --help
 ```
 
 ### database export utility
@@ -127,32 +128,32 @@ php bin/clientcal-user.php remove my_user
  
 The **database export utility** facilitates the creation of database backups of the ClientCal database using the local installation configuration.
 
-The `--help` and `--usage` switches provides details regarding advanced usage (such as quiet mode or specifying the output file basename and full path):
+See `db-export.php --help` for details regarding advanced usage (such as quiet mode or specifying the output file basename and full path):
 ```sh
-php bin/clientcal-user.php --help
-php bin/clientcal-user.php --usage
+php bin/db-export.php --help
+php bin/db-export.phpp --usage
 ```
 
 ### database update utility
- * Location: [bin/config-update.php](bin/config-update.php)
+ * Location: [bin/db-update.php](bin/db-update.php)
 
 The **database update utility** can be invoked without any arguments; it will prompt for all the required parameters (such as the host, dbname, user, pass, etc.). It reads the [app/data/db-schema.json](app/data/db-schema.json) file which specifies the latest database structure version and relative locations of the corresponding SQL resources. The latest SQL update and structure dumps for ClientCal are contained in the [app/data/schema-sql](app/data/schema-sql) directory. When a database is empty (i.e. contains no tables), the database is created from scratch using the SQL dump file of the latest database revision. For existing databases, migrations are perfomed using SQL update files as specified by a database revsions corresponding `db-version.json` file. The current applied schema version is stored in the table `schema_version` of the same database.
 
-The `--help` and `--usage` switches provide details regarding advanced usage (such as quiet mode and avoiding prompts).
+See `db-update.php --help` for details regarding advanced usage (such as quiet mode and avoiding prompts).
 ```sh
 php bin/db-update.php --help
 php bin/db-update.php --usage
 ```
 
 ### configuration update utility
- * Location: [bin/db-update.php](bin/db-update.php)
+ * Location: [bin/config-update.php](bin/config-update.php)
 
 ```sh
 php bin/config-update.php
 ```
 The **configuration update utility** creates and updates configuration file values in the ClientCal config path (/app/config/clientcal) by reading values from `*-sample.php` files. The utility provides a prompt to input each configuration value; along with a default value. The utility resolves the "default value" by using the existing configuration value; if no configuration value yet exists, the "default value" is obtained from the `-sample.php` file. If the utility is started with the `--non-interactive` option, the default values are automatically used. 
 
-The `--help` and `--usage` switches provide details regarding advanced usage (such as quiet mode and avoiding prompts).
+See `config-update.php --help` for details regarding advanced usage (such as quiet mode and avoiding prompts).
 ```sh
 php bin/config-update.php --help
 php bin/config-update.php --usage
