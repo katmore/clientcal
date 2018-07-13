@@ -22,6 +22,8 @@ services:
     volumes:
       - ./container/nginx/clientcal.conf:/etc/nginx/conf.d/clientcal.conf
       - ./../../../web:/var/www/clientcal/web
+    ports:
+      - "8080:8080"
   php-fpm:
     build:
       context: ./../../../
