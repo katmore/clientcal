@@ -35,12 +35,8 @@ Consult the [Installation](https://github.com/katmore/clientcal/wiki/Installatio
    * a copy of the ClientCal source (i.e. `git clone https://github.com/katmore/clientcal.git`)
    * PHP 7.2
    * a recent version of [*composer*](https://getcomposer.org/)
-   * a web server provisioned as follows:
-     * a PHP file handler (i.e. mod_php or php-fpm)
-     * a "Document Root" pointing to the ClientCal web root ([clientcal/web](/web))
-   * a recent version of MySQL provisioned as follows:
-     * an empty MySQL database for "clientcal" (i.e. `CREATE DATABASE "clientcal"`)
-     * a MySQL user/pass with access to the database for "clientcal" (i.e. `GRANT ALL ON clientcal.* TO ...`)
+   * a web server provisioned with a "Document Root" pointing to the ClientCal web root ([clientcal/web](/web))
+   * a recent version of MySQL provisioned an empty database and a user with access to that database
  * Copy and configure ClientCal
    ```sh
    $ git clone https://github.com/katmore/clientcal.git 
