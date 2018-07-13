@@ -12,7 +12,7 @@ ClientCal is a PHP+MySQL based project initially released in 2006 to facilitate 
  * Latest release: https://github.com/katmore/clientcal/releases/latest
  * Documentation: https://github.com/katmore/clientcal/wiki
 
-## Documentation Resources
+## Documentation
  * [Installation](https://github.com/katmore/clientcal/wiki/Installation)
  * [Utilities](https://github.com/katmore/clientcal/wiki/Utilities)
  * [Updating](https://github.com/katmore/clientcal/wiki/Updating)
