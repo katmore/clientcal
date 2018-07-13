@@ -52,16 +52,21 @@ Output Control:
 
 Export Configuration:
 
+--stdout
+   The export will be output to STDOUT instead of saving to the file system.
+   Cannot be used in conjunction with the --export-name or --export-file options.
+
 --export-name=<identifying name> (optional)
    Resolves export file based on the "export name" relative to the backup directory.
    for example; if a value of "daily" is specified, the export file path will be resolved as:
      app/data/mysql/backup/daily.sql
    If the resolved file exists, it will be overwritten.
+   Cannot be used in conjunction with the --stdout switch.
 
 --export-file=<path> (optional, ignored when the --export-name option is present)
    Specify full system path to write the sql dump into.
    If the file exists, it will be overwritten.
-
+   Cannot be used in conjunction with the --stdout switch.
 
 App Configuration:
 --app-dir=<path to project app directory> (optional)
@@ -122,6 +127,11 @@ HELP;
     */
    private $_nonInteractive;
    
+   /**
+    * @var bool
+    */
+   private $_stdoutMode;
+   
    public function __construct() {
 
       if (isset(getopt("",["help",])['help'])) {
@@ -142,12 +152,29 @@ HELP;
       }
 
       $this->_nonInteractive = isset(getopt("",["non-interactive",])['non-interactive']);
+      
+      $this->_stdoutMode = isset(getopt("",["stdout",])['stdout']);
+      
+      if ($this->_stdoutMode) {
+         $this->_verbose = false;
+         $this->_quiet = true;
+      }
 
       $this->_quiet || self::_showIntro();
 
       require self::_getAppDir() . "/bin-common.php";
       
       $config = config::LoadAssoc("mysql");
+      
+      if ($this->_stdoutMode) {
+         if (false===($backupFile = tempnam(sys_get_temp_dir(), static::ME."-"))) {
+            trigger_error("tempnam() failed",\E_USER_ERROR);
+         }
+         register_shutdown_function(function() use(&$backupFile)
+         {
+            if (file_exists($backupFile)) unlink($backupFile);
+         });
+      } else
       if (!empty(getopt("",["export-name::",])['export-name'])) {
          $backupName = getopt("",["export-name::",])['export-name'];
          
@@ -186,6 +213,18 @@ HELP;
       $this->_quiet || self::_showLine(["started export at ".date("c")."..."]);
       $dump = new Mysqldump($config['dsn'], $config['username'], $config['password'],[],$config['options']);
       $dump->start($backupFile);
+      if ($this->_stdoutMode) {
+         if (false===($h = fopen($backupFile,"rb"))) {
+            trigger_error("fopen() failed",\E_USER_ERROR);
+         }
+         while(!feof($h)) {
+            if (false===($buff = fread($h,1024*1024))) {
+               trigger_error("fread() failed",\E_USER_ERROR);
+            }
+            echo $buff;
+         }
+         fclose($h);
+      }
       $this->_quiet || self::_showLine(["(export complete)"]);
    }
     
