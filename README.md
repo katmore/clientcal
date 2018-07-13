@@ -17,8 +17,8 @@ Consult the [Docker](https://github.com/katmore/clientcal/wiki/Docker) page of t
 
  * Prerequisites: 
    * a copy of the ClientCal source (i.e. `git clone https://github.com/katmore/clientcal.git`)
-   * a recent version of Docker 
-   * a recent version of the *docker-compose* command
+   * a recent version of *docker* (https://www.docker.com/community-edition)
+   * a recent version of *docker-compose* (https://docs.docker.com/compose/)
  * Copy, start, and configure ClientCal
     ```sh
     $ cd docker/compose/clientcal
@@ -34,11 +34,13 @@ Consult the [Installation](https://github.com/katmore/clientcal/wiki/Installatio
  * Prerequisites: 
    * a copy of the ClientCal source (i.e. `git clone https://github.com/katmore/clientcal.git`)
    * PHP 7.2
-   * the PHP **composer** command (https://getcomposer.org/)
-   * a web server configured with PHP and a "Document Root" pointing to the ClientCal web root ([clientcal/web](/web))
-   * a recent version of MySQL 
-   * an empty MySQL database for "clientcal" (i.e. `CREATE DATABASE "clientcal"`)
-   * a MySQL user/pass with access to the database for "clientcal" (i.e. `GRANT ALL ON clientcal.* TO ...`)
+   * a recent version of *composer* (https://getcomposer.org/)
+   * a web server provisioned as follows:
+     * a PHP file handler (i.e. mod_php or php-fpm)
+     * a "Document Root" pointing to the ClientCal web root ([clientcal/web](/web))
+   * a recent version of MySQL provisioned as follows:
+     * an empty MySQL database for "clientcal" (i.e. `CREATE DATABASE "clientcal"`)
+     * a MySQL user/pass with access to the database for "clientcal" (i.e. `GRANT ALL ON clientcal.* TO ...`)
  * Copy and configure ClientCal
    ```sh
    $ git clone https://github.com/katmore/clientcal.git 
