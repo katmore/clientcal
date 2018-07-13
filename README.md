@@ -19,7 +19,7 @@ Consult the [Docker](https://github.com/katmore/clientcal/wiki/Docker) page of t
    * a copy of the ClientCal source (i.e. `git clone https://github.com/katmore/clientcal.git`)
    * a recent version of [*docker*](https://www.docker.com/community-edition)
    * a recent version of [*docker-compose*](https://docs.docker.com/compose/)
- * Copy, start, and configure ClientCal
+ * Start containers and configure ClientCal
     ```sh
     $ cd docker/compose/clientcal
     $ docker-compose build
@@ -37,10 +37,8 @@ Consult the [Installation](https://github.com/katmore/clientcal/wiki/Installatio
    * a recent version of [*composer*](https://getcomposer.org/)
    * a web server provisioned with a "Document Root" pointing to the ClientCal web root ([clientcal/web](/web))
    * a recent version of MySQL provisioned an empty database and a user with access to that database
- * Copy and configure ClientCal
+ * Configure ClientCal
    ```sh
-   $ git clone https://github.com/katmore/clientcal.git 
-   $ cd clientcal
    $ composer update
    $ php bin/config-update.php
    $ php bin/db-update.php
