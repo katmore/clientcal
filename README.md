@@ -21,51 +21,40 @@ ClientCal is a PHP+MySQL based project initially released in 2006 to facilitate 
 ## Quick Start using Docker
 Consult the [Docker](https://github.com/katmore/clientcal/wiki/Docker) page of the [ClientCal wiki](https://github.com/katmore/clientcal/wiki) for more information regarding usage with Docker.
 
- * Prerequisites: a recent version of Docker and Docker-compose
+ * Prerequisites: 
+   * a copy of the ClientCal source (i.e. `git clone https://github.com/katmore/clientcal.git`)
+   * a recent version of Docker 
+   * a recent version of the *docker-compose* command
  * Copy, start, and configure ClientCal
     ```sh
-    $ git clone https://github.com/katmore/clientcal.git 
-    $ cd clientcal/docker/compose/clientcal
+    $ cd docker/compose/clientcal
     $ docker-compose build
     $ docker-compose start
     $ docker-compose exec php-fpm /var/www/clientcal/bin/web-user.php add
     ```
- * Ready to view in browser at: http://localhost:8080
+ * That's it! Ready to view in browser at: http://localhost:8080
  
 ## Quick Start without Docker
 Consult the [Installation](https://github.com/katmore/clientcal/wiki/Installation) page of the [ClientCal wiki](https://github.com/katmore/clientcal/wiki) for more detailed instructions.
 
- * Prerequisites: a web server with PHP 7.2, and a running MySQL server
- * Prepare a database for "clientcal":
+ * Prerequisites: 
+   * a copy of the ClientCal source (i.e. `git clone https://github.com/katmore/clientcal.git`)
+   * PHP 7.2
+   * the PHP **composer** command (https://getcomposer.org/)
+   * a web server configured with PHP and a "Document Root" pointing to the ClientCal web root ([clientcal/web](/web))
+   * a recent version of MySQL 
+   * an empty MySQL database for "clientcal" (i.e. `CREATE DATABASE "clientcal"`)
+   * a MySQL user/pass with access to the database for "clientcal" (i.e. `GRANT ALL ON clientcal.* TO ...`)
+ * Copy and configure ClientCal
    ```sh
-   $ echo 'CREATE DATABASE clientcal' | mysql
-   $ MYPASS=$(date +%s | sha256sum | base64 | head -c 32 ; echo)
-   $ echo "GRANT ALL ON clientcal.* TO 'clientcal'@'localhost' IDENTIFIED BY '$MYPASS'" | mysql
-   $ echo "clientcal mysql password: $MYPASS"
+   $ git clone https://github.com/katmore/clientcal.git 
+   $ cd clientcal
+   $ composer update
+   $ php bin/config-update.php
+   $ php bin/db-update.php
+   $ php bin/web-user.php add my_user
    ```
-     *be sure to take note of the "clientcal mysql password" for the next step*
-     
-* Copy and configure ClientCal
-  ```sh
-  $ git clone https://github.com/katmore/clientcal.git 
-  $ cd clientcal
-  $ composer update
-  $ php bin/config-update.php
-  $ php bin/db-update.php
-  $ php bin/web-user.php add my_user
-  $ CLIENTCAL_WEB_ROOT=$(pwd)/web
-  $ echo "clientcal web root: $CLIENTCAL_WEB_ROOT"
-  ```
-     *be sure to take note of the "clientcal web root" for the next step*
-  
- * Edit your HTTP server's "Document Root" to be the **clientcal web root**
- 
-    --OR--
-    
- * Create a symlink to the **clientcal web root** on the exiting "Document Root" 
-   ```sh
-   $ ln -s $CLIENTCAL_WEB_ROOT /var/www
-   ```
+ * All done! Ready to view in a browser using your web server's URL.
 
 ## Screenshots
 See the [Screenshots](https://katmore.github.io/clientcal/#screenshots) section of the [ClientCal homepage](https://katmore.github.io/clientcal/#screenshots).
