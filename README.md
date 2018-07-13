@@ -6,12 +6,6 @@ Scheduling, job, crew, and customer management web application for construction 
 ## Description
 ClientCal is a PHP+MySQL based project initially released in 2006 to facilitate the management of customer info, job scheduling, job site info, and work crew scheduling for small to medium sized construction operations (SMBs). As a traditional HTML form based application it has proved to be very stable over the years. I have released this project in preparation for improvements to the UI (to make it mobile friendly) and implementing a RESTful API backend.
 
-## Related Resources
- * Github: https://github.com/katmore/clientcal
- * Packagist: https://packagist.org/packages/katmore/clientcal
- * Latest release: https://github.com/katmore/clientcal/releases/latest
- * Documentation: https://github.com/katmore/clientcal/wiki
-
 ## Documentation
  * [Installation](https://github.com/katmore/clientcal/wiki/Installation)
  * [Utilities](https://github.com/katmore/clientcal/wiki/Utilities)
@@ -21,55 +15,47 @@ ClientCal is a PHP+MySQL based project initially released in 2006 to facilitate 
 ## Quick Start using Docker
 Consult the [Docker](https://github.com/katmore/clientcal/wiki/Docker) page of the [ClientCal wiki](https://github.com/katmore/clientcal/wiki) for more information regarding usage with Docker.
 
- * Prerequisites: a recent version of Docker and Docker-compose
- * Copy, start, and configure ClientCal
+ * Prerequisites: 
+   * a copy of the ClientCal source (i.e. `git clone https://github.com/katmore/clientcal.git`)
+   * a recent version of [*docker*](https://www.docker.com/community-edition)
+   * a recent version of [*docker-compose*](https://docs.docker.com/compose/)
+ * Start containers and configure ClientCal
     ```sh
-    $ git clone https://github.com/katmore/clientcal.git 
-    $ cd clientcal/docker/compose/clientcal
+    $ cd docker/compose/clientcal
     $ docker-compose build
     $ docker-compose start
     $ docker-compose exec php-fpm /var/www/clientcal/bin/web-user.php add
     ```
- * Ready to view in browser at: http://localhost:8080
+ * That's it! Ready to view in browser at: http://localhost:8080
  
 ## Quick Start without Docker
 Consult the [Installation](https://github.com/katmore/clientcal/wiki/Installation) page of the [ClientCal wiki](https://github.com/katmore/clientcal/wiki) for more detailed instructions.
 
- * Prerequisites: a web server with PHP 7.2, and a running MySQL server
- * Prepare a database for "clientcal":
+ * Prerequisites: 
+   * a copy of the ClientCal source (i.e. `git clone https://github.com/katmore/clientcal.git`)
+   * PHP 7.2
+   * a recent version of [*composer*](https://getcomposer.org/)
+   * a web server provisioned with a "Document Root" pointing to the ClientCal web root ([clientcal/web](/web))
+   * a recent version of MySQL provisioned an empty database and a user with access to that database
+ * Configure ClientCal
    ```sh
-   $ echo 'CREATE DATABASE clientcal' | mysql
-   $ MYPASS=$(date +%s | sha256sum | base64 | head -c 32 ; echo)
-   $ echo "GRANT ALL ON clientcal.* TO 'clientcal'@'localhost' IDENTIFIED BY '$MYPASS'" | mysql
-   $ echo "clientcal mysql password: $MYPASS"
+   $ composer update
+   $ php bin/config-update.php
+   $ php bin/db-update.php
+   $ php bin/web-user.php add my_user
    ```
-     *be sure to take note of the "clientcal mysql password" for the next step*
-     
-* Copy and configure ClientCal
-  ```sh
-  $ git clone https://github.com/katmore/clientcal.git 
-  $ cd clientcal
-  $ composer update
-  $ php bin/config-update.php
-  $ php bin/db-update.php
-  $ php bin/web-user.php add my_user
-  $ CLIENTCAL_WEB_ROOT=$(pwd)/web
-  $ echo "clientcal web root: $CLIENTCAL_WEB_ROOT"
-  ```
-     *be sure to take note of the "clientcal web root" for the next step*
-  
- * Edit your HTTP server's "Document Root" to be the **clientcal web root**
- 
-    --OR--
-    
- * Create a symlink to the **clientcal web root** on the exiting "Document Root" 
-   ```sh
-   $ ln -s $CLIENTCAL_WEB_ROOT /var/www
-   ```
+ * All done! Ready to view in a browser using your web server's URL.
 
 ## Screenshots
 See the [Screenshots](https://katmore.github.io/clientcal/#screenshots) section of the [ClientCal homepage](https://katmore.github.io/clientcal/#screenshots).
 
+## Related Resources
+ * Github: https://github.com/katmore/clientcal
+ * Packagist: https://packagist.org/packages/katmore/clientcal
+ * Latest release: https://github.com/katmore/clientcal/releases/latest
+ * Documentation: https://github.com/katmore/clientcal/wiki
+ * Support/Bugs: https://github.com/katmore/clientcal/issues
+ 
 ## Legal
 ClientCal is distributed under the terms and conditions of the MIT license (see [LICENSE](/LICENSE)), or the terms and conditions of the GPLv3 license (see [GPLv3](/GPLv3)).
 
