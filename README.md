@@ -32,7 +32,7 @@ Consult the [Docker](https://github.com/katmore/clientcal/wiki/Docker) page of t
     ```
  * Ready to view in browser at: http://localhost:8080
  
-## Quick Start
+## Quick Start without Docker
 Consult the [Installation](https://github.com/katmore/clientcal/wiki/Installation) page of the [ClientCal wiki](https://github.com/katmore/clientcal/wiki) for more detailed instructions.
 
  * Prerequisites: a web server with PHP 7.2, and a running MySQL server
