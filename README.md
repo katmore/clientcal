@@ -16,7 +16,10 @@ ClientCal is a PHP+MySQL based project initially released in 2006 to facilitate 
 Consult the [Docker](https://github.com/katmore/clientcal/wiki/Docker) page of the [ClientCal wiki](https://github.com/katmore/clientcal/wiki) for more information regarding usage with Docker.
 
  * Prerequisites: 
-   * a copy of the ClientCal source (i.e. `git clone https://github.com/katmore/clientcal.git`)
+   * a copy of the ClientCal source (i.e...)
+   ```sh
+   git clone https://github.com/katmore/clientcal.git
+   ```
    * a recent version of [*docker*](https://www.docker.com/community-edition)
    * a recent version of [*docker-compose*](https://docs.docker.com/compose/)
  * Start containers and configure ClientCal
@@ -39,10 +42,16 @@ Consult the [Installation](https://github.com/katmore/clientcal/wiki/Installatio
    * a recent version of MySQL provisioned an empty database and a user with access to that database
  * Configure ClientCal
    ```sh
-   $ composer update
-   $ php bin/config-update.php
-   $ php bin/db-update.php
-   $ php bin/web-user.php add my_user
+   composer update
+   ```
+   ```sh
+   php bin/config-update.php
+   ```
+   ```sh
+   php bin/db-update.php
+   ```
+   ```sh
+   php bin/web-user.php add my_user
    ```
  * All done! Ready to view in a browser using your web server's URL.
 
