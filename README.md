@@ -18,7 +18,7 @@ Consult the [Docker](https://github.com/katmore/clientcal/wiki/Docker) page of t
  * Prerequisites: 
    * a copy of the ClientCal source (i.e...)
    ```sh
-   git clone https://github.com/katmore/clientcal.git
+   git clone git@github.com:katmore/clientcal.git
    ```
    * a recent version of [*docker*](https://www.docker.com/community-edition)
    * a recent version of [*docker-compose*](https://docs.docker.com/compose/)
@@ -35,7 +35,10 @@ Consult the [Docker](https://github.com/katmore/clientcal/wiki/Docker) page of t
 Consult the [Installation](https://github.com/katmore/clientcal/wiki/Installation) page of the [ClientCal wiki](https://github.com/katmore/clientcal/wiki) for more detailed instructions.
 
  * Prerequisites: 
-   * a copy of the ClientCal source (i.e. `git clone https://github.com/katmore/clientcal.git`)
+   * a copy of the ClientCal source (i.e...)
+   ```sh
+   git clone git@github.com:katmore/clientcal.git
+   ```
    * PHP 7.2
    * a recent version of [*composer*](https://getcomposer.org/)
    * a web server provisioned with a "Document Root" pointing to the ClientCal web root ([clientcal/web](/web))
