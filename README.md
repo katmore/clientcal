@@ -68,5 +68,5 @@ See the [Screenshots](https://katmore.github.io/clientcal/#screenshots) section 
 ## Legal
 ClientCal is distributed under the terms and conditions of the MIT license (see [LICENSE](/LICENSE)), or the terms and conditions of the GPLv3 license (see [GPLv3](/GPLv3)).
 
-Copyright (c) 2006-2018, Paul Douglas Bird II.
+Copyright (c) 2006-2023, Paul Douglas Bird II.
 All rights reserved.
