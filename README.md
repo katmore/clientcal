@@ -16,7 +16,10 @@ ClientCal is a PHP+MySQL based project initially released in 2006 to facilitate 
 Consult the [Docker](https://github.com/katmore/clientcal/wiki/Docker) page of the [ClientCal wiki](https://github.com/katmore/clientcal/wiki) for more information regarding usage with Docker.
 
  * Prerequisites: 
-   * a copy of the ClientCal source (i.e. `git clone https://github.com/katmore/clientcal.git`)
+   * a copy of the ClientCal source (i.e...)
+   ```sh
+   git clone git@github.com:katmore/clientcal.git
+   ```
    * a recent version of [*docker*](https://www.docker.com/community-edition)
    * a recent version of [*docker-compose*](https://docs.docker.com/compose/)
  * Start containers and configure ClientCal
@@ -32,17 +35,26 @@ Consult the [Docker](https://github.com/katmore/clientcal/wiki/Docker) page of t
 Consult the [Installation](https://github.com/katmore/clientcal/wiki/Installation) page of the [ClientCal wiki](https://github.com/katmore/clientcal/wiki) for more detailed instructions.
 
  * Prerequisites: 
-   * a copy of the ClientCal source (i.e. `git clone https://github.com/katmore/clientcal.git`)
+   * a copy of the ClientCal source (i.e...)
+   ```sh
+   git clone git@github.com:katmore/clientcal.git
+   ```
    * PHP 7.2
    * a recent version of [*composer*](https://getcomposer.org/)
    * a web server provisioned with a "Document Root" pointing to the ClientCal web root ([clientcal/web](/web))
    * a recent version of MySQL provisioned an empty database and a user with access to that database
  * Configure ClientCal
    ```sh
-   $ composer update
-   $ php bin/config-update.php
-   $ php bin/db-update.php
-   $ php bin/web-user.php add my_user
+   composer update
+   ```
+   ```sh
+   php bin/config-update.php
+   ```
+   ```sh
+   php bin/db-update.php
+   ```
+   ```sh
+   php bin/web-user.php add my_user
    ```
  * All done! Ready to view in a browser using your web server's URL.
 
@@ -59,5 +71,5 @@ See the [Screenshots](https://katmore.github.io/clientcal/#screenshots) section 
 ## Legal
 ClientCal is distributed under the terms and conditions of the MIT license (see [LICENSE](/LICENSE)), or the terms and conditions of the GPLv3 license (see [GPLv3](/GPLv3)).
 
-Copyright (c) 2006-2018, Paul Douglas Bird II.
+Copyright (c) 2006-2023, Paul Douglas Bird II.
 All rights reserved.
